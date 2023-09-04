@@ -3,7 +3,6 @@ var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
 const addressInsert = async function (addressData) {
-    console.log('address data: ', addressData);
 
     let sqlAddress = `insert into tbl_address (cep, uf, city, neighborhood, road, number, complement)
                                         values (
