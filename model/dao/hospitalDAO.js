@@ -61,8 +61,23 @@ const hospitalInsert = async function (hospitalData) {
 };
 
 const getHospitalById = async function (hospitalId) {
+  let sql = `
+  SELECT tbl_hospital.id, tbl_hospital.name, tbl_photo.url FROM tbl_photo
+  INNER JOIN tbl_hospital ON tbl_photo.id_hospital = tbl_hospital.id
+  WHERE tbl_hospital.id = ${hospitalId};
+  `
+  let responseHospital = await prisma.$queryRawUnsafe(sql);
+
+  if (responseHospital) {
+    return responseHospital;
+  } else {
+    return false;
+  }
 }
+
+// getAllHospitalDataById
 
 module.exports = {
   hospitalInsert,
+  getHospitalById,
 };

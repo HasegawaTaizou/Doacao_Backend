@@ -31,6 +31,17 @@ app.post('/api/v1/hospital-registration', cors(), bodyJSON, async function (requ
     response.json(resultInsertData)
 });
 
+//Get Hospital
+app.get('/api/v1/hospital/:id', cors(), bodyJSON, async function (request, response) {
+
+    let bodyData = request.body;
+
+    let resultInsertData = await hospitalController.insertHospital(bodyData);
+
+    response.status(resultInsertData.status);
+    response.json(resultInsertData)
+});
+
 
 
 app.listen(8080, function () {
