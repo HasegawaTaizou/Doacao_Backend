@@ -20,18 +20,15 @@ var hospitalController = require('./controller/hospitalController.js');
 
 //ENDPOINTS: 
 
+//Hospital Registration
 app.post('/api/v1/hospital-registration', cors(), bodyJSON, async function (request, response) {
 
-    //Recebe os dados encaminhados no body da requisição
     let bodyData = request.body;
 
-    //Envia os dados para a controller
     let resultInsertData = await hospitalController.insertHospital(bodyData);
 
-    //Retorna o status code e a message
     response.status(resultInsertData.status);
     response.json(resultInsertData)
-
 });
 
 

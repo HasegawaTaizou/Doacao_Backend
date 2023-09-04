@@ -4,9 +4,11 @@ var prisma = new PrismaClient();
 
 var addressDAO = require('./addressDAO.js');
 var phoneDAO = require('./phoneDAO.js');
+var photoDAO = require('./photoDAO.js');
 var siteDAO = require('./siteDAO.js');
 var hospitalSiteDAO = require('./hospitalSiteDAO.js');
 
+//Insert a hospital
 const hospitalInsert = async function (hospitalData) {
 
   //Address Insert
@@ -39,6 +41,9 @@ const hospitalInsert = async function (hospitalData) {
   //Phone Insert
   let resultPhone = await phoneDAO.phoneInsert(hospitalData.hospital.phone, hospitalId);
 
+  //Photo Insert
+  let resultPhoto = await photoDAO.photoInsert(hospitalData.hospital.photo, hospitalId);
+
   // Site Insert
   let siteId = await siteDAO.siteInsert(hospitalData.hospital.donationSite);
 
@@ -54,6 +59,9 @@ const hospitalInsert = async function (hospitalData) {
     return true;
   } else return false;
 };
+
+const getHospitalById = async function (hospitalId) {
+}
 
 module.exports = {
   hospitalInsert,
