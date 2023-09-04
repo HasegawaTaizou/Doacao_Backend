@@ -1,38 +1,12 @@
-/*********************************************************************
- * Objetivo: Realizar a interação do HEMOCENTRO com o banco de dados
- * DATA: 22/08/2023
- * Autor: Genivania Macedo
- * Versão: 1.0
- ********************************************************************/
-
-//Import da biblioteca do prisma client(responsável por manipular dados no BD)
 var { PrismaClient } = require("@prisma/client");
 
-//Instancia da classe do PrismaClient
 var prisma = new PrismaClient();
 
-//Inserir novo hemocentro no registro do banco de dados
-const insertHemocentro = async function (hospitalData) {
-  // Address
-  let sqlAddress = `insert into tbl_address (cep, uf, city, neighborhood, road, number, complement)
-                                        values (
-                                        '${hospitalData.address.cep}',
-                                        '${hospitalData.address.state}',
-                                        '${hospitalData.address.city}',
-                                        '${hospitalData.address.neighborhood}',
-                                        '${hospitalData.address.road}',
-                                        '${hospitalData.address.number}',
-                                        '${hospitalData.address.complement}'
-                                        )
-                                        `;
+var addressDAO = require('./addressDAO.js');
 
-  let resultAddress = await prisma.$executeRawUnsafe(sqlAddress);
+const hospitalInsert = async function (hospitalData) {
 
-  let sqlAddressId = `SELECT LAST_INSERT_ID() AS address_id;`;
-  const resultAddressId = await prisma.$queryRawUnsafe(sqlAddressId);
-
-  let addressId = Number(resultAddressId[0].address_id);
-  console.log("ID do endereço inserido:", addressId);
+  let addressId = await addressDAO.addressInsert(hospitalData.address);
 
   // Hospital
   let sqlHospital = `insert into tbl_hospital (name,
@@ -97,7 +71,6 @@ const insertHemocentro = async function (hospitalData) {
   let resultHospitalSite = await prisma.$executeRawUnsafe(sqlHospitalSite);
 
   if (
-    resultAddress &&
     resultHospital &&
     resultPhone &&
     resultSite &&
@@ -109,9 +82,6 @@ const insertHemocentro = async function (hospitalData) {
   } else return false;
 };
 
-//Atualizar dados do HEMOCENTRO no banco de dados
-const updateHemocentro = function (dadosHemocentro) {};
-
 module.exports = {
-  insertHemocentro,
+  hospitalInsert,
 };
