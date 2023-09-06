@@ -25,21 +25,21 @@ app.post('/api/v1/hospital-registration', cors(), bodyJSON, async function (requ
 
     let bodyData = request.body;
 
-    let resultInsertData = await hospitalController.insertHospital(bodyData);
+    let resultInsertData = await hospitalController.hospitalInsert(bodyData);
 
     response.status(resultInsertData.status);
     response.json(resultInsertData)
 });
 
 //Get Hospital
-app.get('/api/v1/hospital/:id', cors(), bodyJSON, async function (request, response) {
+app.get('/api/v1/hospital/:id', cors(), async function (request, response) {
 
-    let bodyData = request.body;
+    let hospitalId = request.params.id;
 
-    let resultInsertData = await hospitalController.insertHospital(bodyData);
+    let resultGetData = await hospitalController.hospitalGet(hospitalId);
 
-    response.status(resultInsertData.status);
-    response.json(resultInsertData)
+    response.status(resultGetData.status);
+    response.json(resultGetData)
 });
 
 
