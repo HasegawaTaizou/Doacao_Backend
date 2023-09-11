@@ -40,13 +40,18 @@ const hospitalGet = async function (hospitalId) {
     let jsonHospitalData = {};
 
     console.log(`hospitalId: `, hospitalId);
-    
+
     if (hospitalData) {
       jsonHospitalData.status = 200;
       jsonHospitalData.hospital = {
         name: hospitalData[0].name,
         cnpj: hospitalData[0].cnpj,
-        email: hospitalData[0].email
+        email: hospitalData[0].email,
+        phone: hospitalData[0].phone,
+        website: hospitalData[0].website_url,
+        donationSite: hospitalData[0].website_url,
+        otherDonationSite: hospitalData[0].website_url,
+        photo: hospitalData[0].url,
       };
 
       console.log(`HOSPITALDATA: `, hospitalData);
