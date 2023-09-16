@@ -1,6 +1,6 @@
-var bookScheduleDAO = require("../model/dao/bookScheduleDAO.js");
+const bookScheduleDAO = require("../model/dao/bookScheduleDAO.js");
 
-let message = require("./module/config.js");
+const message = require("./module/config.js");
 
 const bookScheduleInsert = async function (bookScheduleData) {
   if (false) {

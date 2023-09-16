@@ -43,11 +43,11 @@ model Address {
 
 model User {
   id          Int      @id @unique @default(autoincrement())
-  name        String   @db.VarChar(9)
+  name        String   @db.VarChar(100)
   cpf         String   @db.VarChar(14)
   dateOfBirth DateTime @map("date_of_birth") @db.Date
   password    String   @db.VarChar(50)
-  weight      Decimal  @db.Decimal(3, 2)
+  weight      Decimal  @db.Decimal(5, 2)
   email       String   @db.VarChar(256)
   photoUrl    String?  @map("photo_url") @db.Text
   phone       String   @db.VarChar(15)

@@ -1,6 +1,6 @@
-var hospitalDAO = require("../model/dao/hospitalDAO.js");
+const hospitalDAO = require("../model/dao/hospitalDAO.js");
 
-let message = require("./module/config.js");
+const message = require("./module/config.js");
 
 const hospitalInsert = async function (hospitalData) {
   if (false) {

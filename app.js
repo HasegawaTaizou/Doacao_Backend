@@ -19,6 +19,7 @@ const bodyJSON = bodyParser.json();
 
 var hospitalController = require("./controller/hospitalController.js");
 var bookScheduleController = require("./controller/bookScheduleController.js");
+var userController = require("./controller/userController.js");
 
 //ENDPOINTS:
 
@@ -56,6 +57,21 @@ app.post(
     let bodyData = request.body;
 
     let resultInsertData = await bookScheduleController.bookScheduleInsert(bodyData);
+
+    response.status(resultInsertData.status);
+    response.json(resultInsertData);
+  }
+);
+
+//User Registration
+app.post(
+  "/api/v1/user-registration",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    let bodyData = request.body;
+
+    let resultInsertData = await userController.userInsert(bodyData);
 
     response.status(resultInsertData.status);
     response.json(resultInsertData);
