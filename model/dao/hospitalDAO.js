@@ -1,11 +1,11 @@
 var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
-var addressDAO = require("./addressDAO.js");
-var phoneDAO = require("./phoneDAO.js");
-var photoDAO = require("./photoDAO.js");
-var siteDAO = require("./siteDAO.js");
-var hospitalSiteDAO = require("./hospitalSiteDAO.js");
+const addressDAO = require("./addressDAO.js");
+const phoneDAO = require("./phoneDAO.js");
+const photoDAO = require("./photoDAO.js");
+const siteDAO = require("./siteDAO.js");
+const hospitalSiteDAO = require("./hospitalSiteDAO.js");
 
 async function insertHospital(hospitalData) {
   try {

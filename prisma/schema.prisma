@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,12 +11,16 @@ model BloodType {
   id   Int    @id @unique @default(autoincrement())
   type String @db.VarChar(3)
 
+  User User[]
+
   @@map("tbl_blood_type")
 }
 
 model Sex {
   id  Int    @id @unique @default(autoincrement())
   sex String @db.VarChar(10)
+
+  User User[]
 
   @@map("tbl_sex")
 }
@@ -34,8 +35,8 @@ model Address {
   number       String  @db.VarChar(4)
   complement   String? @db.VarChar(200)
 
-  User     User[]
   Hospital Hospital[]
+  User     User[]
 
   @@map("tbl_address")
 }
@@ -51,10 +52,14 @@ model User {
   photoUrl    String?  @map("photo_url") @db.Text
   phone       String   @db.VarChar(15)
 
-  idAddress Int        @map("id_address")
-  Address   Address    @relation(fields: [idAddress], references: [id])
-  Review    Review[]
-  Schedule  Schedule[]
+  idAddress   Int        @map("id_address")
+  Address     Address    @relation(fields: [idAddress], references: [id])
+  idSex       Int        @map("id_sex")
+  Sex         Sex        @relation(fields: [idSex], references: [id])
+  idBloodType Int        @default(1) @map("id_blood_type")
+  BloodType   BloodType  @relation(fields: [idBloodType], references: [id])
+  Review      Review[]
+  Schedule    Schedule[]
 
   @@map("tbl_user")
 }
@@ -67,9 +72,8 @@ model Hospital {
   websiteUrl String? @map("website_url") @db.VarChar(200)
   password   String  @db.VarChar(75)
 
-  idAddress Int     @map("id_address")
-  Address   Address @relation(fields: [idAddress], references: [id])
-
+  idAddress    Int            @map("id_address")
+  Address      Address        @relation(fields: [idAddress], references: [id])
   HospitalSite HospitalSite[]
   Phone        Phone[]
   Photo        Photo[]
@@ -171,7 +175,7 @@ model BookSchedule {
 }
 
 model Schedule {
-  id   Int      @id @unique @default(autoincrement())
+  id Int @id @unique @default(autoincrement())
 
   idUser         Int              @map("id_user")
   User           User             @relation(fields: [idUser], references: [id])
