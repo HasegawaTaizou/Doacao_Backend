@@ -1,45 +1,27 @@
 var hospitalDAO = require("../model/dao/hospitalDAO.js");
 
-const hospitalInsert = async function (hospitalData) {
-  //Import do arquivo global de configurações do projeto
-  let message = require("./module/config.js");
+let message = require("./module/config.js");
 
-  if (
-    // dadosHemocentro.nome  == ''  || dadosHemocentro.nome  == undefined || dadosHemocentro.nome.length > 100 ||
-    // dadosHemocentro.cnpj  == ''  || dadosHemocentro.cnpj  == undefined || dadosHemocentro.cnpj.length > 18 ||
-    // dadosHemocentro.email == ''  || dadosHemocentro.email == undefined ||
-    // dadosHemocentro.phone == ''  || dadosHemocentro.phone == undefined || dadosHemocentro.phone.length > 15 ||
-    // dadosHemocentro.photo == ''  || dadosHemocentro.photo == undefined
-    false
-  ) {
+const hospitalInsert = async function (hospitalData) {
+  if (false) {
     return message.ERROR_REQUIRED_DATA;
   } else {
     let status = await hospitalDAO.insertHospital(hospitalData);
-    console.log(`statusss: `, status);
-    if (status) return message.CREATED_ITEM;
-    else return message.ERROR_INTERNAL_SERVER;
+    if (status) {
+      return message.CREATED_ITEM;
+    } else {
+      return message.ERROR_INTERNAL_SERVER;
+    }
   }
 };
 
 const hospitalGet = async function (hospitalId) {
-  //Import do arquivo global de configurações do projeto
-  let message = require("./module/config.js");
-
-  if (
-    // dadosHemocentro.nome  == ''  || dadosHemocentro.nome  == undefined || dadosHemocentro.nome.length > 100 ||
-    // dadosHemocentro.cnpj  == ''  || dadosHemocentro.cnpj  == undefined || dadosHemocentro.cnpj.length > 18 ||
-    // dadosHemocentro.email == ''  || dadosHemocentro.email == undefined ||
-    // dadosHemocentro.phone == ''  || dadosHemocentro.phone == undefined || dadosHemocentro.phone.length > 15 ||
-    // dadosHemocentro.photo == ''  || dadosHemocentro.photo == undefined
-    false
-  ) {
+  if (false) {
     return message.ERROR_REQUIRED_DATA;
   } else {
     let hospitalData = await hospitalDAO.getHospitalById(hospitalId);
 
     let jsonHospitalData = {};
-
-    console.log(`hospitalId: `, hospitalId);
 
     if (hospitalData) {
       jsonHospitalData.status = 200;
@@ -53,8 +35,16 @@ const hospitalGet = async function (hospitalId) {
         otherDonationSite: hospitalData[0].website_url,
         photo: hospitalData[0].url,
       };
+      jsonHospitalData.address = {
+        cep: hospitalData[0].cep,
+        uf: hospitalData[0].uf,
+        city: hospitalData[0].city,
+        neighborhood: hospitalData[0].neighborhood,
+        street: hospitalData[0].street,
+        complement: hospitalData[0].complement,
+      };
 
-      console.log(`HOSPITALDATA: `, hospitalData);
+      console.log(`Hospital Data: ${hospitalData}`);
 
       return jsonHospitalData;
     } else {
