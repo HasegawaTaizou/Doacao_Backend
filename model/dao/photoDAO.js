@@ -3,18 +3,22 @@ var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
 const photoInsert = async function (photoData, hospitalId) {
+  try {
+    const insertPhotoData = await prisma.photo.create({
+      data: {
+        url: photoData.photo,
+        idHospital: hospitalId,
+      },
+    });
 
-    let sqlPhoto = `INSERT INTO tbl_photo (url, id_hospital) VALUES ('${photoData}', ${hospitalId});`;
-
-    let resultPhoto = await prisma.$executeRawUnsafe(sqlPhoto);
-
-    if (resultPhoto) {
-        return resultPhoto;
-    } else {
-        return false
-    };
+    return insertPhotoData;
+  } catch (error) {
+    console.log("error: ", error);
+  } finally {
+    await prisma.$disconnect();
+  }
 };
 
 module.exports = {
-    photoInsert,
+  photoInsert,
 };

@@ -1,5 +1,4 @@
 var { PrismaClient } = require("@prisma/client");
-
 var prisma = new PrismaClient();
 
 var addressDAO = require("./addressDAO.js");
@@ -8,6 +7,60 @@ var photoDAO = require("./photoDAO.js");
 var siteDAO = require("./siteDAO.js");
 var hospitalSiteDAO = require("./hospitalSiteDAO.js");
 
+async function insertHospital(hospitalData) {
+  try {
+    //Address Insert
+    let addressInsert = await addressDAO.addressInsert(hospitalData.address);
+    let addressId = addressInsert.id;
+
+    //Hospital Insert
+    const insertHospitalData = await prisma.hospital.create({
+      data: {
+        name: hospitalData.hospital.name,
+        cnpj: hospitalData.hospital.cnpj,
+        email: hospitalData.hospital.email,
+        websiteUrl: hospitalData.hospital.website,
+        password: hospitalData.hospital.password,
+        idAddress: addressId,
+      },
+    });
+    let hospitalId = insertHospitalData.id;
+
+    //Phone Insert
+    let phoneInsert = await phoneDAO.phoneInsert(
+      hospitalData.hospital,
+      hospitalId
+    );
+
+    //Site Insert
+    let insertSite = await siteDAO.siteInsert(hospitalData.hospital);
+
+    let donationSiteId = insertSite[0].id;
+    let otherDonationSiteId = insertSite[1].id;
+
+    //Hospital Site Insert
+    let insertHospitalSite = await hospitalSiteDAO.hospitalSiteInsert(
+      hospitalId,
+      donationSiteId,
+      otherDonationSiteId
+    );
+
+    //Photo Insert
+    let insertPhoto = await photoDAO.photoInsert(hospitalData.hospital, hospitalId)
+
+    return true;
+  } catch (error) {
+    console.error("Erro ao criar o hospital:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+module.exports = {
+  insertHospital,
+};
+
+/*
 //Insert a hospital
 const insertHospital = async function (hospitalData) {
   //Address Insert
@@ -103,3 +156,4 @@ module.exports = {
   insertHospital,
   getHospitalById,
 };
+*/

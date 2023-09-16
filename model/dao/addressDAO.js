@@ -3,33 +3,27 @@ var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
 const addressInsert = async function (addressData) {
+  try {
+    const insertAddressData = await prisma.address.create({
+      data: {
+        cep: addressData.cep,
+        uf: addressData.uf,
+        city: addressData.city,
+        neighborhood: addressData.neighborhood,
+        street: addressData.street,
+        number: addressData.number,
+        complement: addressData.complement,
+      },
+    });
 
-    let sqlAddress = `insert into tbl_address (cep, uf, city, neighborhood, road, number, complement)
-                                        values (
-                                        '${addressData.cep}',
-                                        '${addressData.state}',
-                                        '${addressData.city}',
-                                        '${addressData.neighborhood}',
-                                        '${addressData.road}',
-                                        '${addressData.number}',
-                                        '${addressData.complement}'
-                                        )
-                                        `;
-
-    let resultAddress = await prisma.$executeRawUnsafe(sqlAddress);
-
-    let sqlAddressId = `SELECT LAST_INSERT_ID() AS address_id;`;
-    const resultAddressId = await prisma.$queryRawUnsafe(sqlAddressId);
-
-    let addressId = Number(resultAddressId[0].address_id);
-
-    if (resultAddress) {
-        return addressId;
-    } else {
-        return false
-    };
+    return insertAddressData; 
+  } catch (error) {
+    console.log("error: ", error);
+  } finally {
+    await prisma.$disconnect();
+  }
 };
 
 module.exports = {
-    addressInsert,
+  addressInsert,
 };
