@@ -6,7 +6,7 @@ const bookScheduleInsert = async function (bookScheduleData) {
   if (false) {
     return message.ERROR_REQUIRED_DATA;
   } else {
-    let status = await bookScheduleDAO.bookScheduleInsert(bookScheduleData);
+    let status = await bookScheduleDAO.insertBookSchedule(bookScheduleData);
     if (status) {
       return message.CREATED_ITEM;
     } else {

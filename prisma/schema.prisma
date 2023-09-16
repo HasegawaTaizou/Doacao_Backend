@@ -161,7 +161,7 @@ enum STATUS {
 model BookSchedule {
   id   Int      @id @unique @default(autoincrement())
   date DateTime @db.Date
-  hour DateTime @db.Time()
+  hour DateTime @db.Time
 
   idHospitalSite Int          @map("id_hospital_site")
   HospitalSite   HospitalSite @relation(fields: [idHospitalSite], references: [id])
