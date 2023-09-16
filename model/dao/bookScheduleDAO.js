@@ -1,16 +1,16 @@
 var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
-const insertPhone = async function (phoneData, hospitalId) {
+const bookScheduleInsert = async function (bookScheduleData) {
   try {
-    const insertPhoneData = await prisma.phone.create({
+    const insertBookScheduleData = await prisma.phone.create({
       data: {
         phone: phoneData.phone,
         idHospital: hospitalId,
       },
     });
 
-    return insertPhoneData;
+    return insertBookScheduleData;
   } catch (error) {
     console.log("error: ", error);
   } finally {
@@ -19,5 +19,5 @@ const insertPhone = async function (phoneData, hospitalId) {
 };
 
 module.exports = {
-  insertPhone
+  bookScheduleInsert,
 };

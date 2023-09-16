@@ -1,7 +1,7 @@
 var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
-const hospitalSiteInsert = async function (hospitalId, siteId, otherSiteId) {
+const insertHospitalSite = async function (hospitalId, siteId, otherSiteId) {
   try {
     const insertHospitalSiteData = await prisma.hospitalSite.createMany({
       data: [
@@ -25,5 +25,5 @@ const hospitalSiteInsert = async function (hospitalId, siteId, otherSiteId) {
 };
 
 module.exports = {
-  hospitalSiteInsert,
+  insertHospitalSite,
 };

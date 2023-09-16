@@ -10,7 +10,7 @@ var hospitalSiteDAO = require("./hospitalSiteDAO.js");
 async function insertHospital(hospitalData) {
   try {
     //Address Insert
-    let addressInsert = await addressDAO.addressInsert(hospitalData.address);
+    let addressInsert = await addressDAO.insertAddress(hospitalData.address);
     let addressId = addressInsert.id;
 
     //Hospital Insert
@@ -27,26 +27,26 @@ async function insertHospital(hospitalData) {
     let hospitalId = insertHospitalData.id;
 
     //Phone Insert
-    let phoneInsert = await phoneDAO.phoneInsert(
+    let phoneInsert = await phoneDAO.insertPhone(
       hospitalData.hospital,
       hospitalId
     );
 
     //Site Insert
-    let insertSite = await siteDAO.siteInsert(hospitalData.hospital);
+    let insertSite = await siteDAO.insertSite(hospitalData.hospital);
 
     let donationSiteId = insertSite[0].id;
     let otherDonationSiteId = insertSite[1].id;
 
     //Hospital Site Insert
-    let insertHospitalSite = await hospitalSiteDAO.hospitalSiteInsert(
+    let insertHospitalSite = await hospitalSiteDAO.insertHospitalSite(
       hospitalId,
       donationSiteId,
       otherDonationSiteId
     );
 
     //Photo Insert
-    let insertPhoto = await photoDAO.photoInsert(
+    let insertPhoto = await photoDAO.insertPhoto(
       hospitalData.hospital,
       hospitalId
     );

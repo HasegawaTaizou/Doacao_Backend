@@ -2,7 +2,7 @@ var { PrismaClient } = require("@prisma/client");
 
 var prisma = new PrismaClient();
 
-const addressInsert = async function (addressData) {
+const insertAddress = async function (addressData) {
   try {
     const insertAddressData = await prisma.address.create({
       data: {
@@ -25,5 +25,5 @@ const addressInsert = async function (addressData) {
 };
 
 module.exports = {
-  addressInsert,
+  insertAddress
 };

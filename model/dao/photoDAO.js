@@ -2,7 +2,7 @@ var { PrismaClient } = require("@prisma/client");
 
 var prisma = new PrismaClient();
 
-const photoInsert = async function (photoData, hospitalId) {
+const insertPhoto = async function (photoData, hospitalId) {
   try {
     const insertPhotoData = await prisma.photo.create({
       data: {
@@ -20,5 +20,5 @@ const photoInsert = async function (photoData, hospitalId) {
 };
 
 module.exports = {
-  photoInsert,
+  insertPhoto
 };

@@ -2,7 +2,7 @@ var { PrismaClient } = require("@prisma/client");
 
 var prisma = new PrismaClient();
 
-const siteInsert = async function (siteData) {
+const insertSite = async function (siteData) {
   try {
     const insertDonationSiteData = await prisma.$transaction([
       prisma.site.create({
@@ -26,5 +26,5 @@ const siteInsert = async function (siteData) {
 };
 
 module.exports = {
-  siteInsert,
+  insertSite
 };
