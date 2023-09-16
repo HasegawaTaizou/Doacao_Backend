@@ -1,12 +1,12 @@
 var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
-const bookScheduleInsert = async function (bookScheduleData) {
+const insertBookSchedule = async function (bookScheduleData) {
   try {
-    const insertBookScheduleData = await prisma.phone.create({
+    const insertBookScheduleData = await prisma.bookSchedule.create({
       data: {
-        phone: phoneData.phone,
-        idHospital: hospitalId,
+        date: bookScheduleData.date,
+        hour: bookScheduleData.hour,
       },
     });
 
@@ -19,5 +19,5 @@ const bookScheduleInsert = async function (bookScheduleData) {
 };
 
 module.exports = {
-  bookScheduleInsert,
+  insertBookSchedule
 };
