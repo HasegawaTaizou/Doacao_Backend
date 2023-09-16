@@ -17,9 +17,11 @@ app.use((request, response, next) => {
 
 const bodyJSON = bodyParser.json();
 
-var hospitalController = require("./controller/hospitalController.js");
-var bookScheduleController = require("./controller/bookScheduleController.js");
-var userController = require("./controller/userController.js");
+const hospitalController = require("./controller/hospitalController.js");
+const bookScheduleController = require("./controller/bookScheduleController.js");
+const userController = require("./controller/userController.js");
+const scheduleController = require("./controller/scheduleController.js");
+const scheduleStatusController = require("./controller/scheduleStatusController.js");
 
 //ENDPOINTS:
 
@@ -72,6 +74,36 @@ app.post(
     let bodyData = request.body;
 
     let resultInsertData = await userController.userInsert(bodyData);
+
+    response.status(resultInsertData.status);
+    response.json(resultInsertData);
+  }
+);
+
+//Schedule Registration
+app.post(
+  "/api/v1/schedule",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    let bodyData = request.body;
+
+    let resultInsertData = await scheduleController.scheduleInsert(bodyData);
+
+    response.status(resultInsertData.status);
+    response.json(resultInsertData);
+  }
+);
+
+//Schedule Status Registration
+app.post(
+  "/api/v1/schedule-status",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    let bodyData = request.body;
+
+    let resultInsertData = await scheduleStatusController.scheduleStatusInsert(bodyData);
 
     response.status(resultInsertData.status);
     response.json(resultInsertData);
