@@ -10,7 +10,132 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model tbl_teste_prisma {
-  id Int @id @default(autoincrement())
-  nome String 
+model BloodType {
+  id   Int    @id @unique @default(autoincrement())
+  type String @db.VarChar(3)
+
+  @@map("tbl_blood_type")
+}
+
+model Sex {
+  id  Int    @id @unique @default(autoincrement())
+  sex String @db.VarChar(10)
+
+  @@map("tbl_sex")
+}
+
+model Address {
+  id           Int     @id @unique @default(autoincrement())
+  cep          String  @db.VarChar(9)
+  uf           String  @db.VarChar(2)
+  city         String  @db.VarChar(75)
+  neighborhood String  @db.VarChar(100)
+  street       String  @db.VarChar(150)
+  number       String  @db.VarChar(4)
+  complement   String? @db.VarChar(200)
+
+  User     User[]
+  Hospital Hospital[]
+
+  @@map("tbl_address")
+}
+
+model User {
+  id          Int      @id @unique @default(autoincrement())
+  name        String   @db.VarChar(9)
+  cpf         String   @db.VarChar(14)
+  dateOfBirth DateTime @map("date_of_birth") @db.Date
+  password    String   @db.VarChar(50)
+  weight      Decimal  @db.Decimal(3, 2)
+  email       String   @db.VarChar(256)
+  photoUrl    String?  @map("photo_url") @db.Text
+  phone       String   @db.VarChar(15)
+
+  idAddress Int      @map("id_address")
+  address   Address  @relation(fields: [idAddress], references: [id])
+  Review    Review[]
+
+  @@map("tbl_user")
+}
+
+model Hospital {
+  id         Int     @id @unique @default(autoincrement())
+  name       String  @db.VarChar(100)
+  cnpj       String  @db.VarChar(18)
+  email      String  @db.VarChar(256)
+  websiteUrl String? @map("website_url") @db.VarChar(200)
+  password   String  @db.VarChar(75)
+
+  idAddress Int     @map("id_address")
+  address   Address @relation(fields: [idAddress], references: [id])
+
+  HospitalSite HospitalSite[]
+  Phone        Phone[]
+  Photo        Photo[]
+  Review       Review[]
+
+  @@map("tbl_hospital")
+}
+
+model Site {
+  id   Int     @id @unique @default(autoincrement())
+  site String? @db.VarChar(150)
+
+  HospitalSite HospitalSite[]
+
+  @@map("tbl_site")
+}
+
+model HospitalSite {
+  id Int @id @unique @default(autoincrement())
+
+  idHospital Int      @map("id_hospital")
+  hospital   Hospital @relation(fields: [idHospital], references: [id])
+  idSite     Int      @map("id_site")
+  site       Site     @relation(fields: [idSite], references: [id])
+
+  @@map("tbl_hospital_site")
+}
+
+model Phone {
+  id    Int    @id @unique @default(autoincrement())
+  phone String @db.VarChar(15)
+
+  idHospital Int      @map("id_hospital")
+  hospital   Hospital @relation(fields: [idHospital], references: [id])
+
+  @@map("tbl_phone")
+}
+
+model Photo {
+  id  Int    @id @unique @default(autoincrement())
+  url String @db.Text
+
+  idHospital Int      @map("id_hospital")
+  hospital   Hospital @relation(fields: [idHospital], references: [id])
+
+  @@map("tbl_photo")
+}
+
+model Star {
+  id         Int      @id @unique @default(autoincrement())
+  starNumber Int      @map("star_number")
+  Review     Review[]
+
+  @@map("tbl_star")
+}
+
+model Review {
+  id      Int      @id @unique @default(autoincrement())
+  opinion String   @db.Text
+  date    DateTime @db.Date
+
+  idUser     Int      @map("id_user")
+  user       User     @relation(fields: [idUser], references: [id])
+  idHospital Int      @map("id_hospital")
+  hospital   Hospital @relation(fields: [idHospital], references: [id])
+  idStar     Int      @map("id_star")
+  star       Star     @relation(fields: [idStar], references: [id])
+
+  @@map("tbl_review")
 }
