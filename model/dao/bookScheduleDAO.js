@@ -24,6 +24,30 @@ const insertBookSchedule = async function (bookScheduleData) {
   return true;
 };
 
+const getBookSchedulesByHospitalId = async function (hospitalId) {
+  let sql = `
+  SELECT 
+  tbl_book_schedule.id, 
+  DATE_FORMAT(tbl_book_schedule.date, '%d/%m/%Y') AS date,
+  TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour,
+  tbl_site.site 
+  FROM tbl_book_schedule
+  INNER JOIN tbl_hospital_site ON tbl_book_schedule.id_hospital_site = tbl_hospital_site.id
+  INNER JOIN tbl_site ON tbl_site.id = tbl_hospital_site.id_site
+  INNER JOIN tbl_hospital ON tbl_hospital.id = tbl_hospital_site.id_hospital
+  WHERE tbl_hospital.id = ${hospitalId};
+  `;
+
+  let responseBookSchedules = await prisma.$queryRawUnsafe(sql);
+
+  if (responseBookSchedules) {
+    return responseBookSchedules;
+  } else {
+    return false;
+  }
+};
+
 module.exports = {
   insertBookSchedule,
+  getBookSchedulesByHospitalId,
 };

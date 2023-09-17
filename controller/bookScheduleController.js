@@ -15,6 +15,27 @@ const bookScheduleInsert = async function (bookScheduleData) {
   }
 };
 
+const bookSchedulesGet = async function (hospitalId) {
+  if (false) {
+    return message.ERROR_REQUIRED_DATA;
+  } else {
+    let bookSchedulesData = await bookScheduleDAO.getBookSchedulesByHospitalId(hospitalId);
+
+    let jsonBookSchedulesData = {};
+
+    if (bookSchedulesData) {
+      console.log(`Book Schedule Data: ${bookSchedulesData}`);
+      jsonBookSchedulesData.status = 200;
+      jsonBookSchedulesData.bookSchedules = bookSchedulesData;
+
+      return jsonBookSchedulesData;
+    } else {
+      return message.ERROR_INTERNAL_SERVER;
+    }
+  }
+};
+
 module.exports = {
   bookScheduleInsert,
+  bookSchedulesGet,
 };
