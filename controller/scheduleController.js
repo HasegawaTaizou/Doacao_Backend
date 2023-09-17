@@ -58,8 +58,22 @@ const scheduleCancelUpdate = async function (scheduleId, scheduleData) {
   }
 };
 
+const scheduleConcludeUpdate = async function (scheduleId) {
+  if (false) {
+    return message.ERROR_REQUIRED_DATA;
+  } else {
+    let status = await scheduleDAO.updateScheduleConclude(scheduleId);
+    if (status) {
+      return message.CREATED_ITEM;
+    } else {
+      return message.ERROR_INTERNAL_SERVER;
+    }
+  }
+};
+
 module.exports = {
   scheduleInsert,
   schedulesStatisticsGet,
   scheduleCancelUpdate,
+  scheduleConcludeUpdate,
 };

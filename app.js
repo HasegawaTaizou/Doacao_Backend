@@ -293,6 +293,21 @@ app.put(
   }
 );
 
+app.put(
+  "/api/v1/schedule-conclude/:id",
+  cors(),
+  async function (request, response) {
+    let scheduleId = request.params.id;
+
+    let resultUpdateData = await scheduleController.scheduleConcludeUpdate(
+      scheduleId
+    );
+
+    response.status(resultUpdateData.status);
+    response.json(resultUpdateData);
+  }
+);
+
 app.listen(8080, function () {
   console.log("Server waiting for requests on port 8080!");
 });

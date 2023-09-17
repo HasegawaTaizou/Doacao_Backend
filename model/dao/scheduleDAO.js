@@ -103,8 +103,61 @@ async function updateScheduleCancel(scheduleId, scheduleData) {
   }
 }
 
+async function updateScheduleConclude(scheduleId) {
+  try {
+    const oldscheduleData = await prisma.schedule.findUnique({
+      where: {
+        id: Number(scheduleId),
+      },
+      include: {
+        ScheduleStatus: {
+          select: {
+            observation: true,
+            Status: {
+              select: {
+                status: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    console.log(oldscheduleData.ScheduleStatus);
+
+    const updatedSchedule = await prisma.schedule.update({
+      where: {
+        id: Number(scheduleId),
+      },
+      data: {
+        ScheduleStatus: {
+          update: {
+            where: {
+              id: Number(scheduleId),
+            },
+            data: {
+              Status: {
+                update: {
+                  status: "CONCLUDED",
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Erro ao atualizar o schedule:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 module.exports = {
   insertSchedule,
   getSchedulesStatisticsByHospitalId,
   updateScheduleCancel,
+  updateScheduleConclude,
 };
