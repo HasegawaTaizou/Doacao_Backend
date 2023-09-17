@@ -15,6 +15,34 @@ const scheduleInsert = async function (scheduleData) {
   }
 };
 
+const schedulesStatisticsGet = async function (hospitalId) {
+  if (false) {
+    return message.ERROR_REQUIRED_DATA;
+  } else {
+    let schedulesStatisticsData =
+      await scheduleDAO.getSchedulesStatisticsByHospitalId(hospitalId);
+
+    let jsonSchedulesStatisticsData = {};
+
+    if (schedulesStatisticsData) {
+      console.log(`Schedule Statistics Data: ${schedulesStatisticsData}`);
+      jsonSchedulesStatisticsData.status = 200;
+      jsonSchedulesStatisticsData.schedulesStatistics = {
+        totalSchedules: Number(schedulesStatisticsData[0].totalSchedules),
+        pendingAmount: schedulesStatisticsData[0].pendingAmount,
+        scheduledAmount: schedulesStatisticsData[0].scheduledAmount,
+        concludedAmount: schedulesStatisticsData[0].concludedAmount,
+        rescheduledAmount: schedulesStatisticsData[0].rescheduledAmount,
+      };
+
+      return jsonSchedulesStatisticsData;
+    } else {
+      return message.ERROR_INTERNAL_SERVER;
+    }
+  }
+};
+
 module.exports = {
   scheduleInsert,
+  schedulesStatisticsGet,
 };

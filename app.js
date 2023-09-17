@@ -191,6 +191,22 @@ app.get(
   }
 );
 
+//Get Hospital Book Schedules
+app.get(
+  "/api/v1/hospital/:id/statistics/schedules",
+  cors(),
+  async function (request, response) {
+    let hospitalId = request.params.id;
+
+    let resultGetData = await scheduleController.schedulesStatisticsGet(hospitalId);
+
+    console.log(resultGetData);
+    
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
+
 app.listen(8080, function () {
-  console.log("Servidor aguardando requisições na porta 8080!");
+  console.log("Server waiting for requests on port 8080!");
 });

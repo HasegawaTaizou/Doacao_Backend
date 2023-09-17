@@ -82,6 +82,8 @@ const getHospitalById = async function (hospitalId) {
   }
 };
 
+// ARRUMAR ESSE AQUI PARA FILTRAR UM WHERE PELO ID
+//hospitalId
 const getHospitalSchedules = async function () {
   let sql = `
   SELECT 
