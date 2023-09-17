@@ -23,6 +23,7 @@ const userController = require("./controller/userController.js");
 const scheduleController = require("./controller/scheduleController.js");
 const scheduleStatusController = require("./controller/scheduleStatusController.js");
 const siteController = require("./controller/siteController.js");
+const reviewController = require("./controller/reviewController.js");
 
 //ENDPOINTS:
 
@@ -204,6 +205,23 @@ app.get(
     
     response.status(resultGetData.status);
     response.json(resultGetData);
+  }
+);
+
+//Review Registration
+app.post(
+  "/api/v1/review-registration",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    let bodyData = request.body;
+
+    let resultInsertData = await reviewController.reviewInsert(
+      bodyData
+    );
+
+    response.status(resultInsertData.status);
+    response.json(resultInsertData);
   }
 );
 
