@@ -2,7 +2,7 @@ const siteDAO = require("../model/dao/siteDAO.js");
 
 const message = require("./module/config.js");
 
-const getSites = async function (hospitalId) {
+const sitesGet = async function (hospitalId) {
   if (false) {
     return message.ERROR_REQUIRED_DATA;
   } else {
@@ -23,5 +23,5 @@ const getSites = async function (hospitalId) {
 };
 
 module.exports = {
-  getSites,
+  sitesGet,
 };

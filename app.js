@@ -138,7 +138,21 @@ app.get(
   async function (request, response) {
     let hospitalId = request.params.id;
 
-    let resultGetData = await siteController.getSites(hospitalId);
+    let resultGetData = await siteController.sitesGet(hospitalId);
+
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
+
+//Get User
+app.get(
+  "/api/v1/users/:id",
+  cors(),
+  async function (request, response) {
+    let userId = request.params.id;
+
+    let resultGetData = await userController.userGet(userId);
 
     response.status(resultGetData.status);
     response.json(resultGetData);

@@ -47,6 +47,38 @@ async function insertUser(userData) {
   }
 }
 
+const getUserById = async function (userId) {
+  console.log(userId);
+  let sql = `
+  SELECT 
+  tbl_user.name, 
+  tbl_user.photo_url,
+  tbl_user.email, 
+  tbl_user.phone,
+  tbl_user.weight,
+  TIMESTAMPDIFF(YEAR, tbl_user.date_of_birth, CURDATE()) AS age,
+  tbl_blood_type.type,
+  tbl_sex.sex
+  FROM tbl_user
+  INNER JOIN tbl_blood_type ON tbl_blood_type.id = tbl_user.id_blood_type
+  INNER JOIN tbl_sex ON tbl_sex.id = tbl_user.id_sex
+  WHERE tbl_user.id = ${userId};
+  `;
+
+  console.log(sql);
+
+  let responseUser = await prisma.$queryRawUnsafe(sql);
+
+  console.log("response user: ", responseUser);
+
+  if (responseUser) {
+    return responseUser;
+  } else {
+    return false;
+  }
+};
+
 module.exports = {
   insertUser,
+  getUserById,
 };
