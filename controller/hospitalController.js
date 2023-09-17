@@ -53,7 +53,44 @@ const hospitalGet = async function (hospitalId) {
   }
 };
 
+const hospitalGetSchedules = async function () {
+  if (false) {
+    return message.ERROR_REQUIRED_DATA;
+  } else {
+    let schedulesData = await hospitalDAO.getSchedules();
+
+    let jsonSchedulesData = {};
+    jsonSchedulesData.status = 200;
+    jsonSchedulesData.schedules = [];
+
+    for (scheduleData in schedulesData) {
+      if (schedulesData) {
+        let scheduleObject = {
+          user: {
+            userId: schedulesData[scheduleData].id,
+            name: schedulesData[scheduleData].name,
+            photo: schedulesData[scheduleData].photo_url,
+          },
+          schedule: {
+            scheduleId: schedulesData[scheduleData].id_schedule,
+            date: schedulesData[scheduleData].date,
+            hour: schedulesData[scheduleData].hour,
+            site: schedulesData[scheduleData].site,
+            status: schedulesData[scheduleData].status,
+          },
+        };
+
+        jsonSchedulesData.schedules.push(scheduleObject);
+      } else {
+        return message.ERROR_INTERNAL_SERVER;
+      }
+    }
+    return jsonSchedulesData;
+  }
+};
+
 module.exports = {
   hospitalInsert,
   hospitalGet,
+  hospitalGetSchedules,
 };

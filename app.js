@@ -41,7 +41,7 @@ app.post(
 );
 
 //Get Hospital
-app.get("/api/v1/hospital/:id", cors(), async function (request, response) {
+app.get("/api/v1/hospital-data/:id", cors(), async function (request, response) {
   let hospitalId = request.params.id;
 
   let resultGetData = await hospitalController.hospitalGet(hospitalId);
@@ -109,6 +109,14 @@ app.post(
     response.json(resultInsertData);
   }
 );
+
+//Get Schedules
+app.get("/api/v1/hospital/schedules", cors(), async function (request, response) {
+  let resultGetData = await hospitalController.hospitalGetSchedules();
+
+  response.status(resultGetData.status);
+  response.json(resultGetData);
+});
 
 app.listen(8080, function () {
   console.log("Servidor aguardando requisições na porta 8080!");
