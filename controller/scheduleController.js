@@ -42,7 +42,24 @@ const schedulesStatisticsGet = async function (hospitalId) {
   }
 };
 
+const scheduleCancelUpdate = async function (scheduleId, scheduleData) {
+  if (false) {
+    return message.ERROR_REQUIRED_DATA;
+  } else {
+    let status = await scheduleDAO.updateScheduleCancel(
+      scheduleId,
+      scheduleData
+    );
+    if (status) {
+      return message.CREATED_ITEM;
+    } else {
+      return message.ERROR_INTERNAL_SERVER;
+    }
+  }
+};
+
 module.exports = {
   scheduleInsert,
   schedulesStatisticsGet,
+  scheduleCancelUpdate,
 };

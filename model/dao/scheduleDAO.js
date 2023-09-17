@@ -20,7 +20,6 @@ const insertSchedule = async function (scheduleData) {
 };
 
 const getSchedulesStatisticsByHospitalId = async function (hospitalId) {
-
   let sql = `
   SELECT
   COUNT(tbl_schedule_status.id_schedule) AS totalSchedules,
@@ -51,7 +50,61 @@ const getSchedulesStatisticsByHospitalId = async function (hospitalId) {
   }
 };
 
+async function updateScheduleCancel(scheduleId, scheduleData) {
+  try {
+    const oldscheduleData = await prisma.schedule.findUnique({
+      where: {
+        id: Number(scheduleId),
+      },
+      include: {
+        ScheduleStatus: {
+          select: {
+            observation: true,
+            Status: {
+              select: {
+                status: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    console.log(oldscheduleData.ScheduleStatus);
+
+    const updatedSchedule = await prisma.schedule.update({
+      where: {
+        id: Number(scheduleId),
+      },
+      data: {
+        ScheduleStatus: {
+          update: {
+            where: {
+              id: Number(scheduleId),
+            },
+            data: {
+              observation: scheduleData.observation,
+              Status: {
+                update: {
+                  status: "PENDING",
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Erro ao atualizar o schedule:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 module.exports = {
   insertSchedule,
   getSchedulesStatisticsByHospitalId,
+  updateScheduleCancel,
 };

@@ -274,6 +274,25 @@ app.put(
   }
 );
 
+//Schedule Cancel Update
+app.put(
+  "/api/v1/schedule-cancel/:id",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    let scheduleId = request.params.id;
+    let bodyData = request.body;
+
+    let resultUpdateData = await scheduleController.scheduleCancelUpdate(
+      scheduleId,
+      bodyData
+    );
+
+    response.status(resultUpdateData.status);
+    response.json(resultUpdateData);
+  }
+);
+
 app.listen(8080, function () {
   console.log("Server waiting for requests on port 8080!");
 });
