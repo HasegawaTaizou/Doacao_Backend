@@ -225,6 +225,22 @@ app.post(
   }
 );
 
+//Get Hospital Reviews Statistics
+app.get(
+  "/api/v1/hospital/:id/statistics/ratings",
+  cors(),
+  async function (request, response) {
+    let hospitalId = request.params.id;
+
+    let resultGetData = await reviewController.reviewsStatisticsGet(hospitalId);
+
+    console.log(resultGetData);
+    
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
+
 app.listen(8080, function () {
   console.log("Server waiting for requests on port 8080!");
 });
