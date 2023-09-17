@@ -19,7 +19,9 @@ const bookSchedulesGet = async function (hospitalId) {
   if (false) {
     return message.ERROR_REQUIRED_DATA;
   } else {
-    let bookSchedulesData = await bookScheduleDAO.getBookSchedulesByHospitalId(hospitalId);
+    let bookSchedulesData = await bookScheduleDAO.getBookSchedulesByHospitalId(
+      hospitalId
+    );
 
     let jsonBookSchedulesData = {};
 
@@ -35,7 +37,24 @@ const bookSchedulesGet = async function (hospitalId) {
   }
 };
 
+const bookScheduleUpdate = async function (bookScheduleId, bookScheduleData) {
+  if (false) {
+    return message.ERROR_REQUIRED_DATA;
+  } else {
+    let status = await bookScheduleDAO.updateBookSchedule(
+      bookScheduleId,
+      bookScheduleData
+    );
+    if (status) {
+      return message.CREATED_ITEM;
+    } else {
+      return message.ERROR_INTERNAL_SERVER;
+    }
+  }
+};
+
 module.exports = {
   bookScheduleInsert,
   bookSchedulesGet,
+  bookScheduleUpdate,
 };

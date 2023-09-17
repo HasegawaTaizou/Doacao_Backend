@@ -47,7 +47,54 @@ const getBookSchedulesByHospitalId = async function (hospitalId) {
   }
 };
 
+async function updateBookSchedule(bookScheduleId, bookScheduleData) {
+  let [day, month, year] = bookScheduleData.date.split("/");
+  let ISOdate = `${year}-${month}-${day}T00:00:00Z`;
+
+  let [hour, minute] = bookScheduleData.hour.split(":");
+  let ISOhour = `1970-01-01T${hour}:${minute}:00Z`;
+
+  try {
+    const oldBookScheduleData = await prisma.bookSchedule.findUnique({
+      where: {
+        id: Number(bookScheduleId),
+      },
+      include: {
+        HospitalSite: {
+          select: {
+            idSite: true,
+          },
+        },
+      },
+    });
+
+    console.log(oldBookScheduleData);
+
+    const updatedBookSchedule = await prisma.bookSchedule.update({
+      where: {
+        id: Number(bookScheduleId),
+      },
+      data: {
+        date: ISOdate,
+        hour: ISOhour,
+        HospitalSite: {
+          update: {
+            idSite: bookScheduleData.idSite,
+          },
+        },
+      },
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Erro ao atualizar o schedule:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 module.exports = {
   insertBookSchedule,
   getBookSchedulesByHospitalId,
+  updateBookSchedule,
 };

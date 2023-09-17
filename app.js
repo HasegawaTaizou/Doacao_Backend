@@ -293,6 +293,7 @@ app.put(
   }
 );
 
+//Schedule Conclude Update
 app.put(
   "/api/v1/schedule-conclude/:id",
   cors(),
@@ -308,6 +309,7 @@ app.put(
   }
 );
 
+//Schedule Reschedule Update
 app.put(
   "/api/v1/schedule-reschedule/:id",
   cors(),
@@ -318,6 +320,25 @@ app.put(
 
     let resultUpdateData = await scheduleController.scheduleRescheduleUpdate(
       scheduleId,
+      bodyData
+    );
+
+    response.status(resultUpdateData.status);
+    response.json(resultUpdateData);
+  }
+);
+
+//Book Schedule Update
+app.put(
+  "/api/v1/book-schedules/:id",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    let bookScheduleId = request.params.id;
+    let bodyData = request.body;
+
+    let resultUpdateData = await bookScheduleController.bookScheduleUpdate(
+      bookScheduleId,
       bodyData
     );
 
