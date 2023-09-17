@@ -192,7 +192,7 @@ app.get(
   }
 );
 
-//Get Hospital Book Schedules
+//Get Hospital Schedules Statistics
 app.get(
   "/api/v1/hospital/:id/statistics/schedules",
   cors(),
@@ -225,9 +225,25 @@ app.post(
   }
 );
 
-//Get Hospital Reviews Statistics
+//Get Hospital Ratings Statistics
 app.get(
   "/api/v1/hospital/:id/statistics/ratings",
+  cors(),
+  async function (request, response) {
+    let hospitalId = request.params.id;
+
+    let resultGetData = await reviewController.reviewsStatisticsGet(hospitalId);
+
+    console.log(resultGetData);
+    
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
+
+//Get Hospital Reviews Statistics
+app.get(
+  "/api/v1/hospital/:id/statistics/reviews",
   cors(),
   async function (request, response) {
     let hospitalId = request.params.id;

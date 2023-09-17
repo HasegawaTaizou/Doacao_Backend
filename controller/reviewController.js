@@ -15,6 +15,35 @@ const reviewInsert = async function (reviewData) {
   }
 };
 
+const ratingsStatisticsGet = async function (hospitalId) {
+  if (false) {
+    return message.ERROR_REQUIRED_DATA;
+  } else {
+    let ratingsStatisticsData =
+      await reviewDAO.getRatingsStatisticsByHospitalId(hospitalId);
+
+    let jsonRatingsStatisticsData = {};
+
+    if (ratingsStatisticsData) {
+      console.log(`Ratings Statistics Data: ${ratingsStatisticsData}`);
+      jsonRatingsStatisticsData.status = 200;
+      jsonRatingsStatisticsData.ratingsStatistics = {
+        oneStarsRating: ratingsStatisticsData[0].oneStarsRating,
+        twoStarsRating: ratingsStatisticsData[0].twoStarsRating,
+        threeStarsRating: ratingsStatisticsData[0].threeStarsRating,
+        fourStarsRating: ratingsStatisticsData[0].fourStarsRating,
+        fiveStarsRating: ratingsStatisticsData[0].fiveStarsRating,
+        totalReviews: Number(ratingsStatisticsData[0].totalReviews),
+        average: ratingsStatisticsData[0].average,
+      };
+
+      return jsonRatingsStatisticsData;
+    } else {
+      return message.ERROR_INTERNAL_SERVER;
+    }
+  }
+};
+
 const reviewsStatisticsGet = async function (hospitalId) {
   if (false) {
     return message.ERROR_REQUIRED_DATA;
@@ -27,15 +56,7 @@ const reviewsStatisticsGet = async function (hospitalId) {
     if (reviewsStatisticsData) {
       console.log(`Reviews Statistics Data: ${reviewsStatisticsData}`);
       jsonReviewsStatisticsData.status = 200;
-      jsonReviewsStatisticsData.reviewsStatistics = {
-        oneStarsRating: reviewsStatisticsData[0].oneStarsRating,
-        twoStarsRating: reviewsStatisticsData[0].twoStarsRating,
-        threeStarsRating: reviewsStatisticsData[0].threeStarsRating,
-        fourStarsRating: reviewsStatisticsData[0].fourStarsRating,
-        fiveStarsRating: reviewsStatisticsData[0].fiveStarsRating,
-        totalReviews: Number(reviewsStatisticsData[0].totalReviews),
-        average: reviewsStatisticsData[0].average,
-      };
+      jsonReviewsStatisticsData.reviewsStatistics = reviewsStatisticsData
 
       return jsonReviewsStatisticsData;
     } else {
@@ -46,5 +67,6 @@ const reviewsStatisticsGet = async function (hospitalId) {
 
 module.exports = {
   reviewInsert,
+  ratingsStatisticsGet,
   reviewsStatisticsGet,
 };

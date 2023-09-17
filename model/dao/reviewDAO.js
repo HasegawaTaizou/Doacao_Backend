@@ -26,7 +26,7 @@ async function insertReview(reviewData) {
   }
 }
 
-const getReviewsStatisticsByHospitalId = async function (hospitalId) {
+const getRatingsStatisticsByHospitalId = async function (hospitalId) {
   let sql = `
   SELECT 
   oneStarsRating,
@@ -50,6 +50,32 @@ FROM (
 ) AS subquery;
   `;
 
+  let responseRatingsStatistics = await prisma.$queryRawUnsafe(sql);
+
+  console.log("response ratings statistics: ", responseRatingsStatistics);
+
+  if (responseRatingsStatistics) {
+    return responseRatingsStatistics;
+  } else {
+    return false;
+  }
+};
+
+const getReviewsStatisticsByHospitalId = async function (hospitalId) {
+  let sql = `
+  SELECT 
+  tbl_user.id AS userId, 
+  tbl_user.name, 
+  tbl_user.photo_url AS photo, 
+  tbl_review.opinion, 
+  DATE_FORMAT(tbl_review.date, '%d/%m/%Y') AS date,
+  tbl_review.id_star AS starRating
+  FROM tbl_user
+  INNER JOIN tbl_review ON tbl_review.id_user = tbl_user.id
+  INNER JOIN tbl_hospital ON tbl_hospital.id = tbl_review.id_hospital
+  WHERE tbl_hospital.id = ${hospitalId};
+  `;
+
   let responseReviewsStatistics = await prisma.$queryRawUnsafe(sql);
 
   console.log("response reviews statistics: ", responseReviewsStatistics);
@@ -63,5 +89,6 @@ FROM (
 
 module.exports = {
   insertReview,
+  getRatingsStatisticsByHospitalId,
   getReviewsStatisticsByHospitalId,
 };
