@@ -62,11 +62,41 @@ async function insertHospital(hospitalData) {
 const getHospitalById = async function (hospitalId) {
   console.log(hospitalId);
   let sql = `
-  SELECT tbl_hospital.id, tbl_hospital.name, tbl_hospital.cnpj, tbl_hospital.email, tbl_phone.phone, tbl_hospital.website_url, tbl_photo.url, tbl_address.cep, tbl_address.uf, tbl_address.city, tbl_address.neighborhood, tbl_address.street, tbl_address.number, tbl_address.complement FROM tbl_hospital
+  SELECT tbl_hospital.id,
+  tbl_hospital.name,
+  tbl_hospital.cnpj,
+  tbl_hospital.email,
+  tbl_phone.phone,
+  tbl_hospital.website_url,
+  tbl_photo.url,
+  tbl_address.cep,
+  tbl_address.uf,
+  tbl_address.city,
+  tbl_address.neighborhood,
+  tbl_address.street,
+  tbl_address.number,
+  tbl_address.complement,
+  (
+      SELECT site
+      FROM tbl_hospital_site
+          INNER JOIN tbl_site ON tbl_hospital_site.id_site = tbl_site.id
+      WHERE tbl_hospital_site.id_hospital = tbl_hospital.id
+      ORDER BY tbl_site.id
+      LIMIT 1
+  ) AS donationSite,
+  (
+      SELECT site
+      FROM tbl_hospital_site
+          INNER JOIN tbl_site ON tbl_hospital_site.id_site = tbl_site.id
+      WHERE tbl_hospital_site.id_hospital = tbl_hospital.id
+      ORDER BY tbl_site.id
+      LIMIT 1 OFFSET 1
+  ) AS otherDonationSite
+FROM tbl_hospital
   INNER JOIN tbl_phone ON tbl_phone.id_hospital = tbl_hospital.id
   INNER JOIN tbl_photo ON tbl_photo.id_hospital = tbl_hospital.id
   INNER JOIN tbl_address ON tbl_hospital.id_address = tbl_address.id
-  WHERE tbl_hospital.id = ${hospitalId};
+WHERE tbl_hospital.id = ${hospitalId};
   `;
 
   console.log(sql);
@@ -113,8 +143,111 @@ const getHospitalSchedules = async function () {
   }
 };
 
+async function updateHospital(hospitalId, hospitalData) {
+  try {
+    const oldHospitalData = await prisma.hospital.findUnique({
+      where: {
+        id: Number(hospitalId),
+      },
+      include: {
+        Phone: {
+          select: {
+            phone: true,
+          },
+        },
+        Photo: {
+          select: {
+            url: true,
+          },
+        },
+        HospitalSite: {
+          select: {
+            Site: {
+              select: {
+                site: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    console.log(hospitalData.hospital);
+
+    const updatedHospital = await prisma.hospital.update({
+      where: {
+        id: Number(hospitalId),
+      },
+      data: {
+        // UPDATE HOSPITAL
+        name: hospitalData.hospital.name,
+        cnpj: hospitalData.hospital.cnpj,
+        email: hospitalData.hospital.email,
+        websiteUrl: hospitalData.hospital.website,
+        // UPDATE PHONE
+        Phone: {
+          update: {
+            where: {
+              id: Number(hospitalId),
+            },
+            data: {
+              phone: hospitalData.hospital.phone,
+            },
+          },
+        },
+        // UPDATE PHOTO
+        Photo: {
+          update: {
+            where: {
+              id: Number(hospitalId),
+            },
+            data: {
+              url: hospitalData.hospital.photo,
+            },
+          },
+        },
+        // UPDATE SITE
+        HospitalSite: {
+          update: {
+            where: {
+              id: Number(hospitalId),
+            },
+            data: {
+              Site: {
+                update: {
+                  site: hospitalData.hospital.donationSite,
+                  // site: hospitalData.hospital.otherDonationSite,
+                },
+              },
+            },
+          },
+        },
+        // UPDATE ADDRESS
+        Address: {
+          update: {
+            cep: hospitalData.address.cep,
+            uf: hospitalData.address.uf,
+            city: hospitalData.address.city,
+            neighborhood: hospitalData.address.neighborhood,
+            street: hospitalData.address.street,
+            number: hospitalData.address.number,
+            complement: hospitalData.address.complement,
+          },
+        },
+      },
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Erro ao atualizar o hospital:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 module.exports = {
   insertHospital,
   getHospitalById,
   getHospitalSchedules,
+  updateHospital,
 };

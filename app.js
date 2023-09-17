@@ -147,18 +147,14 @@ app.get(
 );
 
 //Get User
-app.get(
-  "/api/v1/users/:id",
-  cors(),
-  async function (request, response) {
-    let userId = request.params.id;
+app.get("/api/v1/users/:id", cors(), async function (request, response) {
+  let userId = request.params.id;
 
-    let resultGetData = await userController.userGet(userId);
+  let resultGetData = await userController.userGet(userId);
 
-    response.status(resultGetData.status);
-    response.json(resultGetData);
-  }
-);
+  response.status(resultGetData.status);
+  response.json(resultGetData);
+});
 
 //Get User Schedules
 app.get(
@@ -170,7 +166,7 @@ app.get(
     let resultGetData = await userController.userGetSchedules(userId);
 
     console.log(resultGetData);
-    
+
     response.status(resultGetData.status);
     response.json(resultGetData);
   }
@@ -183,10 +179,12 @@ app.get(
   async function (request, response) {
     let hospitalId = request.params.id;
 
-    let resultGetData = await bookScheduleController.bookSchedulesGet(hospitalId);
+    let resultGetData = await bookScheduleController.bookSchedulesGet(
+      hospitalId
+    );
 
     console.log(resultGetData);
-    
+
     response.status(resultGetData.status);
     response.json(resultGetData);
   }
@@ -199,10 +197,12 @@ app.get(
   async function (request, response) {
     let hospitalId = request.params.id;
 
-    let resultGetData = await scheduleController.schedulesStatisticsGet(hospitalId);
+    let resultGetData = await scheduleController.schedulesStatisticsGet(
+      hospitalId
+    );
 
     console.log(resultGetData);
-    
+
     response.status(resultGetData.status);
     response.json(resultGetData);
   }
@@ -216,9 +216,7 @@ app.post(
   async function (request, response) {
     let bodyData = request.body;
 
-    let resultInsertData = await reviewController.reviewInsert(
-      bodyData
-    );
+    let resultInsertData = await reviewController.reviewInsert(bodyData);
 
     response.status(resultInsertData.status);
     response.json(resultInsertData);
@@ -235,7 +233,7 @@ app.get(
     let resultGetData = await reviewController.reviewsStatisticsGet(hospitalId);
 
     console.log(resultGetData);
-    
+
     response.status(resultGetData.status);
     response.json(resultGetData);
   }
@@ -251,9 +249,28 @@ app.get(
     let resultGetData = await reviewController.reviewsStatisticsGet(hospitalId);
 
     console.log(resultGetData);
-    
+
     response.status(resultGetData.status);
     response.json(resultGetData);
+  }
+);
+
+//Hospital Update
+app.put(
+  "/api/v1/hospital/:id",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    let hospitalId = request.params.id;
+    let bodyData = request.body;
+
+    let resultUpdateData = await hospitalController.hospitalUpdate(
+      hospitalId,
+      bodyData
+    );
+
+    response.status(resultUpdateData.status);
+    response.json(resultUpdateData);
   }
 );
 
