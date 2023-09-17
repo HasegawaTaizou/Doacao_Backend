@@ -245,9 +245,38 @@ async function updateHospital(hospitalId, hospitalData) {
   }
 }
 
+async function updateHospitalPassword(hospitalId, hospitalData) {
+  try {
+    const oldHospitalData = await prisma.hospital.findUnique({
+      where: {
+        id: Number(hospitalId),
+      },
+      select: {
+        password: true,
+      },
+    });
+
+    const updatedHospital = await prisma.hospital.update({
+      where: {
+        id: Number(hospitalId),
+      },
+      data: {
+        password: hospitalData.password,
+      },
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Erro ao atualizar o hospital password:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 module.exports = {
   insertHospital,
   getHospitalById,
   getHospitalSchedules,
   updateHospital,
+  updateHospitalPassword,
 };

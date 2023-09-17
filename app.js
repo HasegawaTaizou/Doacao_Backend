@@ -347,6 +347,25 @@ app.put(
   }
 );
 
+//Hospital Password Update
+app.put(
+  "/api/v1/hospital/redefine-password/:id",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    let hospitalId = request.params.id;
+    let bodyData = request.body;
+
+    let resultUpdateData = await hospitalController.hospitalPasswordUpdate(
+      hospitalId,
+      bodyData
+    );
+
+    response.status(resultUpdateData.status);
+    response.json(resultUpdateData);
+  }
+);
+
 app.listen(8080, function () {
   console.log("Server waiting for requests on port 8080!");
 });

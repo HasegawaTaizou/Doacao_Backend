@@ -102,9 +102,23 @@ const hospitalUpdate = async function (hospitalId, hospitalData) {
   }
 };
 
+const hospitalPasswordUpdate = async function (hospitalId, hospitalData) {
+  if (false) {
+    return message.ERROR_REQUIRED_DATA;
+  } else {
+    let status = await hospitalDAO.updateHospitalPassword(hospitalId, hospitalData);
+    if (status) {
+      return message.CREATED_ITEM;
+    } else {
+      return message.ERROR_INTERNAL_SERVER;
+    }
+  }
+};
+
 module.exports = {
   hospitalInsert,
   hospitalGet,
   hospitalGetSchedules,
   hospitalUpdate,
+  hospitalPasswordUpdate,
 };
