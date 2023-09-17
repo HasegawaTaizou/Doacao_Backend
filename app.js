@@ -22,6 +22,7 @@ const bookScheduleController = require("./controller/bookScheduleController.js")
 const userController = require("./controller/userController.js");
 const scheduleController = require("./controller/scheduleController.js");
 const scheduleStatusController = require("./controller/scheduleStatusController.js");
+const siteController = require("./controller/siteController.js");
 
 //ENDPOINTS:
 
@@ -41,14 +42,18 @@ app.post(
 );
 
 //Get Hospital
-app.get("/api/v1/hospital-data/:id", cors(), async function (request, response) {
-  let hospitalId = request.params.id;
+app.get(
+  "/api/v1/hospital-data/:id",
+  cors(),
+  async function (request, response) {
+    let hospitalId = request.params.id;
 
-  let resultGetData = await hospitalController.hospitalGet(hospitalId);
+    let resultGetData = await hospitalController.hospitalGet(hospitalId);
 
-  response.status(resultGetData.status);
-  response.json(resultGetData);
-});
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
 
 //Book Schedule Registration
 app.post(
@@ -58,7 +63,9 @@ app.post(
   async function (request, response) {
     let bodyData = request.body;
 
-    let resultInsertData = await bookScheduleController.bookScheduleInsert(bodyData);
+    let resultInsertData = await bookScheduleController.bookScheduleInsert(
+      bodyData
+    );
 
     response.status(resultInsertData.status);
     response.json(resultInsertData);
@@ -103,7 +110,9 @@ app.post(
   async function (request, response) {
     let bodyData = request.body;
 
-    let resultInsertData = await scheduleStatusController.scheduleStatusInsert(bodyData);
+    let resultInsertData = await scheduleStatusController.scheduleStatusInsert(
+      bodyData
+    );
 
     response.status(resultInsertData.status);
     response.json(resultInsertData);
@@ -111,12 +120,30 @@ app.post(
 );
 
 //Get Schedules
-app.get("/api/v1/hospital/schedules", cors(), async function (request, response) {
-  let resultGetData = await hospitalController.hospitalGetSchedules();
+app.get(
+  "/api/v1/hospital/schedules",
+  cors(),
+  async function (request, response) {
+    let resultGetData = await hospitalController.hospitalGetSchedules();
 
-  response.status(resultGetData.status);
-  response.json(resultGetData);
-});
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
+
+//Get Hospital Sites
+app.get(
+  "/api/v1/hospital/:id/sites",
+  cors(),
+  async function (request, response) {
+    let hospitalId = request.params.id;
+
+    let resultGetData = await siteController.getSites(hospitalId);
+
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
 
 app.listen(8080, function () {
   console.log("Servidor aguardando requisições na porta 8080!");
