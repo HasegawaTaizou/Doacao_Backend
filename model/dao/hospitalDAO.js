@@ -82,7 +82,7 @@ const getHospitalById = async function (hospitalId) {
   }
 };
 
-const getSchedules = async function () {
+const getHospitalSchedules = async function () {
   let sql = `
   SELECT 
   tbl_user.id, 
@@ -114,5 +114,5 @@ const getSchedules = async function () {
 module.exports = {
   insertHospital,
   getHospitalById,
-  getSchedules,
+  getHospitalSchedules,
 };

@@ -57,7 +57,7 @@ const hospitalGetSchedules = async function () {
   if (false) {
     return message.ERROR_REQUIRED_DATA;
   } else {
-    let schedulesData = await hospitalDAO.getSchedules();
+    let schedulesData = await hospitalDAO.getHospitalSchedules();
 
     let jsonSchedulesData = {};
     jsonSchedulesData.status = 200;

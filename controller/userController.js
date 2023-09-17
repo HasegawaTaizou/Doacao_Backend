@@ -24,7 +24,7 @@ const userGet = async function (userId) {
     let jsonUserData = {};
 
     if (userData) {
-      let age = Number(userData[0].age)
+      let age = Number(userData[0].age);
 
       console.log(`user Data: ${userData}`);
       jsonUserData.status = 200;
@@ -46,7 +46,37 @@ const userGet = async function (userId) {
   }
 };
 
+const userGetSchedules = async function (userId) {
+  if (false) {
+    return message.ERROR_REQUIRED_DATA;
+  } else {
+    let userSchedulesData = await userDAO.getSchedulesUserById(userId);
+
+    let jsonUserSchedulesData = {};
+    jsonUserSchedulesData.status = 200;
+    jsonUserSchedulesData.schedules = [];
+
+    for (userScheduleData in userSchedulesData) {
+      if (userSchedulesData) {
+        let userSchedulesObject = {
+          scheduleId: userSchedulesData[userScheduleData].id_schedule,
+          date: userSchedulesData[userScheduleData].date,
+          hour: userSchedulesData[userScheduleData].hour,
+          site: userSchedulesData[userScheduleData].site,
+          status: userSchedulesData[userScheduleData].status,
+        };
+
+        jsonUserSchedulesData.schedules.push(userSchedulesObject);
+      } else {
+        return message.ERROR_INTERNAL_SERVER;
+      }
+    }
+    return jsonUserSchedulesData;
+  }
+};
+
 module.exports = {
   userInsert,
   userGet,
+  userGetSchedules,
 };

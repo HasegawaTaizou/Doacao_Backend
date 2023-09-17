@@ -78,7 +78,40 @@ const getUserById = async function (userId) {
   }
 };
 
+const getSchedulesUserById = async function (userId) {
+  console.log(userId);
+  let sql = `
+  SELECT 
+  tbl_schedule_status.id_schedule, 
+  DATE_FORMAT(tbl_book_schedule.date, '%d/%m/%Y') AS date,
+  TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour, 
+  tbl_status.status, 
+  tbl_site.site 
+  FROM tbl_schedule_status
+  INNER JOIN tbl_schedule ON tbl_schedule.id = tbl_schedule_status.id_schedule
+  INNER JOIN tbl_user ON tbl_user.id = tbl_schedule.id_user
+  INNER JOIN tbl_book_schedule ON tbl_book_schedule.id = tbl_schedule.id_book_schedule
+  INNER JOIN tbl_status ON tbl_status.id = tbl_schedule_status.id_status
+  INNER JOIN tbl_hospital_site ON tbl_hospital_site.id = tbl_book_schedule.id_hospital_site
+  INNER JOIN tbl_site ON tbl_site.id = tbl_hospital_site.id_site
+  WHERE tbl_schedule.id_user = ${userId};
+  `;
+
+  console.log(sql);
+
+  let responseUser = await prisma.$queryRawUnsafe(sql);
+
+  console.log("response user: ", responseUser);
+
+  if (responseUser) {
+    return responseUser;
+  } else {
+    return false;
+  }
+};
+
 module.exports = {
   insertUser,
   getUserById,
+  getSchedulesUserById,
 };

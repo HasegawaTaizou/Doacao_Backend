@@ -159,6 +159,22 @@ app.get(
   }
 );
 
+//Get User Schedules
+app.get(
+  "/api/v1/users/:id/schedules",
+  cors(),
+  async function (request, response) {
+    let userId = request.params.id;
+
+    let resultGetData = await userController.userGetSchedules(userId);
+
+    console.log(resultGetData);
+    
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
+
 app.listen(8080, function () {
   console.log("Servidor aguardando requisições na porta 8080!");
 });
