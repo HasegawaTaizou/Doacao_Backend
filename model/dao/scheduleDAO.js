@@ -155,9 +155,89 @@ async function updateScheduleConclude(scheduleId) {
   }
 }
 
+async function updateScheduleReschedule(scheduleId, scheduleData) {
+  try {
+    const oldscheduleData = await prisma.schedule.findUnique({
+      where: {
+        id: Number(scheduleId),
+      },
+      include: {
+        ScheduleStatus: {
+          select: {
+            Status: {
+              select: {
+                status: true,
+              },
+            },
+          },
+        },
+        BookSchedule: {
+          select: {
+            date: true,
+            hour: true,
+            HospitalSite: {
+              select: {
+                idSite: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    console.log(oldscheduleData);
+
+    let [day, month, year] = scheduleData.date.split("/");
+    let ISOdate = `${year}-${month}-${day}T00:00:00Z`;
+
+    let [hour, minute] = scheduleData.hour.split(":");
+    let ISOhour = `1970-01-01T${hour}:${minute}:00Z`;
+
+    const updatedSchedule = await prisma.schedule.update({
+      where: {
+        id: Number(scheduleId),
+      },
+      data: {
+        ScheduleStatus: {
+          update: {
+            where: {
+              id: Number(scheduleId),
+            },
+            data: {
+              Status: {
+                update: {
+                  status: "RESCHEDULED",
+                },
+              },
+            },
+          },
+        },
+        BookSchedule: {
+          update: {
+            date: ISOdate,
+            hour: ISOhour,
+            HospitalSite: {
+              update: {
+                idSite: scheduleData.siteId,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Erro ao atualizar o schedule:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 module.exports = {
   insertSchedule,
   getSchedulesStatisticsByHospitalId,
   updateScheduleCancel,
   updateScheduleConclude,
+  updateScheduleReschedule,
 };
