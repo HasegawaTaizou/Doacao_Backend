@@ -280,10 +280,10 @@ app.put(
   cors(),
   bodyJSON,
   async function (request, response) {
-    let scheduleId = request.params.id;
-    let bodyData = request.body;
+    const scheduleId = request.params.id;
+    const bodyData = request.body;
 
-    let resultUpdateData = await scheduleController.scheduleCancelUpdate(
+    const resultUpdateData = await scheduleController.scheduleCancelUpdate(
       scheduleId,
       bodyData
     );
@@ -298,9 +298,9 @@ app.put(
   "/api/v1/schedule-conclude/:id",
   cors(),
   async function (request, response) {
-    let scheduleId = request.params.id;
+    const scheduleId = request.params.id;
 
-    let resultUpdateData = await scheduleController.scheduleConcludeUpdate(
+    const resultUpdateData = await scheduleController.scheduleConcludeUpdate(
       scheduleId
     );
 
@@ -315,10 +315,10 @@ app.put(
   cors(),
   bodyJSON,
   async function (request, response) {
-    let scheduleId = request.params.id;
-    let bodyData = request.body;
+    const scheduleId = request.params.id;
+    const bodyData = request.body;
 
-    let resultUpdateData = await scheduleController.scheduleRescheduleUpdate(
+    const resultUpdateData = await scheduleController.scheduleRescheduleUpdate(
       scheduleId,
       bodyData
     );
@@ -334,10 +334,10 @@ app.put(
   cors(),
   bodyJSON,
   async function (request, response) {
-    let bookScheduleId = request.params.id;
-    let bodyData = request.body;
+    const bookScheduleId = request.params.id;
+    const bodyData = request.body;
 
-    let resultUpdateData = await bookScheduleController.bookScheduleUpdate(
+    const resultUpdateData = await bookScheduleController.bookScheduleUpdate(
       bookScheduleId,
       bodyData
     );
@@ -353,16 +353,90 @@ app.put(
   cors(),
   bodyJSON,
   async function (request, response) {
-    let hospitalId = request.params.id;
-    let bodyData = request.body;
+    const hospitalId = request.params.id;
+    const bodyData = request.body;
 
-    let resultUpdateData = await hospitalController.hospitalPasswordUpdate(
+    const resultUpdateData = await hospitalController.hospitalPasswordUpdate(
       hospitalId,
       bodyData
     );
 
     response.status(resultUpdateData.status);
     response.json(resultUpdateData);
+  }
+);
+
+//User Get By Email
+app.post("/api/v1/user", cors(), bodyJSON, async function (request, response) {
+  const bodyData = request.body;
+
+  const resultUser = await userController.userEmailGet(bodyData);
+
+  response.status(resultUser.status);
+  response.json(resultUser);
+});
+
+//User Login
+app.post(
+  "/api/v1/user-login",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    const bodyData = request.body;
+
+    const resultLogin = await userController.loginUser(bodyData);
+
+    response.status(resultLogin.status);
+    response.json(resultLogin);
+  }
+);
+
+//User Update
+app.put(
+  "/api/v1/user/:id",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    const userId = request.params.id;
+    const bodyData = request.body;
+
+    const resultUpdateData = await userController.userUpdate(userId, bodyData);
+
+    response.status(resultUpdateData.status);
+    response.json(resultUpdateData);
+  }
+);
+
+//User Password Update
+app.put(
+  "/api/v1/user/redefine-password/:id",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    const userId = request.params.id;
+    const bodyData = request.body;
+
+    const resultUpdateData = await userController.userPasswordUpdate(
+      userId,
+      bodyData
+    );
+
+    response.status(resultUpdateData.status);
+    response.json(resultUpdateData);
+  }
+);
+
+//Get Hospitals
+app.get(
+  "/api/v1/hospitals",
+  cors(),
+  async function (request, response) {
+    const resultGetData = await hospitalController.hospitalsGet();
+
+    console.log(resultGetData);
+
+    response.status(resultGetData.status);
+    response.json(resultGetData);
   }
 );
 

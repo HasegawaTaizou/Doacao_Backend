@@ -5,6 +5,22 @@ const addressDAO = require("../dao/addressDAO.js");
 const sexDAO = require("../dao/sexDAO.js");
 const bloodTypeDAO = require("../dao/bloodTypeDAO.js");
 
+const userLogin = async function (loginData) {
+  try {
+    //Verify user
+    const user = await getUserByEmail(loginData.email);
+    console.log(user);
+    // Verify password
+    const passwordMatch = loginData.password === user.password ? true : false;
+
+    if (passwordMatch) {
+      return user;
+    }
+  } catch (error) {
+    return false;
+  }
+};
+
 async function insertUser(userData) {
   try {
     //Address Insert
@@ -51,6 +67,7 @@ const getUserById = async function (userId) {
   console.log(userId);
   let sql = `
   SELECT 
+  tbl_user.id, 
   tbl_user.name, 
   tbl_user.photo_url,
   tbl_user.email, 
@@ -58,10 +75,18 @@ const getUserById = async function (userId) {
   tbl_user.weight,
   TIMESTAMPDIFF(YEAR, tbl_user.date_of_birth, CURDATE()) AS age,
   tbl_blood_type.type,
-  tbl_sex.sex
+  tbl_sex.sex,
+  tbl_address.cep,
+  tbl_address.uf,
+  tbl_address.city,
+  tbl_address.neighborhood,
+  tbl_address.street,
+  tbl_address.number,
+  tbl_address.complement
   FROM tbl_user
   INNER JOIN tbl_blood_type ON tbl_blood_type.id = tbl_user.id_blood_type
   INNER JOIN tbl_sex ON tbl_sex.id = tbl_user.id_sex
+  INNER JOIN tbl_address ON tbl_user.id_address = tbl_address.id
   WHERE tbl_user.id = ${userId};
   `;
 
@@ -77,6 +102,85 @@ const getUserById = async function (userId) {
     return false;
   }
 };
+
+const getUserByEmail = async function (userEmail) {
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        email: userEmail,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        photoUrl: true,
+        password: true,
+      },
+    });
+    console.log(user);
+    return user;
+  } catch (error) {
+    return false;
+  }
+};
+
+async function updateUser(userId, userData) {
+  const [day, month, year] = userData.user.dateOfBirth.split("/");
+  const ISOdate = `${year}-${month}-${day}T00:00:00Z`;
+
+  try {
+    const bloodTypeId = await bloodTypeDAO.getBloodTypeIdByName(
+      userData.user.bloodType
+    );
+    const sexId = await sexDAO.getSexIdByName(userData.user.sex);
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: Number(userId),
+      },
+      data: {
+        // UPDATE HOSPITAL
+        name: userData.user.name,
+        cpf: userData.user.cpf,
+        email: userData.user.email,
+        phone: userData.user.phone,
+        dateOfBirth: ISOdate,
+        weight: userData.user.weight,
+        photoUrl: userData.user.photo,
+        //UPDATE BLOOD TYPE
+        BloodType: {
+          connect: {
+            id: bloodTypeId,
+          },
+        },
+        //UPDATE SEX
+        Sex: {
+          connect: {
+            id: sexId,
+          },
+        },
+        // UPDATE ADDRESS
+        Address: {
+          update: {
+            cep: userData.address.cep,
+            uf: userData.address.uf,
+            city: userData.address.city,
+            neighborhood: userData.address.neighborhood,
+            street: userData.address.street,
+            number: userData.address.number,
+            complement: userData.address.complement,
+          },
+        },
+      },
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Erro ao atualizar o user:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
 
 const getSchedulesUserById = async function (userId) {
   console.log(userId);
@@ -110,8 +214,31 @@ const getSchedulesUserById = async function (userId) {
   }
 };
 
+async function updateUserPassword(userId, userData) {
+  try {
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: Number(userId),
+      },
+      data: {
+        password: userData.password,
+      },
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Erro ao atualizar o user password:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 module.exports = {
+  userLogin,
   insertUser,
   getUserById,
+  updateUser,
+  getUserByEmail,
   getSchedulesUserById,
+  updateUserPassword,
 };

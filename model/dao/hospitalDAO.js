@@ -273,10 +273,32 @@ async function updateHospitalPassword(hospitalId, hospitalData) {
   }
 }
 
+const getHospitals = async function () {
+  let sql = `
+  SELECT 
+  tbl_hospital.id AS hospitalId,
+  tbl_hospital.name,
+  tbl_address.uf,
+  tbl_address.city,
+  tbl_address.neighborhood
+  FROM tbl_hospital
+  INNER JOIN tbl_address ON tbl_address.id = tbl_hospital.id_address;
+  `;
+
+  let responseHospitals = await prisma.$queryRawUnsafe(sql);
+
+  if (responseHospitals) {
+    return responseHospitals;
+  } else {
+    return false;
+  }
+};
+
 module.exports = {
   insertHospital,
   getHospitalById,
   getHospitalSchedules,
   updateHospital,
   updateHospitalPassword,
+  getHospitals,
 };

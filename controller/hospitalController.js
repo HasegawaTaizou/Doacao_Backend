@@ -106,12 +106,48 @@ const hospitalPasswordUpdate = async function (hospitalId, hospitalData) {
   if (false) {
     return message.ERROR_REQUIRED_DATA;
   } else {
-    let status = await hospitalDAO.updateHospitalPassword(hospitalId, hospitalData);
+    let status = await hospitalDAO.updateHospitalPassword(
+      hospitalId,
+      hospitalData
+    );
     if (status) {
       return message.CREATED_ITEM;
     } else {
       return message.ERROR_INTERNAL_SERVER;
     }
+  }
+};
+
+const hospitalsGet = async function () {
+  if (false) {
+    return message.ERROR_REQUIRED_DATA;
+  } else {
+    const hospitalsData = await hospitalDAO.getHospitals();
+
+    const jsonHospitalsData = {};
+    jsonHospitalsData.status = 200;
+    jsonHospitalsData.hospitals = [];
+
+    for (hospitalData in hospitalsData) {
+      if (hospitalsData) {
+        let hospitalObject = {
+          hospital: {
+            hospitalId: hospitalsData[hospitalData].hospitalId,
+            name: hospitalsData[hospitalData].name,
+          },
+          address: {
+            uf: hospitalsData[hospitalData].uf,
+            city: hospitalsData[hospitalData].city,
+            neighborhood: hospitalsData[hospitalData].neighborhood,
+          },
+        };
+
+        jsonHospitalsData.hospitals.push(hospitalObject);
+      } else {
+        return message.ERROR_INTERNAL_SERVER;
+      }
+    }
+    return jsonHospitalsData;
   }
 };
 
@@ -121,4 +157,5 @@ module.exports = {
   hospitalGetSchedules,
   hospitalUpdate,
   hospitalPasswordUpdate,
+  hospitalsGet,
 };
