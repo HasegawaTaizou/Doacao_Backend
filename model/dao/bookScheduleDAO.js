@@ -93,8 +93,32 @@ async function updateBookSchedule(bookScheduleId, bookScheduleData) {
   }
 }
 
+const deleteBookSchedule = async function (bookScheduleId) {
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.schedule.deleteMany({
+        where: {
+          idBookSchedule: Number(bookScheduleId),
+        },
+      });
+
+      await tx.bookSchedule.delete({
+        where: {
+          id: Number(bookScheduleId),
+        },
+      });
+    });
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
 module.exports = {
   insertBookSchedule,
   getBookSchedulesByHospitalId,
   updateBookSchedule,
+  deleteBookSchedule,
 };

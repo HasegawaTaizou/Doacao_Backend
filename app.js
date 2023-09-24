@@ -72,14 +72,19 @@ app.get(
 );
 
 //Hospital Get By Email
-app.post("/api/v1/hospital", cors(), bodyJSON, async function (request, response) {
-  const bodyData = request.body;
+app.post(
+  "/api/v1/hospital",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    const bodyData = request.body;
 
-  const resultHospital = await hospitalController.hospitalEmailGet(bodyData);
+    const resultHospital = await hospitalController.hospitalEmailGet(bodyData);
 
-  response.status(resultHospital.status);
-  response.json(resultHospital);
-});
+    response.status(resultHospital.status);
+    response.json(resultHospital);
+  }
+);
 
 //Book Schedule Registration
 app.post(
@@ -355,7 +360,7 @@ app.put(
 
 //Book Schedule Update
 app.put(
-  "/api/v1/book-schedules/:id",
+  "/api/v1/update-book-schedule/:id",
   cors(),
   bodyJSON,
   async function (request, response) {
@@ -369,6 +374,21 @@ app.put(
 
     response.status(resultUpdateData.status);
     response.json(resultUpdateData);
+  }
+);
+
+//Book Schedule Delete
+app.delete(
+  "/api/v1/delete-book-schedule/:id",
+  cors(),
+  async function (request, response) {
+    const bookScheduleId = request.params.id;
+    const resultDeleteData = await bookScheduleController.bookScheduleDelete(
+      bookScheduleId
+    );
+
+    response.status(resultDeleteData.status);
+    response.json(resultDeleteData);
   }
 );
 
@@ -452,18 +472,14 @@ app.put(
 );
 
 //Get Hospitals
-app.get(
-  "/api/v1/hospitals",
-  cors(),
-  async function (request, response) {
-    const resultGetData = await hospitalController.hospitalsGet();
+app.get("/api/v1/hospitals", cors(), async function (request, response) {
+  const resultGetData = await hospitalController.hospitalsGet();
 
-    console.log(resultGetData);
+  console.log(resultGetData);
 
-    response.status(resultGetData.status);
-    response.json(resultGetData);
-  }
-);
+  response.status(resultGetData.status);
+  response.json(resultGetData);
+});
 
 app.listen(8080, function () {
   console.log("Server waiting for requests on port 8080!");
