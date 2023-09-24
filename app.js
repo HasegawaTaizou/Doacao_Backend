@@ -42,6 +42,21 @@ app.post(
   }
 );
 
+//Hospital Login
+app.post(
+  "/api/v1/hospital-login",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    const bodyData = request.body;
+
+    const resultLogin = await hospitalController.loginHospital(bodyData);
+
+    response.status(resultLogin.status);
+    response.json(resultLogin);
+  }
+);
+
 //Get Hospital
 app.get(
   "/api/v1/hospital-data/:id",
@@ -55,6 +70,16 @@ app.get(
     response.json(resultGetData);
   }
 );
+
+//Hospital Get By Email
+app.post("/api/v1/hospital", cors(), bodyJSON, async function (request, response) {
+  const bodyData = request.body;
+
+  const resultHospital = await hospitalController.hospitalEmailGet(bodyData);
+
+  response.status(resultHospital.status);
+  response.json(resultHospital);
+});
 
 //Book Schedule Registration
 app.post(

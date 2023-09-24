@@ -2,6 +2,35 @@ const hospitalDAO = require("../model/dao/hospitalDAO.js");
 
 const message = require("./module/config.js");
 
+const { JWT_SECRET } = require("../config.js");
+const jwt = require("jsonwebtoken");
+
+const loginHospital = async function (loginData) {
+  const jsonHospitalData = {};
+
+  const hospitalData = await hospitalDAO.hospitalLogin(loginData);
+
+  if (hospitalData) {
+    const token = jwt.sign(
+      { hospitalId: hospitalData.id, email: hospitalData.email },
+      JWT_SECRET
+    );
+
+    jsonHospitalData.status = message.LOGIN_CORRECT.status;
+    jsonHospitalData.hospitalData = {
+      id: hospitalData.id,
+      email: hospitalData.email,
+      name: hospitalData.name,
+      photo: hospitalData.Photo[0].url,
+      token: token,
+    };
+
+    return jsonHospitalData;
+  } else {
+    return message.LOGIN_INCORRECT;
+  }
+};
+
 const hospitalInsert = async function (hospitalData) {
   if (false) {
     return message.ERROR_REQUIRED_DATA;
@@ -50,6 +79,28 @@ const hospitalGet = async function (hospitalId) {
     } else {
       return message.ERROR_INTERNAL_SERVER;
     }
+  }
+};
+
+const hospitalEmailGet = async function (hospitalEmail) {
+  const jsonHospitalData = {};
+
+  const hospitalData = await hospitalDAO.getHospitalByEmail(
+    hospitalEmail.email
+  );
+
+  if (hospitalData) {
+    jsonHospitalData.status = message.LOGIN_CORRECT.status;
+    jsonHospitalData.hospitalData = {
+      id: hospitalData.id,
+      email: hospitalData.email,
+      password: hospitalData.password,
+      photo: hospitalData.Photo[0].url,
+    };
+
+    return jsonHospitalData;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
   }
 };
 
@@ -152,8 +203,10 @@ const hospitalsGet = async function () {
 };
 
 module.exports = {
+  loginHospital,
   hospitalInsert,
   hospitalGet,
+  hospitalEmailGet,
   hospitalGetSchedules,
   hospitalUpdate,
   hospitalPasswordUpdate,

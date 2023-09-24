@@ -7,6 +7,23 @@ const photoDAO = require("./photoDAO.js");
 const siteDAO = require("./siteDAO.js");
 const hospitalSiteDAO = require("./hospitalSiteDAO.js");
 
+const hospitalLogin = async function (loginData) {
+  try {
+    //Verify hospital
+    const hospital = await getHospitalByEmail(loginData.email);
+    console.log(hospital);
+    
+    // Verify password
+    const passwordMatch = loginData.password === hospital.password ? true : false;
+
+    if (passwordMatch) {
+      return hospital;
+    }
+  } catch (error) {
+    return false;
+  }
+};
+
 async function insertHospital(hospitalData) {
   try {
     //Address Insert
@@ -112,6 +129,31 @@ WHERE tbl_hospital.id = ${hospitalId};
   }
 };
 
+const getHospitalByEmail = async function (hospitalEmail) {
+  try {
+    const hospital = await prisma.hospital.findFirst({
+      where: {
+        email: hospitalEmail,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        password: true,
+        Photo: {
+          select: {
+            url: true,
+          },
+        },
+      },
+    });
+    console.log(hospital);
+    return hospital;
+  } catch (error) {
+    return false;
+  }
+};
+
 // ARRUMAR ESSE AQUI PARA FILTRAR UM WHERE PELO ID
 //hospitalId
 const getHospitalSchedules = async function () {
@@ -143,37 +185,9 @@ const getHospitalSchedules = async function () {
   }
 };
 
+//ARRUMAR O SITE
 async function updateHospital(hospitalId, hospitalData) {
   try {
-    const oldHospitalData = await prisma.hospital.findUnique({
-      where: {
-        id: Number(hospitalId),
-      },
-      include: {
-        Phone: {
-          select: {
-            phone: true,
-          },
-        },
-        Photo: {
-          select: {
-            url: true,
-          },
-        },
-        HospitalSite: {
-          select: {
-            Site: {
-              select: {
-                site: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    console.log(hospitalData.hospital);
-
     const updatedHospital = await prisma.hospital.update({
       where: {
         id: Number(hospitalId),
@@ -295,8 +309,10 @@ const getHospitals = async function () {
 };
 
 module.exports = {
+  hospitalLogin,
   insertHospital,
   getHospitalById,
+  getHospitalByEmail,
   getHospitalSchedules,
   updateHospital,
   updateHospitalPassword,

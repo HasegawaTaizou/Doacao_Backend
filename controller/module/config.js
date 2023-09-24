@@ -14,7 +14,7 @@ const CREATED_ITEM = { status: 201, message: "Registro criado com sucesso." };
 //*****************************************LOGIN CONSTANTS******************************************************/
 const LOGIN_INCORRECT = {
   status: 404,
-  message: "User or password incorrects.",
+  message: "E-mail or password incorrects.",
 };
 const LOGIN_CORRECT = { status: 200, message: "Login Succesfull." };
 

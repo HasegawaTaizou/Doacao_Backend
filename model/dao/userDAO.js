@@ -9,7 +9,7 @@ const userLogin = async function (loginData) {
   try {
     //Verify user
     const user = await getUserByEmail(loginData.email);
-    console.log(user);
+
     // Verify password
     const passwordMatch = loginData.password === user.password ? true : false;
 
