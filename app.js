@@ -260,7 +260,7 @@ app.get(
   async function (request, response) {
     let hospitalId = request.params.id;
 
-    let resultGetData = await reviewController.reviewsStatisticsGet(hospitalId);
+    let resultGetData = await reviewController.ratingsStatisticsGet(hospitalId);
 
     console.log(resultGetData);
 
