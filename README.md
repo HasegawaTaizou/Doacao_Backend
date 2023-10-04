@@ -1,4 +1,4 @@
 # Executar o prisma
 
-## prisma generate
-## prisma db push
+## npx prisma generate
+## npx prisma db push
