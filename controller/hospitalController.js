@@ -6,11 +6,20 @@ const { JWT_SECRET } = require("../config.js");
 const jwt = require("jsonwebtoken");
 
 const loginHospital = async function (loginData) {
-  const jsonHospitalData = {};
+  if (
+    !validateEmail(loginData.email) ||
+    !validatePassword(loginData.password)
+  ) {
+    return message.ERROR_REQUIRED_DATA;
+  }
 
   const hospitalData = await hospitalDAO.hospitalLogin(loginData);
 
-  if (hospitalData) {
+  if (hospitalData == null || hospitalData == undefined) {
+    return message.LOGIN_INCORRECT;
+  } else if (hospitalData) {
+    const jsonHospitalData = {};
+
     const token = jwt.sign(
       { hospitalId: hospitalData.id, email: hospitalData.email },
       JWT_SECRET
@@ -27,20 +36,16 @@ const loginHospital = async function (loginData) {
 
     return jsonHospitalData;
   } else {
-    return message.LOGIN_INCORRECT;
+    return message.ERROR_INTERNAL_SERVER;
   }
 };
 
 const hospitalInsert = async function (hospitalData) {
-  if (false) {
-    return message.ERROR_REQUIRED_DATA;
+  let status = await hospitalDAO.insertHospital(hospitalData);
+  if (status) {
+    return message.CREATED_ITEM;
   } else {
-    let status = await hospitalDAO.insertHospital(hospitalData);
-    if (status) {
-      return message.CREATED_ITEM;
-    } else {
-      return message.ERROR_INTERNAL_SERVER;
-    }
+    return message.ERROR_INTERNAL_SERVER;
   }
 };
 
