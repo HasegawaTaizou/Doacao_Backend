@@ -2,23 +2,26 @@ const siteDAO = require("../model/dao/siteDAO.js");
 
 const message = require("./module/config.js");
 
+//VALIDATIONS
+import { validateId } from "../validations/validate-id";
+
 const sitesGet = async function (hospitalId) {
-  if (false) {
-    return message.ERROR_REQUIRED_DATA;
+  if (!validateId(hospitalId)) {
+    return message.ERROR_INVALID_ID;
+  }
+  const hospitalData = await siteDAO.getSitesByHospitalId(hospitalId);
+
+  if (hospitalData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (hospitalData) {
+    const jsonHospitalData = {};
+
+    jsonHospitalData.status = message.OK.status;
+    jsonHospitalData.sites = hospitalData;
+
+    return jsonHospitalData;
   } else {
-    let hospitalData = await siteDAO.getSitesByHospitalId(hospitalId);
-
-    let jsonHospitalData = {};
-
-    if (hospitalData) {
-      console.log(`Hospital Data: ${hospitalData}`);
-      jsonHospitalData.status = 200;
-      jsonHospitalData.sites = hospitalData;
-
-      return jsonHospitalData;
-    } else {
-      return message.ERROR_INTERNAL_SERVER;
-    }
+    return message.ERROR_INTERNAL_SERVER;
   }
 };
 
