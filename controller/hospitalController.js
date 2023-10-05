@@ -5,6 +5,26 @@ const message = require("./module/config.js");
 const { JWT_SECRET } = require("../config.js");
 const jwt = require("jsonwebtoken");
 
+//ADDRESS VALIDATIONS
+import { validateCEP } from "../validations/address/validate-cep";
+import { validateCity } from "../validations/address/validate-city";
+import { validateComplement } from "../validations/address/validate-complement";
+import { validateNeighborhood } from "../validations/address/validate-neighborhood";
+import { validateNumber } from "../validations/address/validate-number";
+import { validateStreet } from "../validations/address/validate-street";
+import { validateUF } from "../validations/address/validate-uf";
+
+//HOSPITAL VALIDATIONS
+import { validateId } from "../validations/validate-id";
+import { validateName } from "../validations/validate-name";
+import { validateCNPJ } from "../validations/validate-cnpj";
+import { validateEmail } from "../validations/validate-email";
+import { validatePhone } from "../validations/validate-phone";
+import { validateWebsite } from "../validations/validate-website";
+import { validateDonationSite } from "../validations/validate-donation-site";
+import { validatePhoto } from "../validations/validate-photo";
+import { validatePassword } from "../validations/validate-password";
+
 const loginHospital = async function (loginData) {
   if (
     !validateEmail(loginData.email) ||
@@ -41,7 +61,28 @@ const loginHospital = async function (loginData) {
 };
 
 const hospitalInsert = async function (hospitalData) {
-  let status = await hospitalDAO.insertHospital(hospitalData);
+  if (
+    !validateName(hospitalData.hospital.name) ||
+    !validateCNPJ(hospitalData.hospital.cnpj) ||
+    !validateEmail(hospitalData.hospital.email) ||
+    !validatePhone(hospitalData.hospital.phone) ||
+    !validateWebsite(hospitalData.hospital.website) ||
+    !validateDonationSite(hospitalData.hospital.donationSite) ||
+    !validateDonationSite(hospitalData.hospital.otherDonationSite) ||
+    !validatePhoto(hospitalData.hospital.photo) ||
+    !validatePassword(hospitalData.hospital.password) ||
+    !validateCEP(hospitalData.address.cep) ||
+    !validateUF(hospitalData.address.uf) ||
+    !validateCity(hospitalData.address.city) ||
+    !validateNeighborhood(hospitalData.address.neighborhood) ||
+    !validateStreet(hospitalData.address.street) ||
+    !validateNumber(hospitalData.address.number) ||
+    !validateComplement(hospitalData.address.complement)
+  ) {
+    return message.ERROR_REQUIRED_DATA;
+  }
+
+  const status = await hospitalDAO.insertHospital(hospitalData);
   if (status) {
     return message.CREATED_ITEM;
   } else {
@@ -50,51 +91,57 @@ const hospitalInsert = async function (hospitalData) {
 };
 
 const hospitalGet = async function (hospitalId) {
-  if (false) {
-    return message.ERROR_REQUIRED_DATA;
+  if (!validateId(hospitalId)) {
+    return message.ERROR_INVALID_ID;
+  }
+
+  const hospitalData = await hospitalDAO.getHospitalById(hospitalId);
+
+  if (hospitalData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (hospitalData) {
+    const jsonHospitalData = {};
+
+    jsonHospitalData.status = message.OK.status;
+    jsonHospitalData.hospital = {
+      name: hospitalData[0].name,
+      cnpj: hospitalData[0].cnpj,
+      email: hospitalData[0].email,
+      phone: hospitalData[0].phone,
+      website: hospitalData[0].website_url,
+      donationSite: hospitalData[0].donationSite,
+      otherDonationSite: hospitalData[0].otherDonationSite,
+      photo: hospitalData[0].url,
+    };
+    jsonHospitalData.address = {
+      cep: hospitalData[0].cep,
+      uf: hospitalData[0].uf,
+      city: hospitalData[0].city,
+      neighborhood: hospitalData[0].neighborhood,
+      street: hospitalData[0].street,
+      complement: hospitalData[0].complement,
+    };
+
+    return jsonHospitalData;
   } else {
-    let hospitalData = await hospitalDAO.getHospitalById(hospitalId);
-
-    let jsonHospitalData = {};
-
-    if (hospitalData) {
-      jsonHospitalData.status = 200;
-      jsonHospitalData.hospital = {
-        name: hospitalData[0].name,
-        cnpj: hospitalData[0].cnpj,
-        email: hospitalData[0].email,
-        phone: hospitalData[0].phone,
-        website: hospitalData[0].website_url,
-        donationSite: hospitalData[0].donationSite,
-        otherDonationSite: hospitalData[0].otherDonationSite,
-        photo: hospitalData[0].url,
-      };
-      jsonHospitalData.address = {
-        cep: hospitalData[0].cep,
-        uf: hospitalData[0].uf,
-        city: hospitalData[0].city,
-        neighborhood: hospitalData[0].neighborhood,
-        street: hospitalData[0].street,
-        complement: hospitalData[0].complement,
-      };
-
-      console.log(`Hospital Data: ${hospitalData}`);
-
-      return jsonHospitalData;
-    } else {
-      return message.ERROR_INTERNAL_SERVER;
-    }
+    return message.ERROR_INTERNAL_SERVER;
   }
 };
 
 const hospitalEmailGet = async function (hospitalEmail) {
-  const jsonHospitalData = {};
+  if (!validateEmail(hospitalEmail.email)) {
+    return message.ERROR_REQUIRED_DATA;
+  }
 
   const hospitalData = await hospitalDAO.getHospitalByEmail(
     hospitalEmail.email
   );
 
-  if (hospitalData) {
+  if (hospitalData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (hospitalData) {
+    const jsonHospitalData = {};
+
     jsonHospitalData.status = message.LOGIN_CORRECT.status;
     jsonHospitalData.hospitalData = {
       id: hospitalData.id,
@@ -110,76 +157,106 @@ const hospitalEmailGet = async function (hospitalEmail) {
 };
 
 const hospitalGetSchedules = async function () {
-  if (false) {
-    return message.ERROR_REQUIRED_DATA;
-  } else {
-    let schedulesData = await hospitalDAO.getHospitalSchedules();
+  const schedulesData = await hospitalDAO.getHospitalSchedules();
 
-    let jsonSchedulesData = {};
+  if (schedulesData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (schedulesData) {
+    const jsonSchedulesData = {};
     jsonSchedulesData.status = 200;
     jsonSchedulesData.schedules = [];
 
     for (scheduleData in schedulesData) {
-      if (schedulesData) {
-        let scheduleObject = {
-          user: {
-            userId: schedulesData[scheduleData].id,
-            name: schedulesData[scheduleData].name,
-            photo: schedulesData[scheduleData].photo_url,
-          },
-          schedule: {
-            scheduleId: schedulesData[scheduleData].id_schedule,
-            date: schedulesData[scheduleData].date,
-            hour: schedulesData[scheduleData].hour,
-            site: schedulesData[scheduleData].site,
-            status: schedulesData[scheduleData].status,
-          },
-        };
+      let scheduleObject = {
+        user: {
+          userId: schedulesData[scheduleData].id,
+          name: schedulesData[scheduleData].name,
+          photo: schedulesData[scheduleData].photo_url,
+        },
+        schedule: {
+          scheduleId: schedulesData[scheduleData].id_schedule,
+          date: schedulesData[scheduleData].date,
+          hour: schedulesData[scheduleData].hour,
+          site: schedulesData[scheduleData].site,
+          status: schedulesData[scheduleData].status,
+        },
+      };
 
-        jsonSchedulesData.schedules.push(scheduleObject);
-      } else {
-        return message.ERROR_INTERNAL_SERVER;
-      }
+      jsonSchedulesData.schedules.push(scheduleObject);
     }
     return jsonSchedulesData;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
   }
 };
 
 const hospitalUpdate = async function (hospitalId, hospitalData) {
-  if (false) {
+  if (!validateId(hospitalId)) {
+    return message.ERROR_INVALID_ID;
+  } else if (
+    !validateName(hospitalData.hospital.name) ||
+    !validateCNPJ(hospitalData.hospital.cnpj) ||
+    !validateEmail(hospitalData.hospital.email) ||
+    !validatePhone(hospitalData.hospital.phone) ||
+    !validateWebsite(hospitalData.hospital.website) ||
+    !validateDonationSite(hospitalData.hospital.donationSite) ||
+    !validateDonationSite(hospitalData.hospital.otherDonationSite) ||
+    !validatePhoto(hospitalData.hospital.photo) ||
+    !validatePassword(hospitalData.hospital.password) ||
+    !validateCEP(hospitalData.address.cep) ||
+    !validateUF(hospitalData.address.uf) ||
+    !validateCity(hospitalData.address.city) ||
+    !validateNeighborhood(hospitalData.address.neighborhood) ||
+    !validateStreet(hospitalData.address.street) ||
+    !validateNumber(hospitalData.address.number) ||
+    !validateComplement(hospitalData.address.complement)
+  ) {
     return message.ERROR_REQUIRED_DATA;
+  }
+
+  const hospital = await hospitalDAO.getHospitalById(hospitalId);
+
+  if (hospital.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  }
+
+  const status = await hospitalDAO.updateHospital(hospitalId, hospitalData);
+  if (status) {
+    return message.UPDATED_ITEM;
   } else {
-    let status = await hospitalDAO.updateHospital(hospitalId, hospitalData);
-    if (status) {
-      return message.CREATED_ITEM;
-    } else {
-      return message.ERROR_INTERNAL_SERVER;
-    }
+    return message.ERROR_INTERNAL_SERVER;
   }
 };
 
 const hospitalPasswordUpdate = async function (hospitalId, hospitalData) {
-  if (false) {
+  if (!validateId(hospitalId)) {
+    return message.ERROR_INVALID_ID;
+  } else if (!validatePassword(hospitalData.password)) {
     return message.ERROR_REQUIRED_DATA;
+  }
+
+  const hospital = await hospitalDAO.getHospitalById(hospitalId);
+  if (hospital.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  }
+
+  const status = await hospitalDAO.updateHospitalPassword(
+    hospitalId,
+    hospitalData
+  );
+  if (status) {
+    return message.UPDATED_ITEM;
   } else {
-    let status = await hospitalDAO.updateHospitalPassword(
-      hospitalId,
-      hospitalData
-    );
-    if (status) {
-      return message.CREATED_ITEM;
-    } else {
-      return message.ERROR_INTERNAL_SERVER;
-    }
+    return message.ERROR_INTERNAL_SERVER;
   }
 };
 
 const hospitalsGet = async function () {
-  if (false) {
-    return message.ERROR_REQUIRED_DATA;
-  } else {
-    const hospitalsData = await hospitalDAO.getHospitals();
+  const hospitalsData = await hospitalDAO.getHospitals();
 
+  if (hospitalsData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (hospitalsData) {
     const jsonHospitalsData = {};
     jsonHospitalsData.status = 200;
     jsonHospitalsData.hospitals = [];
@@ -199,11 +276,11 @@ const hospitalsGet = async function () {
         };
 
         jsonHospitalsData.hospitals.push(hospitalObject);
-      } else {
-        return message.ERROR_INTERNAL_SERVER;
       }
+      return jsonHospitalsData;
     }
-    return jsonHospitalsData;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
   }
 };
 
