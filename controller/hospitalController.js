@@ -56,7 +56,7 @@ const loginHospital = async function (loginData) {
 
     return jsonHospitalData;
   } else {
-    return message.ERROR_INTERNAL_SERVER;
+    return message.LOGIN_INCORRECT;
   }
 };
 
