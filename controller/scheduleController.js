@@ -2,11 +2,11 @@ const scheduleDAO = require("../model/dao/scheduleDAO.js");
 
 const message = require("./module/config.js");
 
-//VALIDATIONS
-import { validateId } from "../validations/validate-id";
-import { validateOpinion } from "../validations/validate-opinion";
-import { validateDate } from "../validations/validate-date";
-import { validateHour } from "../validations/validate-hour";
+// VALIDATIONS
+const { validateId } = require("../validations/validate-id");
+const { validateOpinion } = require("../validations/validate-opinion");
+const { validateDate } = require("../validations/validate-date");
+const { validateHour } = require("../validations/validate-hour");
 
 const scheduleInsert = async function (scheduleData) {
   if (

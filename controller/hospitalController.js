@@ -5,25 +5,31 @@ const message = require("./module/config.js");
 const { JWT_SECRET } = require("../config.js");
 const jwt = require("jsonwebtoken");
 
-//ADDRESS VALIDATIONS
-import { validateCEP } from "../validations/address/validate-cep";
-import { validateCity } from "../validations/address/validate-city";
-import { validateComplement } from "../validations/address/validate-complement";
-import { validateNeighborhood } from "../validations/address/validate-neighborhood";
-import { validateNumber } from "../validations/address/validate-number";
-import { validateStreet } from "../validations/address/validate-street";
-import { validateUF } from "../validations/address/validate-uf";
+// ADDRESS VALIDATIONS
+const { validateCEP } = require("../validations/address/validate-cep");
+const { validateCity } = require("../validations/address/validate-city");
+const {
+  validateComplement,
+} = require("../validations/address/validate-complement");
+const {
+  validateNeighborhood,
+} = require("../validations/address/validate-neighborhood");
+const { validateNumber } = require("../validations/address/validate-number");
+const { validateStreet } = require("../validations/address/validate-street");
+const { validateUF } = require("../validations/address/validate-uf");
 
-//HOSPITAL VALIDATIONS
-import { validateId } from "../validations/validate-id";
-import { validateName } from "../validations/validate-name";
-import { validateCNPJ } from "../validations/validate-cnpj";
-import { validateEmail } from "../validations/validate-email";
-import { validatePhone } from "../validations/validate-phone";
-import { validateWebsite } from "../validations/validate-website";
-import { validateDonationSite } from "../validations/validate-donation-site";
-import { validatePhoto } from "../validations/validate-photo";
-import { validatePassword } from "../validations/validate-password";
+// HOSPITAL VALIDATIONS
+const { validateId } = require("../validations/validate-id");
+const { validateName } = require("../validations/validate-name");
+const { validateCNPJ } = require("../validations/validate-cnpj");
+const { validateEmail } = require("../validations/validate-email");
+const { validatePhone } = require("../validations/validate-phone");
+const { validateWebsite } = require("../validations/validate-website");
+const {
+  validateDonationSite,
+} = require("../validations/validate-donation-site");
+const { validatePhoto } = require("../validations/validate-photo");
+const { validatePassword } = require("../validations/validate-password");
 
 const loginHospital = async function (loginData) {
   if (

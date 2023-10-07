@@ -4,27 +4,31 @@ const jwt = require("jsonwebtoken");
 
 const message = require("./module/config.js");
 
-//ADDRESS VALIDATIONS
-import { validateCEP } from "../validations/address/validate-cep";
-import { validateCity } from "../validations/address/validate-city";
-import { validateComplement } from "../validations/address/validate-complement";
-import { validateNeighborhood } from "../validations/address/validate-neighborhood";
-import { validateNumber } from "../validations/address/validate-number";
-import { validateStreet } from "../validations/address/validate-street";
-import { validateUF } from "../validations/address/validate-uf";
+// ADDRESS VALIDATIONS
+const { validateCEP } = require("../validations/address/validate-cep");
+const { validateCity } = require("../validations/address/validate-city");
+const {
+  validateComplement,
+} = require("../validations/address/validate-complement");
+const {
+  validateNeighborhood,
+} = require("../validations/address/validate-neighborhood");
+const { validateNumber } = require("../validations/address/validate-number");
+const { validateStreet } = require("../validations/address/validate-street");
+const { validateUF } = require("../validations/address/validate-uf");
 
-//USER VALIDATIONS
-import { validateId } from "../validations/validate-id";
-import { validateName } from "../validations/validate-name";
-import { validateCPF } from "../validations/validate-cpf";
-import { validateEmail } from "../validations/validate-email";
-import { validatePhone } from "../validations/validate-phone";
-import { validateDateBirth } from "../validations/validate-date";
-import { validateWeight } from "../validations/validate-weight";
-import { validatePhoto } from "../validations/validate-photo";
-import { validatePassword } from "../validations/validate-password";
-import { validateSex } from "../validations/validate-sex";
-import { validateBloodType } from "../validations/validate-blood-type";
+// USER VALIDATIONS
+const { validateId } = require("../validations/validate-id");
+const { validateName } = require("../validations/validate-name");
+const { validateCPF } = require("../validations/validate-cpf");
+const { validateEmail } = require("../validations/validate-email");
+const { validatePhone } = require("../validations/validate-phone");
+const { validateDate } = require("../validations/validate-date");
+const { validateWeight } = require("../validations/validate-weight");
+const { validatePhoto } = require("../validations/validate-photo");
+const { validatePassword } = require("../validations/validate-password");
+const { validateSex } = require("../validations/validate-sex");
+const { validateBloodType } = require("../validations/validate-blood-type");
 
 const loginUser = async function (loginData) {
   if (
@@ -67,7 +71,7 @@ const userInsert = async function (userData) {
     !validateCPF(userData.user.cpf) ||
     !validateEmail(userData.user.email) ||
     !validatePhone(userData.user.phone) ||
-    !validateDateBirth(userData.user.dateOfBirth) ||
+    !validateDate(userData.user.dateOfBirth) ||
     !validateWeight(userData.user.weight) ||
     !validatePhoto(userData.user.photo) ||
     !validatePassword(userData.user.password) ||
@@ -165,7 +169,7 @@ const userUpdate = async function (userId, userData) {
     !validateCPF(userData.user.cpf) ||
     !validateEmail(userData.user.email) ||
     !validatePhone(userData.user.phone) ||
-    !validateDateBirth(userData.user.dateOfBirth) ||
+    !validateDate(userData.user.dateOfBirth) ||
     !validateWeight(userData.user.weight) ||
     !validatePhoto(userData.user.photo) ||
     !validatePassword(userData.user.password) ||

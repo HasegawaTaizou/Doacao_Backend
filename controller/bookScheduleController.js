@@ -2,10 +2,10 @@ const bookScheduleDAO = require("../model/dao/bookScheduleDAO.js");
 
 const message = require("./module/config.js");
 
-//VALIDATIONS
-import { validateId } from "../validations/validate-id.js";
-import { validateDate } from "../validations/validate-date.js";
-import { validateHour } from "../validations/validate-hour.js";
+// VALIDATIONS
+const { validateId } = require("../validations/validate-id.js");
+const { validateDate } = require("../validations/validate-date.js");
+const { validateHour } = require("../validations/validate-hour.js");
 
 const bookScheduleInsert = async function (bookScheduleData) {
   bookScheduleData.forEach((bookSchedule) => {

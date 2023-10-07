@@ -1,8 +1,8 @@
 const scheduleStatusDAO = require("../model/dao/scheduleStatusDAO.js");
 
-//VALIDATIONS
-import { validateOpinion } from "../validations/validate-opinion.js";
-import { validateId } from "../validations/validate-id.js";
+// VALIDATIONS
+const { validateOpinion } = require("../validations/validate-opinion.js");
+const { validateId } = require("../validations/validate-id.js");
 
 const message = require("./module/config.js");
 
@@ -15,7 +15,9 @@ const scheduleStatusInsert = async function (scheduleStatusData) {
     return message.ERROR_REQUIRED_DATA;
   }
 
-  const status = await scheduleStatusDAO.insertScheduleStatus(scheduleStatusData);
+  const status = await scheduleStatusDAO.insertScheduleStatus(
+    scheduleStatusData
+  );
   if (status) {
     return message.CREATED_ITEM;
   } else {

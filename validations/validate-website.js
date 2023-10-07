@@ -1,6 +1,6 @@
 "use strict";
 
-const validatePhone = function (website) {
+const validateWebsite = function (website) {
   let status = true;
 
   if (
@@ -16,5 +16,5 @@ const validatePhone = function (website) {
 };
 
 module.exports = {
-  validatePhone,
+  validateWebsite,
 };

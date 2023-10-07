@@ -2,10 +2,10 @@ const reviewDAO = require("../model/dao/reviewDAO.js");
 
 const message = require("./module/config.js");
 
-//VALIDATIONS
-import { validateId } from "../validations/validate-id";
-import { validateOpinion } from "../validations/validate-opinion";
-import { validateStar } from "../validations/validate-star";
+// VALIDATIONS
+const { validateId } = require("../validations/validate-id");
+const { validateOpinion } = require("../validations/validate-opinion");
+const { validateStar } = require("../validations/validate-star");
 
 const reviewInsert = async function (reviewData) {
   if (

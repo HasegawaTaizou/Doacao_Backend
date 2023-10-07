@@ -2,8 +2,8 @@ const siteDAO = require("../model/dao/siteDAO.js");
 
 const message = require("./module/config.js");
 
-//VALIDATIONS
-import { validateId } from "../validations/validate-id";
+// VALIDATIONS
+const { validateId } = require("../validations/validate-id");
 
 const sitesGet = async function (hospitalId) {
   if (!validateId(hospitalId)) {
