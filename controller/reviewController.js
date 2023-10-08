@@ -12,7 +12,7 @@ const reviewInsert = async function (reviewData) {
     !validateOpinion(reviewData.opinion) ||
     !validateId(reviewData.idUser) ||
     !validateId(reviewData.idHospital) ||
-    validateStar(reviewData.idStar)
+    !validateStar(reviewData.idStar)
   ) {
     return message.ERROR_REQUIRED_DATA;
   }
