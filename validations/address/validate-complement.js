@@ -6,7 +6,7 @@ const validateComplement = function (complement) {
   if (
     complement == null ||
     complement == undefined ||
-    !isNaN(complement) ||
+    typeof complement !== 'string' ||
     complement.length > 200
   ) {
     status = false;

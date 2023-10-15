@@ -6,10 +6,11 @@ const validateNumber = function (number) {
   if (
     number == null ||
     number == undefined ||
-    !isNaN(number) ||
+    isNaN(number) ||
     number == "" ||
     number.length > 4
   ) {
+    console.log('isNAN: ', isNaN(number));
     status = false;
   }
   return status;

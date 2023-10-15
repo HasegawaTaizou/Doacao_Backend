@@ -6,7 +6,7 @@ const validateCNPJ = function (CNPJ) {
   if (
     CNPJ == null ||
     CNPJ == undefined ||
-    !isNaN(CNPJ) ||
+    isNaN(CNPJ.replace(/[\/\.\-\s]/g, '')) ||
     CNPJ == "" ||
     CNPJ.length > 18
   ) {

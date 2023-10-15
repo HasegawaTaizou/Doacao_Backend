@@ -6,7 +6,7 @@ const validateStreet = function (street) {
   if (
     street == null ||
     street == undefined ||
-    !isNaN(street) ||
+    typeof street !== 'string' ||
     street == "" ||
     street.length > 150
   ) {

@@ -12,9 +12,10 @@ const hospitalLogin = async function (loginData) {
     //Verify hospital
     const hospital = await getHospitalByEmail(loginData.email);
     console.log(hospital);
-    
+
     // Verify password
-    const passwordMatch = loginData.password === hospital.password ? true : false;
+    const passwordMatch =
+      loginData.password === hospital.password ? true : false;
 
     if (passwordMatch) {
       return hospital;
@@ -154,10 +155,8 @@ const getHospitalByEmail = async function (hospitalEmail) {
   }
 };
 
-// ARRUMAR ESSE AQUI PARA FILTRAR UM WHERE PELO ID
-//hospitalId
-const getHospitalSchedules = async function () {
-  let sql = `
+const getHospitalSchedules = async function (hospitalId) {
+  const sql = `
   SELECT 
   tbl_user.id, 
   tbl_user.name, 
@@ -173,10 +172,12 @@ const getHospitalSchedules = async function () {
   INNER JOIN tbl_hospital_site ON tbl_hospital_site.id = tbl_book_schedule.id_hospital_site
   INNER JOIN tbl_site ON tbl_site.id = tbl_hospital_site.id_site
   INNER JOIN tbl_schedule_status ON tbl_schedule_status.id_schedule = tbl_schedule.id
-  INNER JOIN tbl_status ON tbl_status.id = tbl_schedule_status.id_status;
+  INNER JOIN tbl_status ON tbl_status.id = tbl_schedule_status.id_status
+  INNER JOIN tbl_hospital ON tbl_hospital.id = tbl_hospital_site.id_hospital
+  WHERE tbl_hospital.id = ${hospitalId};
   `;
 
-  let responseSchedules = await prisma.$queryRawUnsafe(sql);
+  const responseSchedules = await prisma.$queryRawUnsafe(sql);
 
   if (responseSchedules) {
     return responseSchedules;

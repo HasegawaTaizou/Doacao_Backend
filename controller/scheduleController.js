@@ -13,12 +13,35 @@ const scheduleInsert = async function (scheduleData) {
     !validateId(scheduleData.idUser) ||
     !validateId(scheduleData.idBookSchedule)
   ) {
-    return message.ERROR_RESOURCE_NOT_FOUND;
+    return message.ERROR_REQUIRED_DATA;
   }
 
   const status = await scheduleDAO.insertSchedule(scheduleData);
   if (status) {
     return message.CREATED_ITEM;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
+const scheduleGet = async function (hospitalId) {
+  if (!validateId(hospitalId)) {
+    return message.ERROR_INVALID_ID;
+  }
+
+  const scheduleData = await scheduleDAO.getScheduleByHospitalId(
+    hospitalId
+  );
+
+  if (scheduleData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (scheduleData) {
+    const jsonScheduleData = {};
+
+    jsonScheduleData.status = message.OK.status;
+    jsonScheduleData.schedule = scheduleData;
+
+    return jsonScheduleData;
   } else {
     return message.ERROR_INTERNAL_SERVER;
   }
@@ -51,12 +74,19 @@ const schedulesStatisticsGet = async function (hospitalId) {
   }
 };
 
-//VALIDAR SE TEM UM SCHEDULE ANTES
 const scheduleCancelUpdate = async function (scheduleId, scheduleData) {
   if (!validateId(scheduleId)) {
     return message.ERROR_INVALID_ID;
   } else if (!validateOpinion(scheduleData.observation)) {
     return message.ERROR_REQUIRED_DATA;
+  }
+
+  const schedule = await scheduleDAO.getScheduleByHospitalId(
+    scheduleId
+  );
+
+  if (schedule.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
   }
 
   const status = await scheduleDAO.updateScheduleCancel(
@@ -70,10 +100,17 @@ const scheduleCancelUpdate = async function (scheduleId, scheduleData) {
   }
 };
 
-//VALIDAR SE TEM UM SCHEDULE ANTES
 const scheduleConcludeUpdate = async function (scheduleId) {
   if (!validateId(scheduleId)) {
     return message.ERROR_INVALID_ID;
+  }
+
+  const schedule = await scheduleDAO.getScheduleByHospitalId(
+    scheduleId
+  );
+
+  if (schedule.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
   }
 
   const status = await scheduleDAO.updateScheduleConclude(scheduleId);
@@ -84,7 +121,6 @@ const scheduleConcludeUpdate = async function (scheduleId) {
   }
 };
 
-//VALIDAR SE TEM UM SCHEDULE ANTES
 const scheduleRescheduleUpdate = async function (scheduleId, scheduleData) {
   if (!validateId(scheduleId)) {
     return message.ERROR_INVALID_ID;
@@ -94,6 +130,14 @@ const scheduleRescheduleUpdate = async function (scheduleId, scheduleData) {
     !validateId(scheduleData.siteId)
   ) {
     return message.ERROR_REQUIRED_DATA;
+  }
+
+  const schedule = await scheduleDAO.getScheduleByHospitalId(
+    scheduleId
+  );
+
+  if (schedule.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
   }
 
   const status = await scheduleDAO.updateScheduleReschedule(
@@ -109,6 +153,7 @@ const scheduleRescheduleUpdate = async function (scheduleId, scheduleData) {
 
 module.exports = {
   scheduleInsert,
+  scheduleGet,
   schedulesStatisticsGet,
   scheduleCancelUpdate,
   scheduleConcludeUpdate,

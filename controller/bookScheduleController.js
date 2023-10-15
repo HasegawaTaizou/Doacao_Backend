@@ -8,7 +8,7 @@ const { validateDate } = require("../validations/validate-date.js");
 const { validateHour } = require("../validations/validate-hour.js");
 
 const bookScheduleInsert = async function (bookScheduleData) {
-  bookScheduleData.forEach((bookSchedule) => {
+  for (const bookSchedule of bookScheduleData) {
     if (
       !validateId(bookSchedule.hospitalSiteId) ||
       !validateDate(bookSchedule.date) ||
@@ -16,11 +16,34 @@ const bookScheduleInsert = async function (bookScheduleData) {
     ) {
       return message.ERROR_REQUIRED_DATA;
     }
-  });
+  }
 
   const status = await bookScheduleDAO.insertBookSchedule(bookScheduleData);
   if (status) {
     return message.CREATED_ITEM;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
+const bookScheduleGet = async function (hospitalId) {
+  if (!validateId(hospitalId)) {
+    return message.ERROR_INVALID_ID;
+  }
+
+  const bookScheduleData = await bookScheduleDAO.getBookScheduleByHospitalId(
+    hospitalId
+  );
+
+  if (bookScheduleData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (bookScheduleData) {
+    const jsonBookScheduleData = {};
+
+    jsonBookScheduleData.status = message.OK.status;
+    jsonBookScheduleData.bookSchedule = bookScheduleData;
+
+    return jsonBookScheduleData;
   } else {
     return message.ERROR_INTERNAL_SERVER;
   }
@@ -49,7 +72,6 @@ const bookSchedulesGet = async function (hospitalId) {
   }
 };
 
-//FAZER VALIDAÇÃO DE FAZER UPDATE EM UM BOOK SCHEDULE QUE NAO EXISTE
 const bookScheduleUpdate = async function (bookScheduleId, bookScheduleData) {
   if (!validateId(bookScheduleId)) {
     return message.ERROR_INVALID_ID;
@@ -59,6 +81,14 @@ const bookScheduleUpdate = async function (bookScheduleId, bookScheduleData) {
     !validateId(bookScheduleData.siteId)
   ) {
     return message.ERROR_REQUIRED_DATA;
+  }
+
+  const bookSchedule = await bookScheduleDAO.getBookScheduleByHospitalId(
+    bookScheduleId
+  );
+
+  if (bookSchedule.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
   }
 
   const status = await bookScheduleDAO.updateBookSchedule(
@@ -72,11 +102,18 @@ const bookScheduleUpdate = async function (bookScheduleId, bookScheduleData) {
   }
 };
 
-//FAZER VALIDAÇÃO DE FAZER DELETE EM UM BOOK SCHEDULE QUE NAO EXISTE
 const bookScheduleDelete = async function (bookScheduleId) {
   if (!validateId(bookScheduleId)) {
     return message.ERROR_INVALID_ID;
   } else {
+    const bookSchedule = await bookScheduleDAO.getBookScheduleByHospitalId(
+      bookScheduleId
+    );
+
+    if (bookSchedule.length == 0) {
+      return message.ERROR_RESOURCE_NOT_FOUND;
+    }
+
     const status = await bookScheduleDAO.deleteBookSchedule(bookScheduleId);
     if (status) {
       return message.NO_CONTENT;
@@ -88,6 +125,7 @@ const bookScheduleDelete = async function (bookScheduleId) {
 
 module.exports = {
   bookScheduleInsert,
+  bookScheduleGet,
   bookSchedulesGet,
   bookScheduleUpdate,
   bookScheduleDelete,

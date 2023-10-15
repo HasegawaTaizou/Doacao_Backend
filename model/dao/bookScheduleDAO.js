@@ -24,8 +24,22 @@ const insertBookSchedule = async function (bookScheduleData) {
   return true;
 };
 
+const getBookScheduleByHospitalId = async function (hospitalId) {
+  const sql = `
+  SELECT * FROM tbl_book_schedule WHERE id = ${hospitalId};
+  `;
+
+  const responseBookSchedule = await prisma.$queryRawUnsafe(sql);
+
+  if (responseBookSchedule) {
+    return responseBookSchedule;
+  } else {
+    return false;
+  }
+};
+
 const getBookSchedulesByHospitalId = async function (hospitalId) {
-  let sql = `
+  const sql = `
   SELECT 
   tbl_book_schedule.id, 
   DATE_FORMAT(tbl_book_schedule.date, '%d/%m/%Y') AS date,
@@ -38,7 +52,7 @@ const getBookSchedulesByHospitalId = async function (hospitalId) {
   WHERE tbl_hospital.id = ${hospitalId};
   `;
 
-  let responseBookSchedules = await prisma.$queryRawUnsafe(sql);
+  const responseBookSchedules = await prisma.$queryRawUnsafe(sql);
 
   if (responseBookSchedules) {
     return responseBookSchedules;
@@ -67,8 +81,6 @@ async function updateBookSchedule(bookScheduleId, bookScheduleData) {
         },
       },
     });
-
-    console.log(oldBookScheduleData);
 
     const updatedBookSchedule = await prisma.bookSchedule.update({
       where: {
@@ -118,6 +130,7 @@ const deleteBookSchedule = async function (bookScheduleId) {
 
 module.exports = {
   insertBookSchedule,
+  getBookScheduleByHospitalId,
   getBookSchedulesByHospitalId,
   updateBookSchedule,
   deleteBookSchedule,

@@ -80,7 +80,7 @@ const hospitalInsert = async function (hospitalData) {
     !validateCEP(hospitalData.address.cep) ||
     !validateUF(hospitalData.address.uf) ||
     !validateCity(hospitalData.address.city) ||
-    !validateNeighborhood(hospitalData.address.neighborhood) ||
+    !validateNeighborhood(hospitalData.address.neighborhood) || 
     !validateStreet(hospitalData.address.street) ||
     !validateNumber(hospitalData.address.number) ||
     !validateComplement(hospitalData.address.complement)
@@ -162,8 +162,8 @@ const hospitalEmailGet = async function (hospitalEmail) {
   }
 };
 
-const hospitalGetSchedules = async function () {
-  const schedulesData = await hospitalDAO.getHospitalSchedules();
+const hospitalGetSchedules = async function (hospitalId) {
+  const schedulesData = await hospitalDAO.getHospitalSchedules(hospitalId);
 
   if (schedulesData.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;

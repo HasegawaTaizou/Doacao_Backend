@@ -19,6 +19,20 @@ const insertSchedule = async function (scheduleData) {
   }
 };
 
+const getScheduleByHospitalId = async function (hospitalId) {
+  const sql = `
+  SELECT * FROM tbl_schedule WHERE id = ${hospitalId};
+  `;
+
+  const responseSchedule = await prisma.$queryRawUnsafe(sql);
+
+  if (responseSchedule) {
+    return responseSchedule;
+  } else {
+    return false;
+  }
+};
+
 const getSchedulesStatisticsByHospitalId = async function (hospitalId) {
   let sql = `
   SELECT
@@ -185,8 +199,6 @@ async function updateScheduleReschedule(scheduleId, scheduleData) {
       },
     });
 
-    console.log(oldscheduleData);
-
     let [day, month, year] = scheduleData.date.split("/");
     let ISOdate = `${year}-${month}-${day}T00:00:00Z`;
 
@@ -236,6 +248,7 @@ async function updateScheduleReschedule(scheduleId, scheduleData) {
 
 module.exports = {
   insertSchedule,
+  getScheduleByHospitalId,
   getSchedulesStatisticsByHospitalId,
   updateScheduleCancel,
   updateScheduleConclude,

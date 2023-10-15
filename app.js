@@ -133,6 +133,20 @@ app.post(
   }
 );
 
+//Get Hospital Schedule
+app.get(
+  "/api/v1/hospital/:id/schedule",
+  cors(),
+  async function (request, response) {
+    let hospitalId = request.params.id;
+
+    let resultGetData = await scheduleController.scheduleGet(hospitalId);
+
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
+
 //Schedule Status Registration
 app.post(
   "/api/v1/schedule-status",
@@ -152,10 +166,12 @@ app.post(
 
 //Get Schedules
 app.get(
-  "/api/v1/hospital/schedules",
+  "/api/v1/hospital/:id/schedules",
   cors(),
   async function (request, response) {
-    let resultGetData = await hospitalController.hospitalGetSchedules();
+    let hospitalId = request.params.id;
+    
+    let resultGetData = await hospitalController.hospitalGetSchedules(hospitalId);
 
     response.status(resultGetData.status);
     response.json(resultGetData);
