@@ -73,7 +73,9 @@ const getUserById = async function (userId) {
   tbl_user.email, 
   tbl_user.phone,
   tbl_user.weight,
+  tbl_user.cpf,
   TIMESTAMPDIFF(YEAR, tbl_user.date_of_birth, CURDATE()) AS age,
+  DATE_FORMAT(tbl_user.date_of_birth, '%d/%m/%Y') as date_of_birth,
   tbl_blood_type.type,
   tbl_sex.sex,
   tbl_address.cep,
@@ -190,7 +192,8 @@ const getSchedulesUserById = async function (userId) {
   DATE_FORMAT(tbl_book_schedule.date, '%d/%m/%Y') AS date,
   TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour, 
   tbl_status.status, 
-  tbl_site.site 
+  tbl_site.site,
+  tbl_hospital.name
   FROM tbl_schedule_status
   INNER JOIN tbl_schedule ON tbl_schedule.id = tbl_schedule_status.id_schedule
   INNER JOIN tbl_user ON tbl_user.id = tbl_schedule.id_user
@@ -198,6 +201,7 @@ const getSchedulesUserById = async function (userId) {
   INNER JOIN tbl_status ON tbl_status.id = tbl_schedule_status.id_status
   INNER JOIN tbl_hospital_site ON tbl_hospital_site.id = tbl_book_schedule.id_hospital_site
   INNER JOIN tbl_site ON tbl_site.id = tbl_hospital_site.id_site
+  INNER JOIN tbl_hospital ON tbl_hospital_site.id_hospital = tbl_hospital.id
   WHERE tbl_schedule.id_user = ${userId};
   `;
 

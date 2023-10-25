@@ -117,9 +117,11 @@ const userGet = async function (userId) {
       email: userData[0].email,
       phone: userData[0].phone,
       weight: userData[0].weight,
+      dateOfBirth: userData[0].date_of_birth,
       age: age,
       bloodType: userData[0].type,
       sex: userData[0].sex,
+      cpf: userData[0].cpf,
     };
     jsonUserData.address = {
       cep: userData[0].cep,
@@ -128,6 +130,7 @@ const userGet = async function (userId) {
       neighborhood: userData[0].neighborhood,
       street: userData[0].street,
       complement: userData[0].complement,
+      number: userData[0].number,
     };
 
     return jsonUserData;
@@ -216,6 +219,7 @@ const userGetSchedules = async function (userId) {
           hour: userSchedulesData[userSchedule].hour,
           site: userSchedulesData[userSchedule].site,
           status: userSchedulesData[userSchedule].status,
+          hospital: userSchedulesData[userSchedule].name
         };
 
         jsonUserSchedulesData.schedules.push(userSchedulesObject);
