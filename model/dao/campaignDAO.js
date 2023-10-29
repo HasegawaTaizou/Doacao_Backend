@@ -33,7 +33,7 @@ const getCampaignsByHospitalId = async function (hospitalId) {
 
 const insertCampaign = async function (campaignData, hospitalId) {
   try {
-    const insertPhoneData = await prisma.campaign.create({
+    const insertCampaignData = await prisma.campaign.create({
       data: {
         date: campaignData.date,
         hour: campaignData.hour,
@@ -43,7 +43,7 @@ const insertCampaign = async function (campaignData, hospitalId) {
       },
     });
 
-    return insertPhoneData;
+    return insertCampaignData;
   } catch (error) {
     console.log("error: ", error);
   } finally {

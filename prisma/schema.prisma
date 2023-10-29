@@ -11,7 +11,8 @@ model BloodType {
   id   Int    @id @unique @default(autoincrement())
   type String @db.VarChar(3)
 
-  User User[]
+  User         User[]
+  DonationBank DonationBank[]
 
   @@map("tbl_blood_type")
 }
@@ -79,6 +80,7 @@ model Hospital {
   Photo        Photo[]
   Review       Review[]
   Campaign     Campaign[]
+  DonationBank DonationBank[]
 
   @@map("tbl_hospital")
 }
@@ -94,6 +96,19 @@ model Campaign {
   Hospital   Hospital @relation(fields: [idHospital], references: [id])
 
   @@map("tbl_campaign")
+}
+
+model DonationBank {
+  id      Int     @id @unique @default(autoincrement())
+  year    Int
+  bloodMl Decimal @db.Decimal(7, 2) @map("blood_ml")
+
+  idHospital  Int       @map("id_hospital")
+  Hospital    Hospital  @relation(fields: [idHospital], references: [id])
+  idBloodType Int       @map("id_blood_type")
+  BloodType   BloodType @relation(fields: [idBloodType], references: [id])
+
+  @@map("tbl_donation_bank")
 }
 
 model Site {
