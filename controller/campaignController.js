@@ -12,8 +12,9 @@ const { validateDate } = require("../validations/validate-date.js");
 const { validateHour } = require("../validations/validate-hour.js");
 
 const campaignInsert = async function (campaignData) {
+
   if (
-    !validateId(campaignData.idHospital) ||
+    !validateId(campaignData.hospitalId) ||
     !validatePhoto(campaignData.image) ||
     !validateDescription(campaignData.description) ||
     !validateDate(campaignData.date) ||
@@ -43,7 +44,7 @@ const campaignsGet = async function (hospitalId) {
     const jsonCampaignsData = {};
 
     jsonCampaignsData.status = message.OK.status;
-    jsonCampaignsData.ratingsStatistics = campaignsData;
+    jsonCampaignsData.campaigns = campaignsData;
 
     return jsonCampaignsData;
   } else {

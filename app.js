@@ -519,7 +519,7 @@ app.get(
 
 //Insert Campaign
 app.post(
-  "/api/v1/hospital/campaign",
+  "/api/v1/campaign",
   cors(),
   bodyJSON,
   async function (request, response) {
@@ -538,11 +538,11 @@ app.put(
   cors(),
   bodyJSON,
   async function (request, response) {
-    const userId = request.body.id;
+    const campaignId = request.body.id;
     const bodyData = request.body;
 
-    const resultUpdateData = await userController.userPasswordUpdate(
-      userId,
+    const resultUpdateData = await campaignController.campaignUpdate(
+      campaignId,
       bodyData
     );
 

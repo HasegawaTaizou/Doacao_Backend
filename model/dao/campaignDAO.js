@@ -18,7 +18,14 @@ const getCampaignById = async function (campaignId) {
 
 const getCampaignsByHospitalId = async function (hospitalId) {
   const sql = `
-  SELECT * FROM tbl_campaign
+  SELECT 
+  id,
+  DATE_FORMAT(date, '%d/%m/%Y') AS date,
+  TIME_FORMAT(hour, '%H:%i') AS hour,
+  description,
+  image,
+  id_hospital
+  FROM tbl_campaign
   WHERE id_hospital = ${hospitalId};
       `;
 
@@ -31,15 +38,21 @@ const getCampaignsByHospitalId = async function (hospitalId) {
   }
 };
 
-const insertCampaign = async function (campaignData, hospitalId) {
+const insertCampaign = async function (campaignData) {
   try {
+    const [day, month, year] = campaignData.date.split("/");
+    const ISOdate = `${year}-${month}-${day}T00:00:00Z`;
+
+    const [hour, minute] = campaignData.hour.split(":");
+    const ISOhour = `1970-01-01T${hour}:${minute}:00Z`;
+
     const insertCampaignData = await prisma.campaign.create({
       data: {
-        date: campaignData.date,
-        hour: campaignData.hour,
+        date: ISOdate,
+        hour: ISOhour,
         description: campaignData.description,
         image: campaignData.image,
-        idHospital: hospitalId,
+        idHospital: campaignData.hospitalId,
       },
     });
 
@@ -53,12 +66,19 @@ const insertCampaign = async function (campaignData, hospitalId) {
 
 async function updateCampaign(campaignId, campaignData) {
   try {
+    const [day, month, year] = campaignData.date.split("/");
+    const ISOdate = `${year}-${month}-${day}T00:00:00Z`;
+
+    const [hour, minute] = campaignData.hour.split(":");
+    const ISOhour = `1970-01-01T${hour}:${minute}:00Z`;
+
     const updatedCampaign = await prisma.campaign.update({
       where: {
         id: Number(campaignId),
       },
       data: {
-        date: campaignData.date,
+        date: ISOdate,
+        hour: ISOhour,
         description: campaignData.description,
         image: campaignData.image,
       },
