@@ -78,8 +78,22 @@ model Hospital {
   Phone        Phone[]
   Photo        Photo[]
   Review       Review[]
+  Campaign     Campaign[]
 
   @@map("tbl_hospital")
+}
+
+model Campaign {
+  id          Int      @id @unique @default(autoincrement())
+  date        DateTime @db.Date
+  hour        DateTime @db.Time
+  description String   @db.Text
+  image       String   @db.Text
+
+  idHospital Int      @map("id_hospital")
+  Hospital   Hospital @relation(fields: [idHospital], references: [id])
+
+  @@map("tbl_campaign")
 }
 
 model Site {
