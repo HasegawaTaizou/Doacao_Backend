@@ -24,6 +24,7 @@ const scheduleController = require("./controller/scheduleController.js");
 const scheduleStatusController = require("./controller/scheduleStatusController.js");
 const siteController = require("./controller/siteController.js");
 const reviewController = require("./controller/reviewController.js");
+const campaignController = require("./controller/campaignController.js");
 
 //ENDPOINTS:
 
@@ -171,7 +172,9 @@ app.get(
   async function (request, response) {
     let hospitalId = request.params.id;
 
-    let resultGetData = await hospitalController.hospitalGetSchedules(hospitalId);
+    let resultGetData = await hospitalController.hospitalGetSchedules(
+      hospitalId
+    );
 
     response.status(resultGetData.status);
     response.json(resultGetData);
@@ -497,6 +500,71 @@ app.get("/api/v1/hospitals", cors(), async function (request, response) {
   response.status(resultGetData.status);
   response.json(resultGetData);
 });
+
+//Get Hospital Campaigns
+app.get(
+  "/api/v1/hospital/:id/campaigns",
+  cors(),
+  async function (request, response) {
+    const hospitalId = request.params.id;
+
+    const resultGetData = await campaignController.campaignsGet(hospitalId);
+
+    console.log(resultGetData);
+
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
+
+//Insert Campaign
+app.post(
+  "/api/v1/hospital/campaign",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    const bodyData = request.body;
+
+    const resultCampaign = await campaignController.campaignInsert(bodyData);
+
+    response.status(resultCampaign.status);
+    response.json(resultCampaign);
+  }
+);
+
+//Update Campaign
+app.put(
+  "/api/v1/update-campaign",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    const userId = request.body.id;
+    const bodyData = request.body;
+
+    const resultUpdateData = await userController.userPasswordUpdate(
+      userId,
+      bodyData
+    );
+
+    response.status(resultUpdateData.status);
+    response.json(resultUpdateData);
+  }
+);
+
+//Delete Campaign
+app.delete(
+  "/api/v1/delete-campaign/:id",
+  cors(),
+  async function (request, response) {
+    const campaignId = request.params.id;
+    const resultDeleteData = await campaignController.campaignDelete(
+      campaignId
+    );
+
+    response.status(resultDeleteData.status);
+    response.json(resultDeleteData);
+  }
+);
 
 app.listen(8080, function () {
   console.log("Server waiting for requests on port 8080!");
