@@ -25,6 +25,7 @@ const scheduleStatusController = require("./controller/scheduleStatusController.
 const siteController = require("./controller/siteController.js");
 const reviewController = require("./controller/reviewController.js");
 const campaignController = require("./controller/campaignController.js");
+const donationBankController = require("./controller/donationBankController.js");
 
 //ENDPOINTS:
 
@@ -563,6 +564,60 @@ app.delete(
 
     response.status(resultDeleteData.status);
     response.json(resultDeleteData);
+  }
+);
+
+//Get Hospital Donation Banks
+app.get(
+  "/api/v1/hospital/:id/donation-banks",
+  cors(),
+  async function (request, response) {
+    const hospitalId = request.params.id;
+
+    const resultGetData = await donationBankController.donationBanksGet(
+      hospitalId
+    );
+
+    console.log(resultGetData);
+
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
+
+//Insert Donation Bank
+app.post(
+  "/api/v1/donation-bank",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    const bodyData = request.body;
+
+    const resultDonationBank = await donationBankController.donationBankInsert(
+      bodyData
+    );
+
+    response.status(resultDonationBank.status);
+    response.json(resultDonationBank);
+  }
+);
+
+//Update Donation Bank
+app.put(
+  "/api/v1/update-donation-bank",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    const donationBankId = request.body.id;
+    const bodyData = request.body;
+
+    const resultUpdateData = await donationBankController.donationBankUpdate(
+      donationBankId,
+      bodyData
+    );
+
+    response.status(resultUpdateData.status);
+    response.json(resultUpdateData);
   }
 );
 
