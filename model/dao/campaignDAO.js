@@ -23,11 +23,10 @@ const getCampaignsByHospitalId = async function (hospitalId) {
   DATE_FORMAT(date, '%d/%m/%Y') AS date,
   TIME_FORMAT(hour, '%H:%i') AS hour,
   description,
-  image,
-  id_hospital
+  image
   FROM tbl_campaign
   WHERE id_hospital = ${hospitalId};
-      `;
+  `;
 
   const responseCampaigns = await prisma.$queryRawUnsafe(sql);
 
