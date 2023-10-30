@@ -432,6 +432,21 @@ app.put(
   }
 );
 
+//Hospital Delete
+app.delete(
+  "/api/v1/delete-hospital/:id",
+  cors(),
+  async function (request, response) {
+    const hospitalId = request.params.id;
+    const resultDeleteData = await hospitalController.hospitalDelete(
+      hospitalId
+    );
+
+    response.status(resultDeleteData.status);
+    response.json(resultDeleteData);
+  }
+);
+
 //User Get By Email
 app.post("/api/v1/user", cors(), bodyJSON, async function (request, response) {
   const bodyData = request.body;
@@ -489,6 +504,21 @@ app.put(
 
     response.status(resultUpdateData.status);
     response.json(resultUpdateData);
+  }
+);
+
+//User Delete
+app.delete(
+  "/api/v1/delete-user/:id",
+  cors(),
+  async function (request, response) {
+    const userId = request.params.id;
+    const resultDeleteData = await userController.userDelete(
+      userId
+    );
+
+    response.status(resultDeleteData.status);
+    response.json(resultDeleteData);
   }
 );
 

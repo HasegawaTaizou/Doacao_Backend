@@ -219,7 +219,7 @@ const userGetSchedules = async function (userId) {
           hour: userSchedulesData[userSchedule].hour,
           site: userSchedulesData[userSchedule].site,
           status: userSchedulesData[userSchedule].status,
-          hospital: userSchedulesData[userSchedule].name
+          hospital: userSchedulesData[userSchedule].name,
         };
 
         jsonUserSchedulesData.schedules.push(userSchedulesObject);
@@ -250,6 +250,24 @@ const userPasswordUpdate = async function (userId, userData) {
     return message.ERROR_INTERNAL_SERVER;
   }
 };
+const userDelete = async function (userId) {
+  if (!validateId(userId)) {
+    return message.ERROR_INVALID_ID;
+  } else {
+    const user = await userDAO.getUserById(userId);
+
+    if (user.length == 0) {
+      return message.ERROR_RESOURCE_NOT_FOUND;
+    }
+
+    const status = await userDAO.deleteUserById(userId);
+    if (status) {
+      return message.NO_CONTENT;
+    } else {
+      return message.ERROR_INTERNAL_SERVER;
+    }
+  }
+};
 
 module.exports = {
   loginUser,
@@ -259,4 +277,5 @@ module.exports = {
   userUpdate,
   userGetSchedules,
   userPasswordUpdate,
+  userDelete,
 };

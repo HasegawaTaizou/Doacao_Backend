@@ -80,7 +80,7 @@ const hospitalInsert = async function (hospitalData) {
     !validateCEP(hospitalData.address.cep) ||
     !validateUF(hospitalData.address.uf) ||
     !validateCity(hospitalData.address.city) ||
-    !validateNeighborhood(hospitalData.address.neighborhood) || 
+    !validateNeighborhood(hospitalData.address.neighborhood) ||
     !validateStreet(hospitalData.address.street) ||
     !validateNumber(hospitalData.address.number) ||
     !validateComplement(hospitalData.address.complement)
@@ -290,6 +290,25 @@ const hospitalsGet = async function () {
   }
 };
 
+const hospitalDelete = async function (hospitalId) {
+  if (!validateId(hospitalId)) {
+    return message.ERROR_INVALID_ID;
+  } else {
+    const hospital = await hospitalDAO.getHospitalById(hospitalId);
+
+    if (hospital.length == 0) {
+      return message.ERROR_RESOURCE_NOT_FOUND;
+    }
+
+    const status = await hospitalDAO.deleteHospitalById(hospitalId);
+    if (status) {
+      return message.NO_CONTENT;
+    } else {
+      return message.ERROR_INTERNAL_SERVER;
+    }
+  }
+};
+
 module.exports = {
   loginHospital,
   hospitalInsert,
@@ -299,4 +318,5 @@ module.exports = {
   hospitalUpdate,
   hospitalPasswordUpdate,
   hospitalsGet,
+  hospitalDelete,
 };

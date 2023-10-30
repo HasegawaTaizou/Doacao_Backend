@@ -309,6 +309,41 @@ const getHospitals = async function () {
   }
 };
 
+async function deleteHospitalById(hospitalId) {
+  console.log("ID HOSPIAL: ", hospitalId);
+  try {
+    await prisma.hospitalSite.deleteMany({
+      where: {
+        idHospital: Number(hospitalId),
+      },
+    });
+
+    await prisma.phone.deleteMany({
+      where: {
+        idHospital: Number(hospitalId),
+      },
+    });
+
+    await prisma.photo.deleteMany({
+      where: {
+        idHospital: Number(hospitalId),
+      },
+    });
+
+    await prisma.hospital.delete({
+      where: {
+        id: Number(hospitalId),
+      },
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Erro ao excluir o hospital:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 module.exports = {
   hospitalLogin,
   insertHospital,
@@ -318,4 +353,5 @@ module.exports = {
   updateHospital,
   updateHospitalPassword,
   getHospitals,
+  deleteHospitalById,
 };

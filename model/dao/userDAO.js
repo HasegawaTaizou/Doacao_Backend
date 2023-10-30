@@ -237,6 +237,22 @@ async function updateUserPassword(userId, userData) {
   }
 }
 
+async function deleteUserById(userId) {
+  try {
+    await prisma.user.delete({
+      where: {
+        id: Number(userId),
+      },
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Erro ao excluir o usuario:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 module.exports = {
   userLogin,
   insertUser,
@@ -245,4 +261,5 @@ module.exports = {
   getUserByEmail,
   getSchedulesUserById,
   updateUserPassword,
+  deleteUserById,
 };
