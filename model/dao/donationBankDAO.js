@@ -3,7 +3,8 @@ var prisma = new PrismaClient();
 
 const getDonationBanksByHospitalId = async function (hospitalId) {
   const sql = `
-  SELECT * FROM tbl_donation_bank
+  SELECT tbl_donation_bank.id, tbl_donation_bank.year, tbl_donation_bank.blood_ml, tbl_blood_type.type FROM tbl_donation_bank
+  INNER JOIN tbl_blood_type ON tbl_blood_type.id = tbl_donation_bank.id_blood_type
   WHERE id_hospital = ${hospitalId};
       `;
 
