@@ -9,9 +9,12 @@ const { validateYear } = require("../validations/validate-year.js");
 const { validateBloodMl } = require("../validations/validate-blood-ml.js");
 
 const donationBankInsert = async function (donationBankData) {
-  const bloodTypeId = bloodTypeDAO.getBloodTypeIdByName(
+  const bloodTypeId = await bloodTypeDAO.getBloodTypeIdByName(
     donationBankData.bloodType
   );
+  console.log(donationBankData.bloodType);
+  console.log(bloodTypeId);
+
 
   if (
     !validateId(donationBankData.hospitalId) ||
