@@ -29,9 +29,7 @@ const scheduleGet = async function (hospitalId) {
     return message.ERROR_INVALID_ID;
   }
 
-  const scheduleData = await scheduleDAO.getScheduleByHospitalId(
-    hospitalId
-  );
+  const scheduleData = await scheduleDAO.getScheduleByHospitalId(hospitalId);
 
   if (scheduleData.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;
@@ -81,9 +79,7 @@ const scheduleCancelUpdate = async function (scheduleId, scheduleData) {
     return message.ERROR_REQUIRED_DATA;
   }
 
-  const schedule = await scheduleDAO.getScheduleByHospitalId(
-    scheduleId
-  );
+  const schedule = await scheduleDAO.getScheduleByHospitalId(scheduleId);
 
   if (schedule.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;
@@ -105,9 +101,7 @@ const scheduleConcludeUpdate = async function (scheduleId) {
     return message.ERROR_INVALID_ID;
   }
 
-  const schedule = await scheduleDAO.getScheduleByHospitalId(
-    scheduleId
-  );
+  const schedule = await scheduleDAO.getScheduleByHospitalId(scheduleId);
 
   if (schedule.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;
@@ -132,9 +126,7 @@ const scheduleRescheduleUpdate = async function (scheduleId, scheduleData) {
     return message.ERROR_REQUIRED_DATA;
   }
 
-  const schedule = await scheduleDAO.getScheduleByHospitalId(
-    scheduleId
-  );
+  const schedule = await scheduleDAO.getScheduleByHospitalId(scheduleId);
 
   if (schedule.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;
@@ -151,6 +143,24 @@ const scheduleRescheduleUpdate = async function (scheduleId, scheduleData) {
   }
 };
 
+const schedulesGet = async function () {
+  const schedulesData =
+    await scheduleDAO.getSchedules();
+
+  if (schedulesData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (schedulesData) {
+    const jsonSchedulesData = {};
+
+    jsonSchedulesData.status = message.OK.status;
+    jsonSchedulesData.schedules = schedulesData;
+
+    return jsonSchedulesData;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
 module.exports = {
   scheduleInsert,
   scheduleGet,
@@ -158,4 +168,5 @@ module.exports = {
   scheduleCancelUpdate,
   scheduleConcludeUpdate,
   scheduleRescheduleUpdate,
+  schedulesGet
 };

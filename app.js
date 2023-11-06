@@ -651,6 +651,16 @@ app.put(
   }
 );
 
+//Get Schedules
+app.get("/api/v1/schedules", cors(), async function (request, response) {
+  const resultGetData = await scheduleController.schedulesGet();
+
+  console.log(resultGetData);
+
+  response.status(resultGetData.status);
+  response.json(resultGetData);
+});
+
 app.listen(8080, function () {
   console.log("Server waiting for requests on port 8080!");
 });

@@ -246,6 +246,24 @@ async function updateScheduleReschedule(scheduleId, scheduleData) {
   }
 }
 
+async function getSchedules() {
+  let sql = `
+  SELECT * from tbl_schedule;
+  `;
+
+  console.log(sql);
+
+  let responseSchedules = await prisma.$queryRawUnsafe(sql);
+
+  console.log("response schedules statistics: ", responseSchedules);
+
+  if (responseSchedules) {
+    return responseSchedules;
+  } else {
+    return false;
+  }
+}
+
 module.exports = {
   insertSchedule,
   getScheduleByHospitalId,
@@ -253,4 +271,5 @@ module.exports = {
   updateScheduleCancel,
   updateScheduleConclude,
   updateScheduleReschedule,
+  getSchedules
 };
