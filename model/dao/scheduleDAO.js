@@ -110,6 +110,8 @@ async function updateScheduleConclude(scheduleId) {
 }
 
 async function updateScheduleReschedule(scheduleId, scheduleData) {
+  const bookScheduleId = await getBookScheduleId(scheduleId)
+
   const statusId = await statusDAO.getStatusIdByName("RESCHEDULE");
 
   const sql = `
@@ -143,6 +145,26 @@ async function getSchedules() {
 
   if (responseSchedules) {
     return responseSchedules;
+  } else {
+    return false;
+  }
+}
+
+const getBookScheduleId = async function(scheduleId) {
+  let sql = `
+  SELECT tbl_schedule.id_book_schedule FROM tbl_schedule
+  INNER JOIN tbl_book_schedule ON tbl_schedule.id_book_schedule = tbl_book_schedule.id
+  WHERE tbl_schedule.id = ${scheduleId};
+  `;
+
+  console.log(sql);
+
+  let responseBookSchedule = await prisma.$queryRawUnsafe(sql);
+
+  console.log("response book schedule: ", responseBookSchedule);
+
+  if (responseBookSchedule) {
+    return responseBookSchedule;
   } else {
     return false;
   }
