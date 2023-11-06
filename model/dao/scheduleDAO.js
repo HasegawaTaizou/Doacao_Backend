@@ -1,6 +1,8 @@
 var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
+const statusDAO = require("../dao/statusDAO");
+
 const insertSchedule = async function (scheduleData) {
   console.log(scheduleData);
   try {
@@ -65,184 +67,66 @@ const getSchedulesStatisticsByHospitalId = async function (hospitalId) {
 };
 
 async function updateScheduleCancel(scheduleId, scheduleData) {
-  try {
-    const oldscheduleData = await prisma.schedule.findUnique({
-      where: {
-        id: Number(scheduleId),
-      },
-      include: {
-        ScheduleStatus: {
-          select: {
-            observation: true,
-            Status: {
-              select: {
-                status: true,
-              },
-            },
-          },
-        },
-      },
-    });
+  const statusId = await statusDAO.getStatusIdByName("PENDING");
 
-    console.log(oldscheduleData.ScheduleStatus);
+  const sql = `
+  UPDATE tbl_schedule_status
+  SET 
+  id_status = ${statusId},
+  observation = "${scheduleData.observation}"
+  WHERE id_schedule = ${scheduleId};
+  `;
 
-    const updatedSchedule = await prisma.schedule.update({
-      where: {
-        id: Number(scheduleId),
-      },
-      data: {
-        ScheduleStatus: {
-          update: {
-            where: {
-              id: Number(scheduleId),
-            },
-            data: {
-              observation: scheduleData.observation,
-              Status: {
-                update: {
-                  status: "PENDING",
-                },
-              },
-            },
-          },
-        },
-      },
-    });
+  const updateSchedule = await prisma.$queryRawUnsafe(sql);
 
-    return true;
-  } catch (error) {
-    console.error("Erro ao atualizar o schedule:", error);
-  } finally {
-    await prisma.$disconnect();
+  console.log("update schedule cancel: ", updateSchedule);
+
+  if (updateSchedule) {
+    return updateSchedule;
+  } else {
+    return false;
   }
 }
 
 async function updateScheduleConclude(scheduleId) {
-  try {
-    const oldscheduleData = await prisma.schedule.findUnique({
-      where: {
-        id: Number(scheduleId),
-      },
-      include: {
-        ScheduleStatus: {
-          select: {
-            observation: true,
-            Status: {
-              select: {
-                status: true,
-              },
-            },
-          },
-        },
-      },
-    });
+  const statusId = await statusDAO.getStatusIdByName("CONCLUDED");
 
-    console.log(oldscheduleData.ScheduleStatus);
+  const sql = `
+  UPDATE tbl_schedule_status
+  SET 
+  id_status = ${statusId}
+  WHERE id_schedule = ${scheduleId};
+  `;
 
-    const updatedSchedule = await prisma.schedule.update({
-      where: {
-        id: Number(scheduleId),
-      },
-      data: {
-        ScheduleStatus: {
-          update: {
-            where: {
-              id: Number(scheduleId),
-            },
-            data: {
-              Status: {
-                update: {
-                  status: "CONCLUDED",
-                },
-              },
-            },
-          },
-        },
-      },
-    });
+  const updateSchedule = await prisma.$queryRawUnsafe(sql);
 
-    return true;
-  } catch (error) {
-    console.error("Erro ao atualizar o schedule:", error);
-  } finally {
-    await prisma.$disconnect();
+  console.log("update schedule conclude: ", updateSchedule);
+
+  if (updateSchedule) {
+    return updateSchedule;
+  } else {
+    return false;
   }
 }
 
 async function updateScheduleReschedule(scheduleId, scheduleData) {
-  try {
-    const oldscheduleData = await prisma.schedule.findUnique({
-      where: {
-        id: Number(scheduleId),
-      },
-      include: {
-        ScheduleStatus: {
-          select: {
-            Status: {
-              select: {
-                status: true,
-              },
-            },
-          },
-        },
-        BookSchedule: {
-          select: {
-            date: true,
-            hour: true,
-            HospitalSite: {
-              select: {
-                idSite: true,
-              },
-            },
-          },
-        },
-      },
-    });
+  const statusId = await statusDAO.getStatusIdByName("RESCHEDULE");
 
-    let [day, month, year] = scheduleData.date.split("/");
-    let ISOdate = `${year}-${month}-${day}T00:00:00Z`;
+  const sql = `
+  UPDATE tbl_schedule_status
+  SET 
+  id_status = ${statusId}
+  WHERE id_schedule = ${scheduleId};
+  `;
 
-    let [hour, minute] = scheduleData.hour.split(":");
-    let ISOhour = `1970-01-01T${hour}:${minute}:00Z`;
+  const updateSchedule = await prisma.$queryRawUnsafe(sql);
 
-    const updatedSchedule = await prisma.schedule.update({
-      where: {
-        id: Number(scheduleId),
-      },
-      data: {
-        ScheduleStatus: {
-          update: {
-            where: {
-              id: Number(scheduleId),
-            },
-            data: {
-              Status: {
-                update: {
-                  status: "RESCHEDULED",
-                },
-              },
-            },
-          },
-        },
-        BookSchedule: {
-          update: {
-            date: ISOdate,
-            hour: ISOhour,
-            HospitalSite: {
-              update: {
-                idSite: scheduleData.siteId,
-              },
-            },
-          },
-        },
-      },
-    });
+  console.log("update schedule conclude: ", updateSchedule);
 
-    return true;
-  } catch (error) {
-    console.error("Erro ao atualizar o schedule:", error);
-  } finally {
-    await prisma.$disconnect();
+  if (updateSchedule) {
+    return updateSchedule;
+  } else {
+    return false;
   }
 }
 
@@ -271,5 +155,5 @@ module.exports = {
   updateScheduleCancel,
   updateScheduleConclude,
   updateScheduleReschedule,
-  getSchedules
+  getSchedules,
 };
