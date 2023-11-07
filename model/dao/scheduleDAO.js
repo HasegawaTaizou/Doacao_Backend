@@ -172,11 +172,7 @@ const getBookScheduleId = async function (scheduleId) {
   WHERE tbl_schedule.id = ${scheduleId};
   `;
 
-  console.log(sql);
-
   const responseBookSchedule = await prisma.$queryRawUnsafe(sql);
-
-  console.log("response book schedule: ", responseBookSchedule);
 
   if (responseBookSchedule) {
     return responseBookSchedule;
