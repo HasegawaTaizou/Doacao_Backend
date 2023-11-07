@@ -110,22 +110,37 @@ async function updateScheduleConclude(scheduleId) {
 }
 
 async function updateScheduleReschedule(scheduleId, scheduleData) {
-  const bookScheduleId = await getBookScheduleId(scheduleId)
+  const bookScheduleId = await getBookScheduleId(scheduleId);
 
   const statusId = await statusDAO.getStatusIdByName("RESCHEDULE");
 
-  const sql = `
+  const sqlUpdateScheduleStatus = `
   UPDATE tbl_schedule_status
   SET 
   id_status = ${statusId}
   WHERE id_schedule = ${scheduleId};
   `;
 
-  const updateSchedule = await prisma.$queryRawUnsafe(sql);
+  const splitDate = scheduleData.date.split("/");
 
-  console.log("update schedule conclude: ", updateSchedule);
+  const day = splitDate[0];
+  const month = splitDate[1];
+  const year = splitDate[2];
 
-  if (updateSchedule) {
+  const formattedDate = `${year}/${month}/${day}`;
+
+  const sqlUpdateBookSchedule = `
+  UPDATE tbl_book_schedule
+  SET 
+  date = '${formattedDate}',
+  hour = '${scheduleData.hour}'
+  where id = ${bookScheduleId};
+  `;
+
+  const updateSchedule = await prisma.$queryRawUnsafe(sqlUpdateScheduleStatus);
+  const updateBookSchedule = await prisma.$queryRawUnsafe(sqlUpdateBookSchedule);
+
+  if (updateSchedule && updateBookSchedule) {
     return updateSchedule;
   } else {
     return false;
@@ -150,8 +165,8 @@ async function getSchedules() {
   }
 }
 
-const getBookScheduleId = async function(scheduleId) {
-  let sql = `
+const getBookScheduleId = async function (scheduleId) {
+  const sql = `
   SELECT tbl_schedule.id_book_schedule FROM tbl_schedule
   INNER JOIN tbl_book_schedule ON tbl_schedule.id_book_schedule = tbl_book_schedule.id
   WHERE tbl_schedule.id = ${scheduleId};
@@ -159,7 +174,7 @@ const getBookScheduleId = async function(scheduleId) {
 
   console.log(sql);
 
-  let responseBookSchedule = await prisma.$queryRawUnsafe(sql);
+  const responseBookSchedule = await prisma.$queryRawUnsafe(sql);
 
   console.log("response book schedule: ", responseBookSchedule);
 
@@ -168,7 +183,7 @@ const getBookScheduleId = async function(scheduleId) {
   } else {
     return false;
   }
-}
+};
 
 module.exports = {
   insertSchedule,
