@@ -39,6 +39,7 @@ const getBookScheduleByHospitalId = async function (hospitalId) {
 const getBookSchedulesByHospitalId = async function (hospitalId) {
   const sql = `
   SELECT 
+  tbl_hospital.name,
   tbl_book_schedule.id, 
   DATE_FORMAT(tbl_book_schedule.date, '%d/%m/%Y') AS date,
   TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour,
