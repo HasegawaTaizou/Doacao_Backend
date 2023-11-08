@@ -4,7 +4,6 @@ var prisma = new PrismaClient();
 const statusDAO = require("../dao/statusDAO");
 
 const insertSchedule = async function (scheduleData) {
-  console.log(scheduleData);
   try {
     const insertScheduleData = await prisma.schedule.create({
       data: {
@@ -53,11 +52,7 @@ const getSchedulesStatisticsByHospitalId = async function (hospitalId) {
   WHERE tbl_hospital.id = ${hospitalId};
   `;
 
-  console.log(sql);
-
   let responseSchedulesStatistics = await prisma.$queryRawUnsafe(sql);
-
-  console.log("response schedules statistics: ", responseSchedulesStatistics);
 
   if (responseSchedulesStatistics) {
     return responseSchedulesStatistics;
@@ -79,8 +74,6 @@ async function updateScheduleCancel(scheduleId, scheduleData) {
 
   const updateSchedule = await prisma.$queryRawUnsafe(sql);
 
-  console.log("update schedule cancel: ", updateSchedule);
-
   if (updateSchedule) {
     return updateSchedule;
   } else {
@@ -99,8 +92,6 @@ async function updateScheduleConclude(scheduleId) {
   `;
 
   const updateSchedule = await prisma.$queryRawUnsafe(sql);
-
-  console.log("update schedule conclude: ", updateSchedule);
 
   if (updateSchedule) {
     return updateSchedule;
@@ -138,7 +129,9 @@ async function updateScheduleReschedule(scheduleId, scheduleData) {
   `;
 
   const updateSchedule = await prisma.$queryRawUnsafe(sqlUpdateScheduleStatus);
-  const updateBookSchedule = await prisma.$queryRawUnsafe(sqlUpdateBookSchedule);
+  const updateBookSchedule = await prisma.$queryRawUnsafe(
+    sqlUpdateBookSchedule
+  );
 
   if (updateSchedule && updateBookSchedule) {
     return updateSchedule;
@@ -152,11 +145,7 @@ async function getSchedules() {
   SELECT * from tbl_schedule;
   `;
 
-  console.log(sql);
-
   let responseSchedules = await prisma.$queryRawUnsafe(sql);
-
-  console.log("response schedules statistics: ", responseSchedules);
 
   if (responseSchedules) {
     return responseSchedules;

@@ -2,7 +2,6 @@ var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
 const insertScheduleStatus = async function (scheduleStatusData) {
-  console.log(scheduleStatusData);
   try {
     const insertScheduleStatusData = await prisma.scheduleStatus.create({
       data: {

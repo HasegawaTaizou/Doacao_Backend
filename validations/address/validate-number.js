@@ -10,7 +10,6 @@ const validateNumber = function (number) {
     number == "" ||
     number.length > 4
   ) {
-    console.log('isNAN: ', isNaN(number));
     status = false;
   }
   return status;

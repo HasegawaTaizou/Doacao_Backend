@@ -16,8 +16,6 @@ const insertBookSchedule = async function (bookScheduleData) {
         idHospitalSite: bookScheduleData[bookSchedule].hospitalSiteId,
       },
     });
-
-    console.log(insertBookScheduleData);
   }
   await prisma.$disconnect();
 

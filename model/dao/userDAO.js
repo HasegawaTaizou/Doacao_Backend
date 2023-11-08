@@ -53,8 +53,6 @@ async function insertUser(userData) {
       },
     });
 
-    console.log(insertUserData);
-
     return true;
   } catch (error) {
     console.error("Erro ao criar o usuário:", error);
@@ -64,7 +62,6 @@ async function insertUser(userData) {
 }
 
 const getUserById = async function (userId) {
-  console.log(userId);
   let sql = `
   SELECT 
   tbl_user.id, 
@@ -92,11 +89,7 @@ const getUserById = async function (userId) {
   WHERE tbl_user.id = ${userId};
   `;
 
-  console.log(sql);
-
   let responseUser = await prisma.$queryRawUnsafe(sql);
-
-  console.log("response user: ", responseUser);
 
   if (responseUser) {
     return responseUser;
@@ -119,7 +112,6 @@ const getUserByEmail = async function (userEmail) {
         password: true,
       },
     });
-    console.log(user);
     return user;
   } catch (error) {
     return false;
@@ -185,7 +177,6 @@ async function updateUser(userId, userData) {
 }
 
 const getSchedulesUserById = async function (userId) {
-  console.log(userId);
   let sql = `
   SELECT 
   tbl_schedule_status.id_schedule, 
@@ -205,11 +196,7 @@ const getSchedulesUserById = async function (userId) {
   WHERE tbl_schedule.id_user = ${userId};
   `;
 
-  console.log(sql);
-
   let responseUser = await prisma.$queryRawUnsafe(sql);
-
-  console.log("response user: ", responseUser);
 
   if (responseUser) {
     return responseUser;

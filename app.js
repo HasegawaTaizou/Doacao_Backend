@@ -215,8 +215,6 @@ app.get(
 
     let resultGetData = await userController.userGetSchedules(userId);
 
-    console.log(resultGetData);
-
     response.status(resultGetData.status);
     response.json(resultGetData);
   }
@@ -233,8 +231,6 @@ app.get(
       hospitalId
     );
 
-    console.log(resultGetData);
-
     response.status(resultGetData.status);
     response.json(resultGetData);
   }
@@ -250,8 +246,6 @@ app.get(
     let resultGetData = await scheduleController.schedulesStatisticsGet(
       hospitalId
     );
-
-    console.log(resultGetData);
 
     response.status(resultGetData.status);
     response.json(resultGetData);
@@ -282,8 +276,6 @@ app.get(
 
     let resultGetData = await reviewController.ratingsStatisticsGet(hospitalId);
 
-    console.log(resultGetData);
-
     response.status(resultGetData.status);
     response.json(resultGetData);
   }
@@ -297,8 +289,6 @@ app.get(
     let hospitalId = request.params.id;
 
     let resultGetData = await reviewController.reviewsStatisticsGet(hospitalId);
-
-    console.log(resultGetData);
 
     response.status(resultGetData.status);
     response.json(resultGetData);
@@ -526,8 +516,6 @@ app.delete(
 app.get("/api/v1/hospitals", cors(), async function (request, response) {
   const resultGetData = await hospitalController.hospitalsGet();
 
-  console.log(resultGetData);
-
   response.status(resultGetData.status);
   response.json(resultGetData);
 });
@@ -540,8 +528,6 @@ app.get(
     const hospitalId = request.params.id;
 
     const resultGetData = await campaignController.campaignsGet(hospitalId);
-
-    console.log(resultGetData);
 
     response.status(resultGetData.status);
     response.json(resultGetData);
@@ -608,8 +594,6 @@ app.get(
       hospitalId
     );
 
-    console.log(resultGetData);
-
     response.status(resultGetData.status);
     response.json(resultGetData);
   }
@@ -655,12 +639,18 @@ app.put(
 app.get("/api/v1/schedules", cors(), async function (request, response) {
   const resultGetData = await scheduleController.schedulesGet();
 
-  console.log(resultGetData);
-
   response.status(resultGetData.status);
   response.json(resultGetData);
 });
 
-app.listen(8080, function () {
-  console.log("Server waiting for requests on port 8080!");
-});
+const PORT = process.env.PORT || 8080;
+
+// Verifica se está rodando em um ambiente de teste e usa uma porta diferente
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`Server waiting for requests on port ${PORT}!`);
+  });
+}
+
+module.exports = app
+

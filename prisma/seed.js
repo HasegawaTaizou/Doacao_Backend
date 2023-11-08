@@ -1,6 +1,5 @@
-import { PrismaClient, STATUS } from "@prisma/client";
-import { type } from "express/lib/response";
-const prisma = new PrismaClient();
+var { PrismaClient, $Enums } = require("@prisma/client");
+var prisma = new PrismaClient();
 
 async function insertBloodTypeData() {
   const bloodTypes = ["NA", "O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"];
@@ -14,9 +13,9 @@ async function insertBloodTypeData() {
       })
     )
   )
-    .then(() => console.info("[BLOOD TYPE] Succussfully create coffee records"))
+    .then(() => console.info("[BLOOD TYPE] Succussfully create blood type records"))
     .catch((e) =>
-      console.error("[BLOOD TYPE] Failed to create coffee records", e)
+      console.error("[BLOOD TYPE] Failed to create blood type records", e)
     );
 }
 
@@ -32,8 +31,8 @@ async function insertSexData() {
       })
     )
   )
-    .then(() => console.info("[SEX] Succussfully create coffee records"))
-    .catch((e) => console.error("[SEX] Failed to create coffee records", e));
+    .then(() => console.info("[SEX] Succussfully create sexs records"))
+    .catch((e) => console.error("[SEX] Failed to create sexs records", e));
 }
 
 async function insertStarData() {
@@ -48,16 +47,17 @@ async function insertStarData() {
       })
     )
   )
-    .then(() => console.info("[STAR] Succussfully create coffee records"))
-    .catch((e) => console.error("[STAR] Failed to create coffee records", e));
+    .then(() => console.info("[STAR] Succussfully create stars records"))
+    .catch((e) => console.error("[STAR] Failed to create stars records", e));
 }
 
 async function insertStatusData() {
+  console.log();
   const statusData = [
-    STATUS.SCHEDULED,
-    STATUS.CONCLUDED,
-    STATUS.RESCHEDULED,
-    STATUS.PENDING,
+    $Enums.STATUS.SCHEDULED,
+    $Enums.STATUS.CONCLUDED,
+    $Enums.STATUS.RESCHEDULED,
+    $Enums.STATUS.PENDING
   ];
 
   Promise.all(
@@ -69,11 +69,11 @@ async function insertStatusData() {
       })
     )
   )
-    .then(() => console.info("[STATUS] Succussfully create coffee records"))
-    .catch((e) => console.error("[STATUS] Failed to create coffee records", e));
+    .then(() => console.info("[STATUS] Succussfully create status records"))
+    .catch((e) => console.error("[STATUS] Failed to create status records", e));
 }
 
-await insertBloodTypeData()
-await insertSexData()
-await insertStarData()
-await insertStatusData()
+insertBloodTypeData()
+insertSexData()
+insertStarData()
+insertStatusData()

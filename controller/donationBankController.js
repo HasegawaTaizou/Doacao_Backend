@@ -12,9 +12,6 @@ const donationBankInsert = async function (donationBankData) {
   const bloodTypeId = await bloodTypeDAO.getBloodTypeIdByName(
     donationBankData.bloodType
   );
-  console.log(donationBankData.bloodType);
-  console.log(bloodTypeId);
-
 
   if (
     !validateId(donationBankData.hospitalId) ||

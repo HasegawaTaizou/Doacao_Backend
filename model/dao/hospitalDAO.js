@@ -11,7 +11,6 @@ const hospitalLogin = async function (loginData) {
   try {
     //Verify hospital
     const hospital = await getHospitalByEmail(loginData.email);
-    console.log(hospital);
 
     // Verify password
     const passwordMatch =
@@ -78,7 +77,6 @@ async function insertHospital(hospitalData) {
 }
 
 const getHospitalById = async function (hospitalId) {
-  console.log(hospitalId);
   let sql = `
   SELECT tbl_hospital.id,
   tbl_hospital.name,
@@ -117,11 +115,7 @@ FROM tbl_hospital
 WHERE tbl_hospital.id = ${hospitalId};
   `;
 
-  console.log(sql);
-
   let responseHospital = await prisma.$queryRawUnsafe(sql);
-
-  console.log("response hospital: ", responseHospital);
 
   if (responseHospital) {
     return responseHospital;
@@ -148,7 +142,6 @@ const getHospitalByEmail = async function (hospitalEmail) {
         },
       },
     });
-    console.log(hospital);
     return hospital;
   } catch (error) {
     return false;
@@ -310,7 +303,6 @@ const getHospitals = async function () {
 };
 
 async function deleteHospitalById(hospitalId) {
-  console.log("ID HOSPIAL: ", hospitalId);
   try {
     await prisma.hospitalSite.deleteMany({
       where: {

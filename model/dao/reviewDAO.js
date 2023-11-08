@@ -16,8 +16,6 @@ async function insertReview(reviewData) {
       },
     });
 
-    console.log(insertReviewData);
-
     return true;
   } catch (error) {
     console.error("Erro ao criar o review:", error);
@@ -52,8 +50,6 @@ FROM (
 
   let responseRatingsStatistics = await prisma.$queryRawUnsafe(sql);
 
-  console.log("response ratings statistics: ", responseRatingsStatistics);
-
   if (responseRatingsStatistics) {
     return responseRatingsStatistics;
   } else {
@@ -77,8 +73,6 @@ const getReviewsStatisticsByHospitalId = async function (hospitalId) {
   `;
 
   let responseReviewsStatistics = await prisma.$queryRawUnsafe(sql);
-
-  console.log("response reviews statistics: ", responseReviewsStatistics);
 
   if (responseReviewsStatistics) {
     return responseReviewsStatistics;

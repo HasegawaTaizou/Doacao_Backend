@@ -268,6 +268,7 @@ const hospitalsGet = async function () {
     jsonHospitalsData.hospitals = [];
 
     for (hospitalData in hospitalsData) {
+      console.log(hospitalData);
       if (hospitalsData) {
         let hospitalObject = {
           hospital: {
@@ -283,6 +284,7 @@ const hospitalsGet = async function () {
 
         jsonHospitalsData.hospitals.push(hospitalObject);
       }
+      console.log(jsonHospitalsData.hospitals);
       return jsonHospitalsData;
     }
   } else {
