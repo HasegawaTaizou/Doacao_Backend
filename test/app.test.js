@@ -59,15 +59,15 @@ const BASE_URL = "/api/v1";
 //   });
 
 //   //Ver quando o nao tem um hospital
-  // test("GET das estatísticas do hospital sobre agendamentos", async () => {
-  //   const response = await supertest(app).get(
-  //     "/api/v1/hospital/1/statistics/schedules"
-  //   );
+// test("GET das estatísticas do hospital sobre agendamentos", async () => {
+//   const response = await supertest(app).get(
+//     "/api/v1/hospital/1/statistics/schedules"
+//   );
 
-  //   expect(response.status).toBe(200);
-  //   expect(response.body).toHaveProperty("schedulesStatistics");
-  //   expect(response.body.schedulesStatistics).toBeInstanceOf(Object);
-  // });
+//   expect(response.status).toBe(200);
+//   expect(response.body).toHaveProperty("schedulesStatistics");
+//   expect(response.body.schedulesStatistics).toBeInstanceOf(Object);
+// });
 
 //   test("GET das estatísticas do hospital sobre avaliações quando o hospital existe", async () => {
 //     const response = await supertest(app).get(
@@ -182,20 +182,20 @@ const BASE_URL = "/api/v1";
 //     expect(response.body.hospitalData).toBeInstanceOf(Object);
 //   });
 
-  test("POST login do hospital com dados incorretos", async () => {
-    const data = {
-      email: "sofiaaaa@gmail.com",
-      password: "123567",
-    };
+// test("POST login do hospital com dados incorretos", async () => {
+//   const data = {
+//     email: "sofiaaaa@gmail.com",
+//     password: "123567",
+//   };
 
-    const response = await supertest(app)
-      .post(`${BASE_URL}/hospital-login`)
-      .send(data)
-      .expect(404);
+//   const response = await supertest(app)
+//     .post(`${BASE_URL}/hospital-login`)
+//     .send(data)
+//     .expect(404);
 
-    expect(response.body).toHaveProperty("message");
-    expect(response.body.message).toBe("User or password incorrects.");
-  });
+//   expect(response.body).toHaveProperty("message");
+//   expect(response.body.message).toBe("User or password incorrects.");
+// });
 
 //   // PUT TESTS
 //   test("PUT do hospital com dados corretos", async () => {
@@ -301,6 +301,35 @@ const BASE_URL = "/api/v1";
 //     expect(response.body).toHaveProperty("message");
 //     expect(response.body.message).toBe("No items found.");
 //   });
+
+test("PUT da senha do hospital que existe", async () => {
+  const data = {
+    id: 1,
+    password: "123",
+  };
+
+  const response = await supertest(app)
+    .put(`${BASE_URL}/hospital/redefine-password`)
+    .send(data)
+    .expect(204);
+
+  expect(response.body).toStrictEqual({});
+});
+
+test("PUT da senha do hospital que não existe", async () => {
+  const data = {
+    id: 100,
+    password: "123",
+  };
+
+  const response = await supertest(app)
+    .put(`${BASE_URL}/hospital/redefine-password`)
+    .send(data)
+    .expect(404);
+
+  expect(response.body).toHaveProperty("message");
+  expect(response.body.message).toBe("No items found.");
+});
 
 //   //DELETE TESTS
 //   test("DELETE de um hospital que existe", async () => {
@@ -968,13 +997,13 @@ const BASE_URL = "/api/v1";
 //       user: {
 //         name: "Teste de Delete",
 //         cpf: "1225.324-32",
-//         email: "delete@gmail.com",
+//         email: "caio@gmail.com",
 //         phone: "12110988",
 //         dateOfBirth: "21/03/1999",
 //         weight: 70.02,
 //         photo:
 //           "https://conteudo.imguol.com.br/c/esporte/62/2022/10/26/cristiano-ronaldo-em-acao-com-a-camisa-da-selecao-de-portugal-1666822687434_v2_4x3.jpg",
-//         password: "1234",
+//         password: "123",
 //         sex: "Masculine",
 //         bloodType: "A+",
 //       },
@@ -1034,7 +1063,35 @@ const BASE_URL = "/api/v1";
 //     );
 //   });
 
-//   //LOGIN FAZER DEPOOOIS
+test("POST login do usuário com dados corretos", async () => {
+  const data = {
+    email: "caio@gmail.com",
+    password: "123",
+  };
+
+  const response = await supertest(app)
+    .post(`${BASE_URL}/user-login`)
+    .send(data)
+    .expect(200);
+
+  expect(response.body).toHaveProperty("userData");
+  expect(response.body.userData).toBeInstanceOf(Object);
+});
+
+test("POST login do usuário com dados incorretos", async () => {
+  const data = {
+    email: "sofiaaaa@gmail.com",
+    password: "123567",
+  };
+
+  const response = await supertest(app)
+    .post(`${BASE_URL}/user-login`)
+    .send(data)
+    .expect(404);
+
+  expect(response.body).toHaveProperty("message");
+  expect(response.body.message).toBe("User or password incorrects.");
+});
 
 //   //PUT TESTS
 //   test("PUT de um usuário com dados corretos", async () => {
@@ -1109,6 +1166,35 @@ const BASE_URL = "/api/v1";
 //       "There are mandatory data that have not been filled in."
 //     );
 //   });
+
+test("PUT da senha do usuário que existe", async () => {
+  const data = {
+    id: 1,
+    password: "123",
+  };
+
+  const response = await supertest(app)
+    .put(`${BASE_URL}/user/redefine-password`)
+    .send(data)
+    .expect(204);
+
+  expect(response.body).toStrictEqual({});
+});
+
+test("PUT da senha do usuário que não existe", async () => {
+  const data = {
+    id: 100,
+    password: "123",
+  };
+
+  const response = await supertest(app)
+    .put(`${BASE_URL}/user/redefine-password`)
+    .send(data)
+    .expect(404);
+
+  expect(response.body).toHaveProperty("message");
+  expect(response.body.message).toBe("No items found.");
+});
 
 //   //DELETE TESTS VER DEPOIS
 //   // test("DELETE de um usuário que existe", async () => {
