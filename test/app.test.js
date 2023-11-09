@@ -1,99 +1,948 @@
 const supertest = require("supertest");
 const app = require("../app.js");
 
+const BASE_URL = "/api/v1";
+
 //HOSPITAL TESTS
-describe("Integration Tests HOSPITAL", () => {
+// describe("Integration Tests HOSPITAL", () => {
+//   //GET TESTS
+//   test("GET das estatísticas de um hospital", async () => {
+//     const response = await supertest(app).get(
+//       "/api/v1/hospital/1/statistics/ratings"
+//     );
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("ratingsStatistics");
+//     expect(response.body.ratingsStatistics).toBeInstanceOf(Object);
+//   });
+
+//   test("GET de um hospital que existe", async () => {
+//     const response = await supertest(app).get("/api/v1/hospital-data/1");
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("hospital");
+//     expect(response.body).toHaveProperty("address");
+//     expect(response.body.hospital).toBeInstanceOf(Object);
+//     expect(response.body.address).toBeInstanceOf(Object);
+//   });
+
+//   test("GET de um hospital que não existe", async () => {
+//     const response = await supertest(app).get("/api/v1/hospital-data/100");
+
+//     expect(response.status).toBe(404);
+//     expect(response.body).toHaveProperty("message");
+//   });
+
+//   test("GET de todos hospitais", async () => {
+//     const response = await supertest(app).get("/api/v1/hospitals");
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("hospitals");
+//     expect(response.body.hospitals).toBeInstanceOf(Array);
+//   });
+
+//   test("GET dos agendamentos feitos no hospital quando existem", async () => {
+//     const response = await supertest(app).get("/api/v1/hospital/1/schedules");
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("schedules");
+//     expect(response.body.schedules).toBeInstanceOf(Array);
+//   });
+
+//   test("GET dos agendamentos feitos no hospital quando não existem", async () => {
+//     const response = await supertest(app).get("/api/v1/hospital/100/schedules");
+
+//     expect(response.status).toBe(404);
+//     expect(response.body).toHaveProperty("message");
+//   });
+
+//   //Ver quando o nao tem um hospital
+//   test("GET das estatísticas do hospital sobre agendamentos", async () => {
+//     const response = await supertest(app).get(
+//       "/api/v1/hospital/1/statistics/schedules"
+//     );
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("schedulesStatistics");
+//     expect(response.body.schedulesStatistics).toBeInstanceOf(Object);
+//   });
+
+//   test("GET das estatísticas do hospital sobre avaliações quando o hospital existe", async () => {
+//     const response = await supertest(app).get(
+//       "/api/v1/hospital/1/statistics/reviews"
+//     );
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("reviewsStatistics");
+//     expect(response.body.reviewsStatistics).toBeInstanceOf(Array);
+//   });
+
+//   test("GET das estatísticas do hospital sobre avaliações quando o hospital não existe", async () => {
+//     const response = await supertest(app).get(
+//       "/api/v1/hospital/100/statistics/reviews"
+//     );
+
+//     expect(response.status).toBe(404);
+//     expect(response.body).toHaveProperty("message");
+//   });
+
+//   // VER ESSA PARTE PARA VER COMO QUE FAZ QUANDO NAO TEM NENHUM
+//   test("GET de todos os hospitais quando não tem nenhum", async () => {
+//     const response = await supertest(app).get("/api/v1/hospital-data/100");
+
+//     expect(response.status).toBe(404);
+//     expect(response.body).toHaveProperty("message");
+//   });
+
+//   // POSTS TESTS
+//   test("POST do hospital com dados corretos", async () => {
+//     const data = {
+//       hospital: {
+//         name: "Hospital de Jandira",
+//         cnpj: "3454643445456",
+//         email: "hospitaljandira@gmail.com",
+//         phone: "1111-1111",
+//         website: "www.hospitaljandira.com.br",
+//         donationSite: "www.hospitaljandira.com.br",
+//         otherDonationSite: "www.hospitaljandira.com.br",
+//         photo:
+//           "https://www.folhadejandira.com.br/wp-content/uploads/2023/02/20230203-hospital-de-jandira-03-e1675468680181.jpg",
+//         password: "123",
+//       },
+//       address: {
+//         cep: "04216900",
+//         uf: "SP",
+//         city: "Jandira",
+//         neighborhood: "Ipiranga",
+//         street: "Rua Mil Oitocentos e Vinte e Dois",
+//         number: "76",
+//         complement: "Hospital",
+//       },
+//     };
+
+//     const response = await supertest(app)
+//       .post(`${BASE_URL}/hospital-registration`)
+//       .send(data)
+//       .expect(201);
+
+//     expect(response.body.message).toBe("Record created successfully.");
+//   });
+
+//   test("POST do hospital com dados incorretos", async () => {
+//     const data = {
+//       hospital: {
+//         name: "Hospital de Jandira",
+//         //CNPJ too long
+//         cnpj: "3454643445456232332424",
+//         email: "hospitaljandira@gmail.com",
+//         phone: "1111-1111",
+//         website: "www.hospitaljandira.com.br",
+//         donationSite: "www.hospitaljandira.com.br",
+//         otherDonationSite: "www.hospitaljandira.com.br",
+//         photo:
+//           "https://www.folhadejandira.com.br/wp-content/uploads/2023/02/20230203-hospital-de-jandira-03-e1675468680181.jpg",
+//         password: "123",
+//       },
+//       address: {
+//         cep: "04216900",
+//         uf: "SP",
+//         city: "Jandira",
+//         neighborhood: "Ipiranga",
+//         street: "Rua Mil Oitocentos e Vinte e Dois",
+//         number: "76",
+//         complement: "Hospital",
+//       },
+//     };
+
+//     const response = await supertest(app)
+//       .post(`${BASE_URL}/hospital-registration`)
+//       .send(data)
+//       .expect(400);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   test("POST login do hospital com dados corretos", async () => {
+//     const data = {
+//       email: "hospitaljandira@gmail.com",
+//       password: "123",
+//     };
+
+//     const response = await supertest(app)
+//       .post(`${BASE_URL}/hospital-login`)
+//       .send(data)
+//       .expect(200);
+
+//     expect(response.body).toHaveProperty("hospitalData");
+//     expect(response.body.hospitalData).toBeInstanceOf(Object);
+//   });
+
+//   test("POST login do hospital com dados incorretos", async () => {
+//     const data = {
+//       email: "sofiaaaa@gmail.com",
+//       password: "123567",
+//     };
+
+//     const response = await supertest(app)
+//       .post(`${BASE_URL}/hospital-login`)
+//       .send(data)
+//       .expect(404);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe("User or password incorrects.");
+//   });
+
+//   // PUT TESTS
+//   test("PUT do hospital com dados corretos", async () => {
+//     const data = {
+//       id: 1,
+//       hospital: {
+//         name: "Sofia Coghi Landi",
+//         cnpj: "123453-34.09",
+//         email: "sofiacoghi@gmail.com",
+//         phone: "(11) 1111-1111",
+//         website: "www.sofia.com.br",
+//         donationSite: "Local 1",
+//         otherDonationSite: "Local 2",
+//         photo: "Imagem URL",
+//         password: "123",
+//       },
+//       address: {
+//         cep: "0922-844",
+//         uf: "SP",
+//         city: "São Paulo",
+//         neighborhood: "carapicuiba",
+//         street: "Rua Sofia",
+//         number: "222",
+//         complement: "",
+//       },
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/hospital-update`)
+//       .send(data)
+//       .expect(204);
+
+//     expect(response.body).toStrictEqual({});
+//   });
+
+//   test("PUT do hospital com dados incorretos", async () => {
+//     const data = {
+//       id: 1,
+//       hospital: {
+//         name: "Sofia Coghi Landi",
+//         cnpj: "123453-34.09",
+//         email: "sofiacoghi@gmail.com",
+//         //Phone too long
+//         phone: "(11) 1111-1111111111111",
+//         website: "www.sofia.com.br",
+//         donationSite: "Local 1",
+//         otherDonationSite: "Local 2",
+//         photo: "Imagem URL",
+//         password: "123",
+//       },
+//       address: {
+//         cep: "0922-844",
+//         uf: "SP",
+//         city: "São Paulo",
+//         neighborhood: "carapicuiba",
+//         street: "Rua Sofia",
+//         number: "222",
+//         complement: "",
+//       },
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/hospital-update`)
+//       .send(data)
+//       .expect(400);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   test("PUT de um hospital que não existe", async () => {
+//     const data = {
+//       id: 100,
+//       hospital: {
+//         name: "Sofia Coghi Landi",
+//         cnpj: "123453-34.09",
+//         email: "sofiacoghi@gmail.com",
+//         phone: "(11) 1111-1111",
+//         website: "www.sofia.com.br",
+//         donationSite: "Local 1",
+//         otherDonationSite: "Local 2",
+//         photo: "Imagem URL",
+//         password: "123",
+//       },
+//       address: {
+//         cep: "0922-844",
+//         uf: "SP",
+//         city: "São Paulo",
+//         neighborhood: "carapicuiba",
+//         street: "Rua Sofia",
+//         number: "222",
+//         complement: "",
+//       },
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/hospital-update`)
+//       .send(data)
+//       .expect(404);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe("No items found.");
+//   });
+
+//   //DELETE TESTS
+//   test("DELETE de um hospital que existe", async () => {
+//     const response = await supertest(app)
+//       .delete(`${BASE_URL}/delete-hospital/1`)
+//       .expect(204);
+
+//     expect(response.body).toStrictEqual({});
+//   });
+
+//   test("DELETE de um hospital que não existe", async () => {
+//     const response = await supertest(app)
+//       .delete(`${BASE_URL}/delete-hospital/100`)
+//       .expect(404);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe("No items found.");
+//   });
+// });
+
+//SCHEDULE TESTS
+// describe("Integration Tests SCHEDULE", () => {
+//   //GET TESTS
+//   // test("GET de todos os agendamentos", async () => {
+//   //   const response = await supertest(app).get(`${BASE_URL}/schedules`);
+
+//   //   expect(response.status).toBe(200);
+//   //   expect(response.body).toHaveProperty("schedules");
+//   //   expect(response.body.schedules).toBeInstanceOf(Array);
+//   // });
+
+//   // test("GET de todos os agendamentos quando não há nenhum", async () => {
+//   //   const response = await supertest(app).get(`${BASE_URL}/schedules`);
+
+//   //   expect(response.status).toBe(404);
+//   //   expect(response.body).toHaveProperty("message");
+//   //   expect(response.body.message).toBe("No items found.");
+//   // });
+
+//   //POST TESTS
+//MANO VER ESSE AQUI E SERIO
+//   // test("POST do agendamento com dados corretos", async () => {
+//   //   const data = [
+//   //     {
+//   //       date: "03/07/2000",
+//   //       hour: "14:30",
+//   //       hospitalSiteId: 1,
+//   //     },
+//   //     {
+//   //       date: "19/01/1845",
+//   //       hour: "07:12",
+//   //       hospitalSiteId: 1,
+//   //     },
+//   //   ];
+
+//   //   const response = await supertest(app)
+//   //     .post(`${BASE_URL}/book-schedules`)
+//   //     .send(data)
+//   //     .expect(201);
+
+//   //   expect(response.body.message).toBe("Record created successfully.");
+//   // });
+
+//   //PUT TESTS
+//   test("PUT do agendamento para PENDING", async () => {
+//     const data = {
+//       id: 1,
+//       observation: "Sofia Linda Melhor Filha Te Amo",
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/schedule-cancel`)
+//       .send(data)
+//       .expect(204);
+
+//     expect(response.body).toStrictEqual({});
+//   });
+
+//   test("PUT do agendamento para PENDING quando os dados estão errados", async () => {
+//     const data = {
+//       id: 1,
+//       observation: 123,
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/schedule-cancel`)
+//       .send(data)
+//       .expect(400);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   test("PUT do agendamento para PENDING quando não existe", async () => {
+//     const data = {
+//       id: 100,
+//       observation: "Sofia Linda Melhor Filha Te Amo",
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/schedule-cancel`)
+//       .send(data)
+//       .expect(404);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe("No items found.");
+//   });
+
+//   test("PUT do agendamento para RESCHEDULED", async () => {
+//     const data = {
+//       id: 1,
+//       date: "20/03/2000",
+//       hour: "12:00",
+//       siteId: 1,
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/schedule-reschedule`)
+//       .send(data)
+//       .expect(204);
+
+//     expect(response.body).toStrictEqual({});
+//   });
+
+//   test("PUT do agendamento para RESCHEDULED quando os dados estão errados", async () => {
+//     const data = {
+//       id: 1,
+//       date: "20/03/200022",
+//       hour: "12:00",
+//       siteId: 1,
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/schedule-reschedule`)
+//       .send(data)
+//       .expect(400);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   test("PUT do agendamento para RESCHEDULED quando não existe", async () => {
+//     const data = {
+//       id: 100,
+//       date: "20/03/2000",
+//       hour: "12:00",
+//       siteId: 2,
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/schedule-reschedule`)
+//       .send(data)
+//       .expect(404);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe("No items found.");
+//   });
+
+//   test("PUT do agendamento para CONCLUDED", async () => {
+//     const data = {
+//       id: 1,
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/schedule-conclude`)
+//       .send(data)
+//       .expect(204);
+
+//     expect(response.body).toStrictEqual({});
+//   });
+
+//   test("PUT do agendamento para CONCLUDED quando não existe", async () => {
+//     const data = {
+//       id: 100,
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/schedule-conclude`)
+//       .send(data)
+//       .expect(404);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe("No items found.");
+//   });
+// });
+
+//SCHEDULE-STATUS TESTS
+// describe("Integration Tests SCHEDULE-STATUS", () => {
+//   //POST TESTS
+//   test("POST do agendamento do usuário com dados corretos", async () => {
+//     const data = {
+//       observation: "",
+//       idStatus: 1,
+//       idSchedule: 1,
+//     };
+
+//     const response = await supertest(app)
+//       .post(`${BASE_URL}/schedule-status`)
+//       .send(data)
+//       .expect(201);
+
+//     expect(response.body.message).toBe("Record created successfully.");
+//   });
+
+//   test("POST do agendamento do usuário com dados incorretos", async () => {
+//     const data = {
+//       observation: 12354,
+//       idStatus: 1,
+//       idSchedule: 1,
+//     };
+
+//     const response = await supertest(app)
+//       .post(`${BASE_URL}/schedule-status`)
+//       .send(data)
+//       .expect(400);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+// });
+
+//SITE TESTS
+// describe("Integration Tests SITE", () => {
+//   //GET TESTS
+//   test("GET de todos os locais de agendamentos do hospital", async () => {
+//     const response = await supertest(app).get(`${BASE_URL}/hospital/1/sites`);
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("sites");
+//     expect(response.body.sites).toBeInstanceOf(Array);
+//   });
+
+//   test("GET de todos os locais de agendamentos do hospital que não existe", async () => {
+//     const response = await supertest(app).get(`${BASE_URL}/hospital/100/sites`);
+
+//     expect(response.status).toBe(404);
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe("No items found.");
+//   });
+// });
+
+// describe("Integration Tests BOOK-SCHEDULE", () => {
+//   //GET TESTS
+//   test("GET de todas as reservas de agendamentos do hospital", async () => {
+//     const response = await supertest(app).get(
+//       `${BASE_URL}/hospital/1/book-schedules`
+//     );
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("bookSchedules");
+//     expect(response.body.bookSchedules).toBeInstanceOf(Array);
+//   });
+
+//   test("GET de todas as reservas de agendamentos do hospital que não existe", async () => {
+//     const response = await supertest(app).get(
+//       `${BASE_URL}/hospital/100/book-schedules`
+//     );
+
+//     expect(response.status).toBe(404);
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe("No items found.");
+//   });
+
+//   //POST TESTS
+//   test("POST da reserva de agendamentos com dados corretos", async () => {
+//     const data = [
+//       {
+//         date: "03/07/2000",
+//         hour: "14:30",
+//         hospitalSiteId: 1,
+//       },
+//       {
+//         date: "19/01/1845",
+//         hour: "07:12",
+//         hospitalSiteId: 1,
+//       },
+//     ];
+
+//     const response = await supertest(app)
+//       .post(`${BASE_URL}/book-schedules`)
+//       .send(data)
+//       .expect(201);
+
+//     expect(response.body.message).toBe("Record created successfully.");
+//   });
+
+//   test("POST da reserva de agendamentos com dados incorretos", async () => {
+//     const data = [
+//       {
+//         date: "03/07/200023",
+//         hour: "14:30",
+//         hospitalSiteId: 1,
+//       },
+//       {
+//         date: "19/01/1845",
+//         hour: "07:12",
+//         hospitalSiteId: 1,
+//       },
+//     ];
+
+//     const response = await supertest(app)
+//       .post(`${BASE_URL}/book-schedules`)
+//       .send(data)
+//       .expect(400);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   //PUT TESTS
+//   test("PUT da reserva de agendamentos com dados corretos", async () => {
+//     const data = {
+//       id: 1,
+//       date: "20/01/2000",
+//       hour: "10:20",
+//       siteId: 1,
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/update-book-schedule`)
+//       .send(data)
+//       .expect(204);
+
+//     expect(response.body).toStrictEqual({});
+//   });
+
+//   test("PUT da reserva de agendamentos com dados incorretos", async () => {
+//     const data = {
+//       id: 1,
+//       date: "20/01/200023",
+//       hour: "10:20",
+//       siteId: 1,
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/update-book-schedule`)
+//       .send(data)
+//       .expect(400);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   //DELETE TESTS VER ESSE AQUI DEPOIS
+//   test("DELETE de uma reserva de agendamento que existe", async () => {
+//     const response = await supertest(app)
+//       .delete(`${BASE_URL}/delete-book-schedule/1`)
+//       .expect(204);
+
+//     expect(response.body).toStrictEqual({});
+//   });
+
+//   test("DELETE de uma reserva de agendamento que não existe", async () => {
+//     const response = await supertest(app)
+//       .delete(`${BASE_URL}/delete-book-schedule/100`)
+//       .expect(404);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe("No items found.");
+//   });
+// });
+
+// describe("Integration Tests CAMPAIGN", () => {
+//   //GET TESTS
+//   test("GET das campanhas de um hospital que existe", async () => {
+//     const response = await supertest(app).get(
+//       `${BASE_URL}/hospital/1/campaigns`
+//     );
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("campaigns");
+//     expect(response.body.campaigns).toBeInstanceOf(Array);
+//   });
+
+//   test("GET das campanhas de um hospital que não existe", async () => {
+//     const response = await supertest(app).get(
+//       `${BASE_URL}/hospital/100/campaigns`
+//     );
+
+//     expect(response.status).toBe(404);
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe("No items found.");
+//   });
+
+//   //POST TESTS
+//   test("POST de campanha com dados corretos", async () => {
+//     const data = {
+//       date: "03/07/2000",
+//       hour: "14:30",
+//       description: "Loren Ipsun da description alo",
+//       image: "alooooo",
+//       hospitalId: 1,
+//     };
+
+//     const response = await supertest(app)
+//       .post(`${BASE_URL}/campaign`)
+//       .send(data)
+//       .expect(201);
+
+//     expect(response.body.message).toBe("Record created successfully.");
+//   });
+
+//   test("POST de campanha com dados incorretos", async () => {
+//     const data = {
+//       date: "03/07/200023",
+//       hour: "14:30",
+//       description: "Loren Ipsun da description alo",
+//       image: "alooooo",
+//       hospitalId: 1,
+//     };
+
+//     const response = await supertest(app)
+//       .post(`${BASE_URL}/campaign`)
+//       .send(data)
+//       .expect(400);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   //PUT TESTS
+//   test("PUT de campanha com dados corretos", async () => {
+//     const data = {
+//       id: 1,
+//       date: "03/07/2000",
+//       hour: "14:30",
+//       description: "Loren Ipsun da description alo",
+//       image: "alooooo",
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/update-campaign`)
+//       .send(data)
+//       .expect(204);
+
+//     expect(response.body).toStrictEqual({});
+//   });
+
+//   test("PUT de campanha com dados incorretos", async () => {
+//     const data = {
+//       id: 1,
+//       date: "03/07/2000234",
+//       hour: "14:30",
+//       description: "Loren Ipsun da description alo",
+//       image: "alooooo",
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/update-campaign`)
+//       .send(data)
+//       .expect(400);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   //DELETE TESTS VER ESSE AQUI DEPOIS
+//   test("DELETE de uma campanha que existe", async () => {
+//     const response = await supertest(app)
+//       .delete(`${BASE_URL}/delete-campaign/1`)
+//       .expect(204);
+
+//     expect(response.body).toStrictEqual({});
+//   });
+
+//   test("DELETE de uma camapanha que não existe", async () => {
+//     const response = await supertest(app)
+//       .delete(`${BASE_URL}/delete-campaign/100`)
+//       .expect(404);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe("No items found.");
+//   });
+// });
+
+// describe("Integration Tests DONATION BANK", () => {
+//   //GET TESTS
+//   test("GET do banco de sangue de um hospital que existe", async () => {
+//     const response = await supertest(app).get(
+//       `${BASE_URL}/hospital/1/donation-banks`
+//     );
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("donationBanks");
+//     expect(response.body.donationBanks).toBeInstanceOf(Array);
+//   });
+
+//   test("GET do banco de sangue de um hospital que não existe", async () => {
+//     const response = await supertest(app).get(
+//       `${BASE_URL}/hospital/100/donation-banks`
+//     );
+
+//     expect(response.status).toBe(404);
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe("No items found.");
+//   });
+
+//   //POST TESTS
+//   test("POST do banco de sangue com dados corretos", async () => {
+//     const data = {
+//       year: 2023,
+//       bloodMl: 350,
+//       bloodType: "A-",
+//       hospitalId: 1,
+//     };
+
+//     const response = await supertest(app)
+//       .post(`${BASE_URL}/donation-bank`)
+//       .send(data)
+//       .expect(201);
+
+//     expect(response.body.message).toBe("Record created successfully.");
+//   });
+
+//   test("POST do banco de sangue com dados incorretos", async () => {
+//     const data = {
+//       year: 2023,
+//       bloodMl: 350,
+//       bloodType: 4423,
+//       hospitalId: 1,
+//     };
+
+//     const response = await supertest(app)
+//       .post(`${BASE_URL}/donation-bank`)
+//       .send(data)
+//       .expect(400);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   //PUT TESTS
+//   test("PUT do banco de sangue com dados corretos", async () => {
+//     const data = {
+//       id: 1,
+//       year: 2023,
+//       bloodMl: 350,
+//       bloodType: "A+",
+//       hospitalId: 1,
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/update-donation-bank`)
+//       .send(data)
+//       .expect(204);
+
+//     expect(response.body).toStrictEqual({});
+//   });
+
+//   test("PUT  do banco de sangue com dados incorretos", async () => {
+//     const data = {
+//       id: 1,
+//       year: 2023,
+//       bloodMl: 350,
+//       bloodType: 4423,
+//       hospitalId: 1,
+//     };
+
+//     const response = await supertest(app)
+//       .put(`${BASE_URL}/update-donation-bank`)
+//       .send(data)
+//       .expect(400);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+// });
+
+// describe("Integration Tests REVIEW", () => {
+//   //POST TESTS
+//   test("POST da opinião com dados corretos", async () => {
+//     const data = {
+//       opinion:
+//         "Ótimo atendimento, exelentes profissionais e instalações extrmamente limpos e seguro",
+//       idUser: 1,
+//       idHospital: 1,
+//       idStar: 5,
+//     };
+
+//     const response = await supertest(app)
+//       .post(`${BASE_URL}/review-registration`)
+//       .send(data)
+//       .expect(201);
+
+//     expect(response.body.message).toBe("Record created successfully.");
+//   });
+
+//   test("POST da opinião com dados incorretos", async () => {
+//     const data = {
+//       opinion: 33123,
+//       idUser: 1,
+//       idHospital: 1,
+//       idStar: 5,
+//     };
+
+//     const response = await supertest(app)
+//       .post(`${BASE_URL}/review-registration`)
+//       .send(data)
+//       .expect(400);
+
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+// });
+
+describe("Integration Tests USER", () => {
   //GET TESTS
-  test("GET das estatísticas de um hospital", async () => {
+  test("GET do banco de sangue de um hospital que existe", async () => {
     const response = await supertest(app).get(
-      "/api/v1/hospital/1/statistics/ratings"
+      `${BASE_URL}/hospital/1/donation-banks`
     );
 
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("ratingsStatistics");
-    expect(response.body.ratingsStatistics).toBeInstanceOf(Object);
+    expect(response.body).toHaveProperty("donationBanks");
+    expect(response.body.donationBanks).toBeInstanceOf(Array);
   });
 
-  test("GET de um hospital que existe", async () => {
-    const response = await supertest(app).get("/api/v1/hospital-data/1");
-
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("hospital");
-    expect(response.body).toHaveProperty("address");
-    expect(response.body.hospital).toBeInstanceOf(Object);
-    expect(response.body.address).toBeInstanceOf(Object);
-  });
-
-  test("GET de um hospital que não existe", async () => {
-    const response = await supertest(app).get("/api/v1/hospital-data/100");
-
-    expect(response.status).toBe(404);
-    expect(response.body).toHaveProperty("message");
-  });
-
-  test("GET de todos hospitais", async () => {
-    const response = await supertest(app).get("/api/v1/hospitals");
-
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("hospitals");
-    expect(response.body.hospitals).toBeInstanceOf(Array);
-  });
-
-  test("GET dos agendamentos feitos no hospital quando existem", async () => {
-    const response = await supertest(app).get("/api/v1/hospital/1/schedules");
-
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("schedules");
-    expect(response.body.schedules).toBeInstanceOf(Array);
-  });
-
-  test("GET dos agendamentos feitos no hospital quando não existem", async () => {
-    const response = await supertest(app).get("/api/v1/hospital/100/schedules");
-
-    expect(response.status).toBe(404);
-    expect(response.body).toHaveProperty("message");
-  });
-
-  //Ver quando o nao tem um hospital
-  test("GET das estatísticas do hospital sobre agendamentos", async () => {
+  test("GET do banco de sangue de um hospital que não existe", async () => {
     const response = await supertest(app).get(
-      "/api/v1/hospital/1/statistics/schedules"
-    );
-
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("schedulesStatistics");
-    expect(response.body.schedulesStatistics).toBeInstanceOf(Object);
-  });
-
-  test("GET das estatísticas do hospital sobre avaliações quando o hospital existe", async () => {
-    const response = await supertest(app).get(
-      "/api/v1/hospital/1/statistics/reviews"
-    );
-
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("reviewsStatistics");
-    expect(response.body.reviewsStatistics).toBeInstanceOf(Array);
-  });
-
-  test("GET das estatísticas do hospital sobre avaliações quando o hospital não existe", async () => {
-    const response = await supertest(app).get(
-      "/api/v1/hospital/100/statistics/reviews"
+      `${BASE_URL}/hospital/100/donation-banks`
     );
 
     expect(response.status).toBe(404);
     expect(response.body).toHaveProperty("message");
+    expect(response.body.message).toBe("No items found.");
   });
-
-  //POSTS TESTS
-  
-
-  //VER ESSA PARTE PARA VER COMO QUE FAZ QUANDO NAO TEM NENHUM
-  //   test("GET de todos os hospitais quando não tem nenhum", async () => {
-  //     const response = await supertest(app).get(
-  //       "/api/v1/hospital-data/100"
-  //     );
-
-  //     expect(response.status).toBe(404);
-  //     expect(response.body).toHaveProperty("message");
-  //   });
 });

@@ -58,7 +58,7 @@ const donationBanksGet = async function (hospitalId) {
 };
 
 const donationBankUpdate = async function (donationBankId, donationBankData) {
-  const bloodTypeId = bloodTypeDAO.getBloodTypeIdByName(
+  const bloodTypeId = await bloodTypeDAO.getBloodTypeIdByName(
     donationBankData.bloodType
   );
 

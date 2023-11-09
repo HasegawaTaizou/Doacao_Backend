@@ -1,4 +1,4 @@
-var { PrismaClient } = require("@prisma/client");
+var { PrismaClient, STATUS } = require("@prisma/client");
 var prisma = new PrismaClient();
 
 const statusDAO = require("../dao/statusDAO");
@@ -67,7 +67,7 @@ async function updateScheduleCancel(scheduleId, scheduleData) {
   const sql = `
   UPDATE tbl_schedule_status
   SET 
-  id_status = ${statusId},
+  id_status = ${statusId[0].id},
   observation = "${scheduleData.observation}"
   WHERE id_schedule = ${scheduleId};
   `;
@@ -87,7 +87,7 @@ async function updateScheduleConclude(scheduleId) {
   const sql = `
   UPDATE tbl_schedule_status
   SET 
-  id_status = ${statusId}
+  id_status = ${statusId[0].id}
   WHERE id_schedule = ${scheduleId};
   `;
 
@@ -103,12 +103,12 @@ async function updateScheduleConclude(scheduleId) {
 async function updateScheduleReschedule(scheduleId, scheduleData) {
   const bookScheduleId = await getBookScheduleId(scheduleId);
 
-  const statusId = await statusDAO.getStatusIdByName("RESCHEDULE");
+  const statusId = await statusDAO.getStatusIdByName("RESCHEDULED");
 
   const sqlUpdateScheduleStatus = `
   UPDATE tbl_schedule_status
   SET 
-  id_status = ${statusId}
+  id_status = ${statusId[0].id}
   WHERE id_schedule = ${scheduleId};
   `;
 
@@ -125,7 +125,7 @@ async function updateScheduleReschedule(scheduleId, scheduleData) {
   SET 
   date = '${formattedDate}',
   hour = '${scheduleData.hour}'
-  where id = ${bookScheduleId};
+  where id = ${bookScheduleId[0].id_book_schedule};
   `;
 
   const updateSchedule = await prisma.$queryRawUnsafe(sqlUpdateScheduleStatus);

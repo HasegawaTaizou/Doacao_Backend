@@ -105,6 +105,7 @@ async function updateBookSchedule(bookScheduleId, bookScheduleData) {
 }
 
 const deleteBookSchedule = async function (bookScheduleId) {
+  console.log(bookScheduleId);
   try {
     await prisma.$transaction(async (tx) => {
       await tx.schedule.deleteMany({
