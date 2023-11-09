@@ -3,6 +3,8 @@ const app = require("../app.js");
 
 const BASE_URL = "/api/v1";
 
+//fazer do login e sobre a validação de id
+
 //HOSPITAL TESTS
 // describe("Integration Tests HOSPITAL", () => {
 //   //GET TESTS
@@ -926,22 +928,202 @@ const BASE_URL = "/api/v1";
 
 describe("Integration Tests USER", () => {
   //GET TESTS
-  test("GET do banco de sangue de um hospital que existe", async () => {
-    const response = await supertest(app).get(
-      `${BASE_URL}/hospital/1/donation-banks`
-    );
+  test("GET dos agendamentos de um usuário que existe", async () => {
+    const response = await supertest(app).get(`${BASE_URL}/users/1/schedules`);
 
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("donationBanks");
-    expect(response.body.donationBanks).toBeInstanceOf(Array);
+    expect(response.body).toHaveProperty("schedules");
+    expect(response.body.schedules).toBeInstanceOf(Array);
   });
 
-  test("GET do banco de sangue de um hospital que não existe", async () => {
+  test("GET dos agendamentos de um usuário que não existe", async () => {
     const response = await supertest(app).get(
-      `${BASE_URL}/hospital/100/donation-banks`
+      `${BASE_URL}/users/100/schedules`
     );
 
     expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty("message");
+    expect(response.body.message).toBe("No items found.");
+  });
+
+  test("GET de um usuário que existe", async () => {
+    const response = await supertest(app).get(`${BASE_URL}/users/1`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("user");
+    expect(response.body.user).toBeInstanceOf(Object);
+  });
+
+  test("GET de um usuário que não existe", async () => {
+    const response = await supertest(app).get(`${BASE_URL}/users/100`);
+
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty("message");
+    expect(response.body.message).toBe("No items found.");
+  });
+
+  //POST TESTS
+  test("POST de um usuário com dados corretos", async () => {
+    const data = {
+      user: {
+        name: "Teste de Delete",
+        cpf: "1225.324-32",
+        email: "delete@gmail.com",
+        phone: "12110988",
+        dateOfBirth: "21/03/1999",
+        weight: 70.02,
+        photo:
+          "https://conteudo.imguol.com.br/c/esporte/62/2022/10/26/cristiano-ronaldo-em-acao-com-a-camisa-da-selecao-de-portugal-1666822687434_v2_4x3.jpg",
+        password: "1234",
+        sex: "Masculine",
+        bloodType: "A+",
+      },
+      address: {
+        cep: "06423224",
+        uf: "SP",
+        city: "JANDIRA",
+        neighborhood: "Brotinho",
+        street: "Rua do brotinho",
+        number: "85",
+        complement: "Casa",
+      },
+    };
+
+    const response = await supertest(app)
+      .post(`${BASE_URL}/user-registration`)
+      .send(data)
+      .expect(201);
+
+    expect(response.body.message).toBe("Record created successfully.");
+  });
+
+  test("POST de um usuário com dados incorretos", async () => {
+    const data = {
+      user: {
+        name: "Teste de Delete",
+        cpf: "1225.324-32",
+        email: "delete@gmail.com",
+        phone: "121109883243243242",
+        dateOfBirth: "21/03/1999324",
+        weight: 70.02,
+        photo:
+          "https://conteudo.imguol.com.br/c/esporte/62/2022/10/26/cristiano-ronaldo-em-acao-com-a-camisa-da-selecao-de-portugal-1666822687434_v2_4x3.jpg",
+        password: "1234",
+        sex: "Masculine",
+        bloodType: "A+",
+      },
+      address: {
+        cep: "06423224",
+        uf: "SP",
+        city: "JANDIRA",
+        neighborhood: "Brotinho",
+        street: "Rua do brotinho",
+        number: "85",
+        complement: "Casa",
+      },
+    };
+
+    const response = await supertest(app)
+      .post(`${BASE_URL}/user-registration`)
+      .send(data)
+      .expect(400);
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.body.message).toBe(
+      "There are mandatory data that have not been filled in."
+    );
+  });
+
+  //LOGIN FAZER DEPOOOIS
+
+  //PUT TESTS
+  test("PUT de um usuário com dados corretos", async () => {
+    const data = {
+      id: 1,
+      user: {
+        name: "Cristiano Ronaldo",
+        cpf: "1225.324-32",
+        email: "cr7@gmail.com",
+        phone: "1968744707",
+        dateOfBirth: "21/03/1999",
+        weight: 70.02,
+        photo:
+          "https://conteudo.imguol.com.br/c/esporte/62/2022/10/26/cristiano-ronaldo-em-acao-com-a-camisa-da-selecao-de-portugal-1666822687434_v2_4x3.jpg",
+        password: "1234",
+        sex: "Masculine",
+        bloodType: "A+",
+      },
+      address: {
+        cep: "22222222",
+        uf: "SP",
+        city: "ITAPEVI",
+        neighborhood: "Brotinho",
+        street: "Rua dos Craques",
+        number: "85",
+        complement: "Casa da Lenda",
+      },
+    };
+
+    const response = await supertest(app)
+      .put(`${BASE_URL}/user-update`)
+      .send(data)
+      .expect(204);
+
+    expect(response.body).toStrictEqual({});
+  });
+
+  test("PUT de um usuário com dados incorretos", async () => {
+    const data = {
+      id: 1,
+      user: {
+        name: "Cristiano Ronaldo",
+        cpf: "1225.324-32",
+        email: "cr7@gmail.com",
+        phone: "1968744707423424",
+        dateOfBirth: "21/03/1999223",
+        weight: 70.02,
+        photo:
+          "https://conteudo.imguol.com.br/c/esporte/62/2022/10/26/cristiano-ronaldo-em-acao-com-a-camisa-da-selecao-de-portugal-1666822687434_v2_4x3.jpg",
+        password: "1234",
+        sex: "Masculine",
+        bloodType: "A+",
+      },
+      address: {
+        cep: "22222222",
+        uf: "SP",
+        city: "ITAPEVI",
+        neighborhood: "Brotinho",
+        street: "Rua dos Craques",
+        number: "85",
+        complement: "Casa da Lenda",
+      },
+    };
+
+    const response = await supertest(app)
+      .put(`${BASE_URL}/user-update`)
+      .send(data)
+      .expect(400);
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.body.message).toBe(
+      "There are mandatory data that have not been filled in."
+    );
+  });
+
+  //DELETE TESTS VER DEPOIS
+  // test("DELETE de um usuário que existe", async () => {
+  //   const response = await supertest(app)
+  //     .delete(`${BASE_URL}/delete-user/1`)
+  //     .expect(204);
+
+  //   expect(response.body).toStrictEqual({});
+  // });
+
+  test("DELETE de um usuário que não existe", async () => {
+    const response = await supertest(app)
+      .delete(`${BASE_URL}/delete-user/100`)
+      .expect(404);
+
     expect(response.body).toHaveProperty("message");
     expect(response.body.message).toBe("No items found.");
   });
