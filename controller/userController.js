@@ -189,6 +189,12 @@ const userUpdate = async function (userId, userData) {
     return message.ERROR_REQUIRED_DATA;
   }
 
+  const user = await userDAO.getUserById(userId);
+
+  if (user.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  }
+
   const status = await userDAO.updateUser(userId, userData);
   if (status) {
     return message.UPDATED_ITEM;

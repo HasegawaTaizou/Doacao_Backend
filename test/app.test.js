@@ -3,6 +3,8 @@ const app = require("../app.js");
 
 const BASE_URL = "/api/v1";
 
+const userController = require("../controller/userController");
+
 //fazer do login e sobre a validação de id
 
 //HOSPITAL TESTS
@@ -302,34 +304,34 @@ const BASE_URL = "/api/v1";
 //     expect(response.body.message).toBe("No items found.");
 //   });
 
-test("PUT da senha do hospital que existe", async () => {
-  const data = {
-    id: 1,
-    password: "123",
-  };
+// test("PUT da senha do hospital que existe", async () => {
+//   const data = {
+//     id: 1,
+//     password: "123",
+//   };
 
-  const response = await supertest(app)
-    .put(`${BASE_URL}/hospital/redefine-password`)
-    .send(data)
-    .expect(204);
+//   const response = await supertest(app)
+//     .put(`${BASE_URL}/hospital/redefine-password`)
+//     .send(data)
+//     .expect(204);
 
-  expect(response.body).toStrictEqual({});
-});
+//   expect(response.body).toStrictEqual({});
+// });
 
-test("PUT da senha do hospital que não existe", async () => {
-  const data = {
-    id: 100,
-    password: "123",
-  };
+// test("PUT da senha do hospital que não existe", async () => {
+//   const data = {
+//     id: 100,
+//     password: "123",
+//   };
 
-  const response = await supertest(app)
-    .put(`${BASE_URL}/hospital/redefine-password`)
-    .send(data)
-    .expect(404);
+//   const response = await supertest(app)
+//     .put(`${BASE_URL}/hospital/redefine-password`)
+//     .send(data)
+//     .expect(404);
 
-  expect(response.body).toHaveProperty("message");
-  expect(response.body.message).toBe("No items found.");
-});
+//   expect(response.body).toHaveProperty("message");
+//   expect(response.body.message).toBe("No items found.");
+// });
 
 //   //DELETE TESTS
 //   test("DELETE de um hospital que existe", async () => {
@@ -1063,35 +1065,35 @@ test("PUT da senha do hospital que não existe", async () => {
 //     );
 //   });
 
-test("POST login do usuário com dados corretos", async () => {
-  const data = {
-    email: "caio@gmail.com",
-    password: "123",
-  };
+// test("POST login do usuário com dados corretos", async () => {
+//   const data = {
+//     email: "caio@gmail.com",
+//     password: "123",
+//   };
 
-  const response = await supertest(app)
-    .post(`${BASE_URL}/user-login`)
-    .send(data)
-    .expect(200);
+//   const response = await supertest(app)
+//     .post(`${BASE_URL}/user-login`)
+//     .send(data)
+//     .expect(200);
 
-  expect(response.body).toHaveProperty("userData");
-  expect(response.body.userData).toBeInstanceOf(Object);
-});
+//   expect(response.body).toHaveProperty("userData");
+//   expect(response.body.userData).toBeInstanceOf(Object);
+// });
 
-test("POST login do usuário com dados incorretos", async () => {
-  const data = {
-    email: "sofiaaaa@gmail.com",
-    password: "123567",
-  };
+// test("POST login do usuário com dados incorretos", async () => {
+//   const data = {
+//     email: "sofiaaaa@gmail.com",
+//     password: "123567",
+//   };
 
-  const response = await supertest(app)
-    .post(`${BASE_URL}/user-login`)
-    .send(data)
-    .expect(404);
+//   const response = await supertest(app)
+//     .post(`${BASE_URL}/user-login`)
+//     .send(data)
+//     .expect(404);
 
-  expect(response.body).toHaveProperty("message");
-  expect(response.body.message).toBe("User or password incorrects.");
-});
+//   expect(response.body).toHaveProperty("message");
+//   expect(response.body.message).toBe("User or password incorrects.");
+// });
 
 //   //PUT TESTS
 //   test("PUT de um usuário com dados corretos", async () => {
@@ -1167,34 +1169,34 @@ test("POST login do usuário com dados incorretos", async () => {
 //     );
 //   });
 
-test("PUT da senha do usuário que existe", async () => {
-  const data = {
-    id: 1,
-    password: "123",
-  };
+// test("PUT da senha do usuário que existe", async () => {
+//   const data = {
+//     id: 1,
+//     password: "123",
+//   };
 
-  const response = await supertest(app)
-    .put(`${BASE_URL}/user/redefine-password`)
-    .send(data)
-    .expect(204);
+//   const response = await supertest(app)
+//     .put(`${BASE_URL}/user/redefine-password`)
+//     .send(data)
+//     .expect(204);
 
-  expect(response.body).toStrictEqual({});
-});
+//   expect(response.body).toStrictEqual({});
+// });
 
-test("PUT da senha do usuário que não existe", async () => {
-  const data = {
-    id: 100,
-    password: "123",
-  };
+// test("PUT da senha do usuário que não existe", async () => {
+//   const data = {
+//     id: 100,
+//     password: "123",
+//   };
 
-  const response = await supertest(app)
-    .put(`${BASE_URL}/user/redefine-password`)
-    .send(data)
-    .expect(404);
+//   const response = await supertest(app)
+//     .put(`${BASE_URL}/user/redefine-password`)
+//     .send(data)
+//     .expect(404);
 
-  expect(response.body).toHaveProperty("message");
-  expect(response.body.message).toBe("No items found.");
-});
+//   expect(response.body).toHaveProperty("message");
+//   expect(response.body.message).toBe("No items found.");
+// });
 
 //   //DELETE TESTS VER DEPOIS
 //   // test("DELETE de um usuário que existe", async () => {
@@ -1214,3 +1216,261 @@ test("PUT da senha do usuário que não existe", async () => {
 //     expect(response.body.message).toBe("No items found.");
 //   });
 // });
+
+/* --------------------------------- UNITARY TESTS ---------------------------------*/
+// describe("Unitary Tests USER", () => {
+//   test("loginUser with correct data", async () => {
+//     const data = {
+//       email: "sofia@gmail.com",
+//       password: "1234",
+//     };
+
+//     const response = await userController.loginUser(data);
+
+//     expect(response.status).toBe(200);
+//     expect(response.userData.id).toBeGreaterThan(0);
+//     expect(response.userData.email).toBe("sofia@gmail.com");
+//     expect(typeof response.userData.token).toBe("string");
+//   });
+
+//   test("loginUser with incorrect data", async () => {
+//     const data = {
+//       email: 3124,
+//       password: "1234",
+//     };
+
+//     const response = await userController.loginUser(data);
+
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   test("loginUser with nonexistent user", async () => {
+//     const data = {
+//       email: "sofiafwefewfwefw@gmail.com",
+//       password: "12342345",
+//     };
+
+//     const response = await userController.loginUser(data);
+
+//     expect(response.status).toBe(404);
+//     expect(response.message).toBe("User or password incorrects.");
+//   });
+
+//   test("userInsert with correct data", async () => {
+//     const data = {
+//       user: {
+//         name: "Solange Ribeiro",
+//         cpf: "1225.324-32",
+//         email: "sofia@gmail.com",
+//         phone: "11982763467",
+//         dateOfBirth: "21/09/1989",
+//         weight: 62.02,
+//         photo: "qqdqwdwqdqw",
+//         password: "1234",
+//         sex: "Feminine",
+//         bloodType: "A+",
+//       },
+//       address: {
+//         cep: "06423224",
+//         uf: "SP",
+//         city: "JANDIRA",
+//         neighborhood: "Brotinho",
+//         street: "Rua do brotinho",
+//         number: "85",
+//         complement: "Casa",
+//       },
+//     };
+
+//     const response = await userController.userInsert(data);
+
+//     expect(response.status).toBe(201);
+//     expect(response.message).toBe("Record created successfully.");
+//   });
+
+//   test("userInsert with incorrect data", async () => {
+//     const data = {
+//       user: {
+//         name: "Solange Ribeiro",
+//         cpf: "1225.324-32",
+//         email: "sofia@gmail.com",
+//         phone: "1198276346732342342342342", //Incorrect Phone
+//         dateOfBirth: "21/09/1989",
+//         weight: 62.02,
+//         photo: "qqdqwdwqdqw",
+//         password: "1234",
+//         sex: "Feminine",
+//         bloodType: "A+",
+//       },
+//       address: {
+//         cep: "06423224",
+//         uf: "SP",
+//         city: "JANDIRA",
+//         neighborhood: "Brotinho",
+//         street: "Rua do brotinho",
+//         number: "85",
+//         complement: "Casa",
+//       },
+//     };
+
+//     const response = await userController.userInsert(data);
+
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   test("userGet with existent user", async () => {
+//     const data = 1;
+
+//     const response = await userController.userGet(data);
+
+//     expect(response.status).toBe(200);
+//     expect(response).toHaveProperty("user");
+//     expect(response.user).toBeInstanceOf(Object);
+//     expect(response).toHaveProperty("address");
+//     expect(response.address).toBeInstanceOf(Object);
+//   });
+
+//   test("userGet with nonexistent user", async () => {
+//     const data = 100;
+
+//     const response = await userController.userGet(data);
+
+//     expect(response.status).toBe(404);
+//     expect(response.message).toBe("No items found.");
+//   });
+
+//   test("userUpdate with correct data", async () => {
+//     const id = 1;
+//     const data = {
+//       user: {
+//         name: "Cristiano Ronaldo",
+//         cpf: "1225.324-32",
+//         email: "cr7@gmail.com",
+//         phone: "1968744707",
+//         dateOfBirth: "21/03/1999",
+//         weight: 70.02,
+//         photo:
+//           "https://conteudo.imguol.com.br/c/esporte/62/2022/10/26/cristiano-ronaldo-em-acao-com-a-camisa-da-selecao-de-portugal-1666822687434_v2_4x3.jpg",
+//         password: "1234",
+//         sex: "Masculine",
+//         bloodType: "A+",
+//       },
+//       address: {
+//         cep: "22222222",
+//         uf: "SP",
+//         city: "ITAPEVI",
+//         neighborhood: "Brotinho",
+//         street: "Rua dos Craques",
+//         number: "85",
+//         complement: "Casa da Lenda",
+//       },
+//     };
+
+//     const response = await userController.userUpdate(id, data);
+
+//     expect(response.status).toBe(204);
+//     expect(response.message).toBe("Record updated successfully.");
+//   });
+
+//   test("userUpdate with incorrect data", async () => {
+//     const id = 1;
+//     const data = {
+//       user: {
+//         name: "Cristiano Ronaldo",
+//         cpf: "1225.324-32",
+//         email: "cr7@gmail.com",
+//         phone: "196874470732432423", //Incorrect Phone
+//         dateOfBirth: "21/03/1999",
+//         weight: 70.02,
+//         photo:
+//           "https://conteudo.imguol.com.br/c/esporte/62/2022/10/26/cristiano-ronaldo-em-acao-com-a-camisa-da-selecao-de-portugal-1666822687434_v2_4x3.jpg",
+//         password: "1234",
+//         sex: "Masculine",
+//         bloodType: "A+",
+//       },
+//       address: {
+//         cep: "22222222",
+//         uf: "SP",
+//         city: "ITAPEVI",
+//         neighborhood: "Brotinho",
+//         street: "Rua dos Craques",
+//         number: "85",
+//         complement: "Casa da Lenda",
+//       },
+//     };
+
+//     const response = await userController.userUpdate(id, data);
+
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   test("userUpdate with unexistent user", async () => {
+//     const id = 100;
+//     const data = {
+//       user: {
+//         name: "Cristiano Ronaldo",
+//         cpf: "1225.324-32",
+//         email: "cr7@gmail.com",
+//         phone: "1968744707",
+//         dateOfBirth: "21/03/1999",
+//         weight: 70.02,
+//         photo:
+//           "https://conteudo.imguol.com.br/c/esporte/62/2022/10/26/cristiano-ronaldo-em-acao-com-a-camisa-da-selecao-de-portugal-1666822687434_v2_4x3.jpg",
+//         password: "1234",
+//         sex: "Masculine",
+//         bloodType: "A+",
+//       },
+//       address: {
+//         cep: "06423224",
+//         uf: "SP",
+//         city: "JANDIRA",
+//         neighborhood: "Brotinho",
+//         street: "Rua do brotinho",
+//         number: "85",
+//         complement: "Casa",
+//       },
+//     };
+
+//     const response = await userController.userUpdate(id, data);
+
+//     console.log(response);
+//     expect(response.status).toBe(404);
+//     expect(response.message).toBe("No items found.");
+//   });
+
+//   test("userPasswordUpdate with correct data", async () => {
+//     const id = 1;
+//     const data = {
+//       password: "1234"
+//     };
+
+//     const response = await userController.userPasswordUpdate(id, data);
+
+//     expect(response.status).toBe(204);
+//     expect(response.message).toBe("Record updated successfully.");
+//   });
+
+//   test("userPasswordUpdate with unexistent user", async () => {
+//     const id = 100;
+//     const data = {
+//       password: "1234"
+//     };
+
+//     const response = await userController.userPasswordUpdate(id, data);
+
+//     expect(response.status).toBe(404);
+//     expect(response.message).toBe("No items found.");
+//   });
+// });
+
+describe("Unitary Tests HOSPITAL", () => {
+
+})

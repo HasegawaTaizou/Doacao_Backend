@@ -12,7 +12,6 @@ const insertSchedule = async function (scheduleData) {
       },
     });
 
-    console.log(insertScheduleData);
     return insertScheduleData;
   } catch (error) {
     console.log("error: ", error);
