@@ -1472,5 +1472,15 @@ const userController = require("../controller/userController");
 // });
 
 describe("Unitary Tests HOSPITAL", () => {
+  test("userPasswordUpdate with unexistent user", async () => {
+    const id = 100;
+    const data = {
+      password: "1234",
+    };
 
-})
+    const response = await userController.userPasswordUpdate(id, data);
+
+    expect(response.status).toBe(404);
+    expect(response.message).toBe("No items found.");
+  });
+});

@@ -182,6 +182,8 @@ const getHospitalSchedules = async function (hospitalId) {
 //ARRUMAR O SITE
 async function updateHospital(hospitalId, hospitalData) {
   try {
+    const sitesId = await siteDAO.getSitesByHospitalId(hospitalId);
+
     const updatedHospital = await prisma.hospital.update({
       where: {
         id: Number(hospitalId),
@@ -214,22 +216,6 @@ async function updateHospital(hospitalId, hospitalData) {
             },
           },
         },
-        // UPDATE SITE
-        HospitalSite: {
-          update: {
-            where: {
-              id: Number(hospitalId),
-            },
-            data: {
-              Site: {
-                update: {
-                  site: hospitalData.hospital.donationSite,
-                  // site: hospitalData.hospital.otherDonationSite,
-                },
-              },
-            },
-          },
-        },
         // UPDATE ADDRESS
         Address: {
           update: {
@@ -244,6 +230,26 @@ async function updateHospital(hospitalId, hospitalData) {
         },
       },
     });
+
+    await prisma.site.update({
+      where: {
+        id: sitesId[0].idSite,
+      },
+      data: {
+        site: hospitalData.hospital.donationSite,
+      },
+    });
+
+    if (sitesId[1]) {
+      await prisma.site.update({
+        where: {
+          id: sitesId[1].idSite,
+        },
+        data: {
+          site: hospitalData.hospital.otherDonationSite,
+        },
+      });
+    }
 
     return true;
   } catch (error) {

@@ -104,27 +104,55 @@ async function updateBookSchedule(bookScheduleId, bookScheduleData) {
   }
 }
 
-const deleteBookSchedule = async function (bookScheduleId) {
-  console.log(bookScheduleId);
-  try {
-    await prisma.$transaction(async (tx) => {
-      await tx.schedule.deleteMany({
-        where: {
-          idBookSchedule: Number(bookScheduleId),
-        },
-      });
+const getScheduleIdByBookScheduleId = async function (bookScheduleId) {
+  const sql = `
+  SELECT id_schedule FROM tbl_schedule_status
+  INNER JOIN tbl_schedule ON tbl_schedule_status.id_schedule = tbl_schedule.id
+  INNER JOIN tbl_book_schedule ON tbl_book_schedule.id = tbl_schedule.id_book_schedule
+  WHERE tbl_book_schedule.id = ${bookScheduleId};
+  `;
 
-      await tx.bookSchedule.delete({
-        where: {
-          id: Number(bookScheduleId),
-        },
-      });
+  const responseScheduleId = await prisma.$queryRawUnsafe(sql);
+
+  if (responseScheduleId) {
+    console.log(responseScheduleId);
+    return responseScheduleId;
+  } else {
+    return false;
+  }
+};
+
+const deleteBookSchedule = async function (bookScheduleId) {
+  try {
+    const scheduleId = await getScheduleIdByBookScheduleId(bookScheduleId);
+
+    // Excluir da tabela tbl_schedule_status
+    await prisma.scheduleStatus.deleteMany({
+      where: {
+        idSchedule: scheduleId[0].id_schedule,
+      },
+    });
+
+    // Excluir da tabela tbl_schedule
+    await prisma.schedule.deleteMany({
+      where: {
+        idBookSchedule: Number(bookScheduleId),
+      },
+    });
+
+    // Excluir da tabela tbl_book_schedule
+    await prisma.bookSchedule.delete({
+      where: {
+        id: Number(bookScheduleId),
+      },
     });
 
     return true;
   } catch (error) {
-    console.log(error);
+    console.error("Erro ao excluir o agendamento:", error);
     return false;
+  } finally {
+    await prisma.$disconnect();
   }
 };
 
