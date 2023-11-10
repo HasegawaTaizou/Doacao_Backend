@@ -1,7 +1,7 @@
 var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
-const scheduleDAO = require('./scheduleDAO')
+const scheduleDAO = require("./scheduleDAO");
 
 const insertBookSchedule = async function (bookScheduleData) {
   for (bookSchedule in bookScheduleData) {
@@ -108,22 +108,25 @@ async function updateBookSchedule(bookScheduleId, bookScheduleData) {
 
 const deleteBookSchedule = async function (bookScheduleId) {
   try {
-    const scheduleId = await scheduleDAO.getScheduleIdByBookScheduleId(bookScheduleId);
+    const scheduleId = await scheduleDAO.getScheduleIdByBookScheduleId(
+      bookScheduleId
+    );
 
-    // Excluir da tabela tbl_schedule_status
-    await prisma.scheduleStatus.deleteMany({
-      where: {
-        idSchedule: scheduleId[0].id_schedule,
-      },
-    });
+    if (scheduleId.length != 0) {
+      // Excluir da tabela tbl_schedule_status
+      await prisma.scheduleStatus.deleteMany({
+        where: {
+          idSchedule: scheduleId[0].id_schedule,
+        },
+      });
 
-    // Excluir da tabela tbl_schedule
-    await prisma.schedule.deleteMany({
-      where: {
-        idBookSchedule: Number(bookScheduleId),
-      },
-    });
-
+      // Excluir da tabela tbl_schedule
+      await prisma.schedule.deleteMany({
+        where: {
+          idBookSchedule: Number(bookScheduleId),
+        },
+      });
+    }
     // Excluir da tabela tbl_book_schedule
     await prisma.bookSchedule.delete({
       where: {
