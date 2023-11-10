@@ -18,7 +18,12 @@ const scheduleInsert = async function (scheduleData) {
 
   const status = await scheduleDAO.insertSchedule(scheduleData);
   if (status) {
-    return message.CREATED_ITEM;
+    const jsonScheduleInsert = {}
+    jsonScheduleInsert.message = message.CREATED_ITEM.message
+    jsonScheduleInsert.status = message.CREATED_ITEM.status
+    jsonScheduleInsert.idSchedule = status.id;
+    
+    return jsonScheduleInsert;
   } else {
     return message.ERROR_INTERNAL_SERVER;
   }
