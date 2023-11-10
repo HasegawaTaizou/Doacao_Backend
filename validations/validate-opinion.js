@@ -3,7 +3,6 @@
 const validateOpinion = function (opinion) {
   let status = true;
 
-  console.log(opinion);
   if (
     opinion == null ||
     opinion == undefined ||

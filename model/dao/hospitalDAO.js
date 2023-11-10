@@ -179,7 +179,6 @@ const getHospitalSchedules = async function (hospitalId) {
   }
 };
 
-//ARRUMAR O SITE
 async function updateHospital(hospitalId, hospitalData) {
   try {
     const sitesId = await siteDAO.getSitesByHospitalId(hospitalId);

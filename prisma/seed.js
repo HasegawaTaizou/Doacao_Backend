@@ -52,7 +52,6 @@ async function insertStarData() {
 }
 
 async function insertStatusData() {
-  console.log();
   const statusData = [
     $Enums.STATUS.SCHEDULED,
     $Enums.STATUS.CONCLUDED,

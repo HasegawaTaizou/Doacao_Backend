@@ -1,6 +1,8 @@
 var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
+const scheduleDAO = require('./scheduleDAO')
+
 const insertBookSchedule = async function (bookScheduleData) {
   for (bookSchedule in bookScheduleData) {
     let [day, month, year] = bookScheduleData[bookSchedule].date.split("/");
@@ -104,27 +106,9 @@ async function updateBookSchedule(bookScheduleId, bookScheduleData) {
   }
 }
 
-const getScheduleIdByBookScheduleId = async function (bookScheduleId) {
-  const sql = `
-  SELECT id_schedule FROM tbl_schedule_status
-  INNER JOIN tbl_schedule ON tbl_schedule_status.id_schedule = tbl_schedule.id
-  INNER JOIN tbl_book_schedule ON tbl_book_schedule.id = tbl_schedule.id_book_schedule
-  WHERE tbl_book_schedule.id = ${bookScheduleId};
-  `;
-
-  const responseScheduleId = await prisma.$queryRawUnsafe(sql);
-
-  if (responseScheduleId) {
-    console.log(responseScheduleId);
-    return responseScheduleId;
-  } else {
-    return false;
-  }
-};
-
 const deleteBookSchedule = async function (bookScheduleId) {
   try {
-    const scheduleId = await getScheduleIdByBookScheduleId(bookScheduleId);
+    const scheduleId = await scheduleDAO.getScheduleIdByBookScheduleId(bookScheduleId);
 
     // Excluir da tabela tbl_schedule_status
     await prisma.scheduleStatus.deleteMany({

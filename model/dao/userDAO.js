@@ -1,6 +1,8 @@
 var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
+const scheduleDAO = require('./scheduleDAO.js')
+
 const addressDAO = require("../dao/addressDAO.js");
 const sexDAO = require("../dao/sexDAO.js");
 const bloodTypeDAO = require("../dao/bloodTypeDAO.js");
@@ -224,21 +226,56 @@ async function updateUserPassword(userId, userData) {
   }
 }
 
-async function deleteUserById(userId) {
+// async function deleteUserById(userId) {
+//   try {
+//     await prisma.user.delete({
+//       where: {
+//         id: Number(userId),
+//       },
+//     });
+
+//     return true;
+//   } catch (error) {
+//     console.error("Erro ao excluir o usuario:", error);
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
+
+const deleteUserById = async function (userId) {
+  const scheduleId = await scheduleDAO.getScheduleIdByUserId(userId)
+
   try {
-    await prisma.user.delete({
+    // Excluir da tabela tbl_review
+    await prisma.review.deleteMany({
       where: {
-        id: Number(userId),
+        idUser: Number(userId),
+      },
+    });
+
+    // Excluir da tabela tbl_schedule_status
+    await prisma.scheduleStatus.deleteMany({
+      where: {
+        idSchedule: scheduleId[0].id_schedule,
+      },
+    });
+
+    // Excluir da tabela tbl_schedule
+    await prisma.schedule.deleteMany({
+      where: {
+        idUser: Number(userId),
       },
     });
 
     return true;
   } catch (error) {
-    console.error("Erro ao excluir o usuario:", error);
+    console.error("Erro ao excluir o usuário:", error);
+    return false;
   } finally {
     await prisma.$disconnect();
   }
-}
+};
+
 
 module.exports = {
   userLogin,
