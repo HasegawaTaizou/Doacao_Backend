@@ -260,6 +260,7 @@ const hospitalPasswordUpdate = async function (hospitalId, hospitalData) {
 const hospitalsGet = async function () {
   const hospitalsData = await hospitalDAO.getHospitals();
 
+  console.log('LOG HOSPITAL DATA', hospitalsData);
   if (hospitalsData.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;
   } else if (hospitalsData) {
@@ -268,7 +269,7 @@ const hospitalsGet = async function () {
     jsonHospitalsData.hospitals = [];
 
     for (hospitalData in hospitalsData) {
-      console.log(hospitalData);
+      console.log(hospitalsData.length);
       if (hospitalsData) {
         let hospitalObject = {
           hospital: {
@@ -284,9 +285,8 @@ const hospitalsGet = async function () {
 
         jsonHospitalsData.hospitals.push(hospitalObject);
       }
-      console.log(jsonHospitalsData.hospitals);
-      return jsonHospitalsData;
     }
+    return jsonHospitalsData;
   } else {
     return message.ERROR_INTERNAL_SERVER;
   }

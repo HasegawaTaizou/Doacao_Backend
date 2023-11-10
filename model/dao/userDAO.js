@@ -1,7 +1,7 @@
 var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
-const scheduleDAO = require('./scheduleDAO.js')
+const scheduleDAO = require("./scheduleDAO.js");
 
 const addressDAO = require("../dao/addressDAO.js");
 const sexDAO = require("../dao/sexDAO.js");
@@ -226,56 +226,45 @@ async function updateUserPassword(userId, userData) {
   }
 }
 
-// async function deleteUserById(userId) {
-//   try {
-//     await prisma.user.delete({
-//       where: {
-//         id: Number(userId),
-//       },
-//     });
-
-//     return true;
-//   } catch (error) {
-//     console.error("Erro ao excluir o usuario:", error);
-//   } finally {
-//     await prisma.$disconnect();
-//   }
-// }
-
 const deleteUserById = async function (userId) {
-  const scheduleId = await scheduleDAO.getScheduleIdByUserId(userId)
+  const user = await getUserById(userId);
 
-  try {
-    // Excluir da tabela tbl_review
-    await prisma.review.deleteMany({
-      where: {
-        idUser: Number(userId),
-      },
-    });
+  const scheduleId = await scheduleDAO.getScheduleIdByUserId(userId);
 
-    // Excluir da tabela tbl_schedule_status
-    await prisma.scheduleStatus.deleteMany({
-      where: {
-        idSchedule: scheduleId[0].id_schedule,
-      },
-    });
+  if (user) {
+    try {
+      // Excluir da tabela tbl_review
+      await prisma.review.deleteMany({
+        where: {
+          idUser: Number(userId),
+        },
+      });
 
-    // Excluir da tabela tbl_schedule
-    await prisma.schedule.deleteMany({
-      where: {
-        idUser: Number(userId),
-      },
-    });
+      if (scheduleId.length != 0) {
+        // Excluir da tabela tbl_schedule_status
+        await prisma.scheduleStatus.deleteMany({
+          where: {
+            idSchedule: scheduleId[0].id_schedule,
+          },
+        });
 
-    return true;
-  } catch (error) {
-    console.error("Erro ao excluir o usuário:", error);
-    return false;
-  } finally {
-    await prisma.$disconnect();
-  }
+        // Excluir da tabela tbl_schedule
+        await prisma.schedule.deleteMany({
+          where: {
+            idUser: Number(userId),
+          },
+        });
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Erro ao excluir o usuário:", error);
+      return false;
+    } finally {
+      await prisma.$disconnect();
+    }
+  } else return false;
 };
-
 
 module.exports = {
   userLogin,
