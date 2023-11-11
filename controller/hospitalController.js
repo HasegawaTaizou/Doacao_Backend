@@ -202,23 +202,21 @@ const hospitalUpdate = async function (hospitalId, hospitalData) {
   if (!validateId(hospitalId)) {
     return message.ERROR_INVALID_ID;
   } else if (
-    false
-    // !validateName(hospitalData.hospital.name) ||
-    // !validateCNPJ(hospitalData.hospital.cnpj) ||
-    // !validateEmail(hospitalData.hospital.email) ||
-    // !validatePhone(hospitalData.hospital.phone) ||
-    // !validateWebsite(hospitalData.hospital.website) ||
-    // !validateDonationSite(hospitalData.hospital.donationSite) ||
-    // !validateDonationSite(hospitalData.hospital.otherDonationSite) ||
-    // !validatePhoto(hospitalData.hospital.photo) ||
-    // !validatePassword(hospitalData.hospital.password) ||
-    // !validateCEP(hospitalData.address.cep) ||
-    // !validateUF(hospitalData.address.uf) ||
-    // !validateCity(hospitalData.address.city) ||
-    // !validateNeighborhood(hospitalData.address.neighborhood) ||
-    // !validateStreet(hospitalData.address.street) ||
-    // !validateNumber(hospitalData.address.number) ||
-    // !validateComplement(hospitalData.address.complement)
+    !validateName(hospitalData.hospital.name) ||
+    !validateCNPJ(hospitalData.hospital.cnpj) ||
+    !validateEmail(hospitalData.hospital.email) ||
+    !validatePhone(hospitalData.hospital.phone) ||
+    !validateWebsite(hospitalData.hospital.website) ||
+    !validateDonationSite(hospitalData.hospital.donationSite) ||
+    !validateDonationSite(hospitalData.hospital.otherDonationSite) ||
+    !validatePhoto(hospitalData.hospital.photo) ||
+    !validateCEP(hospitalData.address.cep) ||
+    !validateUF(hospitalData.address.uf) ||
+    !validateCity(hospitalData.address.city) ||
+    !validateNeighborhood(hospitalData.address.neighborhood) ||
+    !validateStreet(hospitalData.address.street) ||
+    !validateNumber(hospitalData.address.number) ||
+    !validateComplement(hospitalData.address.complement)
   ) {
     return message.ERROR_REQUIRED_DATA;
   }
@@ -263,7 +261,6 @@ const hospitalPasswordUpdate = async function (hospitalId, hospitalData) {
 const hospitalsGet = async function () {
   const hospitalsData = await hospitalDAO.getHospitals();
 
-  console.log('LOG HOSPITAL DATA', hospitalsData);
   if (hospitalsData.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;
   } else if (hospitalsData) {
@@ -272,7 +269,6 @@ const hospitalsGet = async function () {
     jsonHospitalsData.hospitals = [];
 
     for (hospitalData in hospitalsData) {
-      console.log(hospitalsData.length);
       if (hospitalsData) {
         let hospitalObject = {
           hospital: {

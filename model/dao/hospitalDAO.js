@@ -6,7 +6,8 @@ const phoneDAO = require("./phoneDAO.js");
 const photoDAO = require("./photoDAO.js");
 const siteDAO = require("./siteDAO.js");
 const hospitalSiteDAO = require("./hospitalSiteDAO.js");
-const scheduleDAO = require('./scheduleDAO.js')
+const scheduleDAO = require("./scheduleDAO.js");
+const bookScheduleDAO = require("./bookScheduleDAO.js");
 
 const hospitalLogin = async function (loginData) {
   try {
@@ -185,9 +186,6 @@ async function updateHospital(hospitalId, hospitalData) {
   try {
     const sitesId = await siteDAO.getSitesByHospitalId(hospitalId);
 
-    console.log(sitesId);
-    console.log(hospitalData.hospital.donationSite);
-    console.log(hospitalData.hospital.otherDonationSite);
     const updatedHospital = await prisma.hospital.update({
       where: {
         id: Number(hospitalId),
@@ -326,19 +324,22 @@ const getHospitals = async function () {
 
 async function deleteHospitalById(hospitalId) {
   try {
-    // await prisma.hospitalSite.deleteMany({
-    //   where: {
-    //     idHospital: Number(hospitalId),
-    //   },
-    // });
+    const idSchedule = await scheduleDAO.getSchedulesIdByHospitalId(hospitalId);
 
-    const idSchedule = await scheduleDAO.getScheduleByHospitalId(hospitalId)
+    idSchedule.forEach(async (schedule) => {
+      await prisma.scheduleStatus.deleteMany({
+        where: {
+          idSchedule: Number(schedule.schedule_id),
+        },
+      });
+    });
 
-    console.log(idSchedule);
-    await prisma.scheduleStatus.deleteMany({
-      where: {
-        idSchedule: idSchedule
-      },
+    idSchedule.forEach(async (schedule) => {
+      await prisma.schedule.delete({
+        where: {
+          id: Number(schedule.schedule_id),
+        },
+      });
     });
 
     await prisma.campaign.deleteMany({
@@ -375,6 +376,25 @@ async function deleteHospitalById(hospitalId) {
       where: {
         id: Number(hospitalId),
       },
+    });
+
+    await prisma.hospitalSite.deleteMany({
+      where: {
+        idHospital: Number(hospitalId),
+      },
+    });
+
+    const bookScheduleId = await bookScheduleDAO.getBookSchedulesByHospitalId(
+      hospitalId
+    );
+    console.log(bookScheduleId);
+
+    bookScheduleId.forEach(async (bookSchedule) => {
+      await prisma.bookSchedule.deleteMany({
+        where: {
+          id: Number(bookSchedule.id),
+        },
+      });
     });
 
     return true;

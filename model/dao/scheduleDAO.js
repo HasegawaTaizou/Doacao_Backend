@@ -35,6 +35,25 @@ const getScheduleByHospitalId = async function (hospitalId) {
   }
 };
 
+const getSchedulesIdByHospitalId = async function (hospitalId) {
+  const sql = `
+  SELECT tbl_schedule.id AS schedule_id FROM tbl_hospital
+  INNER JOIN tbl_hospital_site ON tbl_hospital_site.id_hospital = tbl_hospital.id
+  INNER JOIN tbl_book_schedule ON tbl_book_schedule.id_hospital_site = tbl_hospital_site.id
+  INNER JOIN tbl_schedule ON tbl_schedule.id_book_schedule = tbl_book_schedule.id
+  INNER JOIN tbl_schedule_status ON tbl_schedule_status.id_schedule = tbl_schedule.id
+  WHERE tbl_hospital.id = ${hospitalId};
+  `;
+
+  const responseSchedule = await prisma.$queryRawUnsafe(sql);
+
+  if (responseSchedule) {
+    return responseSchedule;
+  } else {
+    return false;
+  }
+};
+
 const getSchedulesStatisticsByHospitalId = async function (hospitalId) {
   let sql = `
   SELECT
@@ -247,4 +266,5 @@ module.exports = {
   getScheduleIdByBookScheduleId,
   getScheduleIdByUserId,
   getScheduleIdByHospitalId,
+  getSchedulesIdByHospitalId
 };

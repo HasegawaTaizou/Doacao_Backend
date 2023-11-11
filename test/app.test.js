@@ -1441,7 +1441,6 @@ const userController = require("../controller/userController");
 
 //     const response = await userController.userUpdate(id, data);
 
-//     console.log(response);
 //     expect(response.status).toBe(404);
 //     expect(response.message).toBe("No items found.");
 //   });
