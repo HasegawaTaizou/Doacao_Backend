@@ -44,12 +44,13 @@ const getBookSchedulesByHospitalId = async function (hospitalId) {
   tbl_hospital.name,
   tbl_book_schedule.id, 
   DATE_FORMAT(tbl_book_schedule.date, '%d/%m/%Y') AS date,
-  TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour,
-  tbl_site.site 
+  TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour, 
+  tbl_site.site,
+  tbl_site.id AS site_id 
   FROM tbl_book_schedule
   INNER JOIN tbl_hospital_site ON tbl_book_schedule.id_hospital_site = tbl_hospital_site.id
-  INNER JOIN tbl_site ON tbl_site.id = tbl_hospital_site.id_site
-  INNER JOIN tbl_hospital ON tbl_hospital.id = tbl_hospital_site.id_hospital
+  INNER JOIN tbl_hospital ON tbl_hospital_site.id_hospital = tbl_hospital.id
+  INNER JOIN tbl_site ON tbl_hospital_site.id = tbl_site.id
   WHERE tbl_hospital.id = ${hospitalId};
   `;
 
