@@ -158,6 +158,7 @@ const getHospitalSchedules = async function (hospitalId) {
   tbl_schedule_status.id_schedule,
   DATE_FORMAT(tbl_book_schedule.date, '%d/%m/%Y') AS date,
   TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour,
+  tbl_site.id AS site_id, 
   tbl_site.site, 
   tbl_status.status 
   FROM tbl_user
@@ -184,6 +185,9 @@ async function updateHospital(hospitalId, hospitalData) {
   try {
     const sitesId = await siteDAO.getSitesByHospitalId(hospitalId);
 
+    console.log(sitesId);
+    console.log(hospitalData.hospital.donationSite);
+    console.log(hospitalData.hospital.otherDonationSite);
     const updatedHospital = await prisma.hospital.update({
       where: {
         id: Number(hospitalId),

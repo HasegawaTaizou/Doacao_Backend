@@ -2,6 +2,7 @@ var { PrismaClient, STATUS } = require("@prisma/client");
 var prisma = new PrismaClient();
 
 const statusDAO = require("../dao/statusDAO");
+const hospitalSiteDAO = require("../dao/hospitalSiteDAO");
 
 const insertSchedule = async function (scheduleData) {
   try {
@@ -128,12 +129,24 @@ async function updateScheduleReschedule(scheduleId, scheduleData) {
   where id = ${bookScheduleId[0].id_book_schedule};
   `;
 
+  const hospitalSiteId = await hospitalSiteDAO.getHospitalSiteIdBySiteId(scheduleData.siteId)
+
+  const sqlUpdateSite = `
+  UPDATE tbl_book_schedule
+  INNER JOIN tbl_hospital_site ON tbl_book_schedule.id_hospital_site = tbl_hospital_site.id
+  INNER JOIN tbl_site ON tbl_site.id = tbl_hospital_site.id_site
+  INNER JOIN tbl_schedule ON tbl_schedule.id_book_schedule = tbl_book_schedule.id
+  SET tbl_book_schedule.id_hospital_site = ${hospitalSiteId[0].hospital_site_id}
+  WHERE tbl_schedule.id = ${scheduleId};
+  `;
+
   const updateSchedule = await prisma.$queryRawUnsafe(sqlUpdateScheduleStatus);
   const updateBookSchedule = await prisma.$queryRawUnsafe(
     sqlUpdateBookSchedule
   );
+  const updateSite = await prisma.$queryRawUnsafe(sqlUpdateSite);
 
-  if (updateSchedule && updateBookSchedule) {
+  if (updateSchedule && updateBookSchedule && updateSite) {
     return updateSchedule;
   } else {
     return false;
@@ -233,5 +246,5 @@ module.exports = {
   getSchedules,
   getScheduleIdByBookScheduleId,
   getScheduleIdByUserId,
-  getScheduleIdByHospitalId
+  getScheduleIdByHospitalId,
 };

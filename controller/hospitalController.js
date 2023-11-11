@@ -185,6 +185,7 @@ const hospitalGetSchedules = async function (hospitalId) {
           date: schedulesData[scheduleData].date,
           hour: schedulesData[scheduleData].hour,
           site: schedulesData[scheduleData].site,
+          siteId: schedulesData[scheduleData].site_id,
           status: schedulesData[scheduleData].status,
         },
       };
@@ -201,22 +202,23 @@ const hospitalUpdate = async function (hospitalId, hospitalData) {
   if (!validateId(hospitalId)) {
     return message.ERROR_INVALID_ID;
   } else if (
-    !validateName(hospitalData.hospital.name) ||
-    !validateCNPJ(hospitalData.hospital.cnpj) ||
-    !validateEmail(hospitalData.hospital.email) ||
-    !validatePhone(hospitalData.hospital.phone) ||
-    !validateWebsite(hospitalData.hospital.website) ||
-    !validateDonationSite(hospitalData.hospital.donationSite) ||
-    !validateDonationSite(hospitalData.hospital.otherDonationSite) ||
-    !validatePhoto(hospitalData.hospital.photo) ||
-    !validatePassword(hospitalData.hospital.password) ||
-    !validateCEP(hospitalData.address.cep) ||
-    !validateUF(hospitalData.address.uf) ||
-    !validateCity(hospitalData.address.city) ||
-    !validateNeighborhood(hospitalData.address.neighborhood) ||
-    !validateStreet(hospitalData.address.street) ||
-    !validateNumber(hospitalData.address.number) ||
-    !validateComplement(hospitalData.address.complement)
+    false
+    // !validateName(hospitalData.hospital.name) ||
+    // !validateCNPJ(hospitalData.hospital.cnpj) ||
+    // !validateEmail(hospitalData.hospital.email) ||
+    // !validatePhone(hospitalData.hospital.phone) ||
+    // !validateWebsite(hospitalData.hospital.website) ||
+    // !validateDonationSite(hospitalData.hospital.donationSite) ||
+    // !validateDonationSite(hospitalData.hospital.otherDonationSite) ||
+    // !validatePhoto(hospitalData.hospital.photo) ||
+    // !validatePassword(hospitalData.hospital.password) ||
+    // !validateCEP(hospitalData.address.cep) ||
+    // !validateUF(hospitalData.address.uf) ||
+    // !validateCity(hospitalData.address.city) ||
+    // !validateNeighborhood(hospitalData.address.neighborhood) ||
+    // !validateStreet(hospitalData.address.street) ||
+    // !validateNumber(hospitalData.address.number) ||
+    // !validateComplement(hospitalData.address.complement)
   ) {
     return message.ERROR_REQUIRED_DATA;
   }

@@ -24,6 +24,30 @@ const insertHospitalSite = async function (hospitalId, siteId, otherSiteId) {
   }
 };
 
+async function getHospitalSiteIdBySiteId(siteId) {
+  const sql = `
+  SELECT tbl_hospital_site.id AS hospital_site_id FROM tbl_hospital_site
+  INNER JOIN tbl_site ON tbl_hospital_site.id_site = tbl_site.id
+  WHERE tbl_site.id = ${siteId};
+  `;
+  // const sql = `
+  // SELECT tbl_book_schedule.id_hospital_site FROM tbl_book_schedule
+  // INNER JOIN tbl_hospital_site ON tbl_book_schedule.id_hospital_site = tbl_hospital_site.id
+  // INNER JOIN tbl_site ON tbl_site.id = tbl_hospital_site.id_site
+  // INNER JOIN tbl_schedule ON tbl_schedule.id_book_schedule = tbl_book_schedule.id
+  // WHERE tbl_hospital_site.id_site = ${siteId};
+  // `;
+
+  const hospitalSiteId = await prisma.$queryRawUnsafe(sql);
+
+  if (hospitalSiteId) {
+    return hospitalSiteId;
+  } else {
+    return false;
+  }
+}
+
 module.exports = {
   insertHospitalSite,
+  getHospitalSiteIdBySiteId
 };
