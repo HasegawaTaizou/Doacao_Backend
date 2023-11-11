@@ -6,6 +6,7 @@ const phoneDAO = require("./phoneDAO.js");
 const photoDAO = require("./photoDAO.js");
 const siteDAO = require("./siteDAO.js");
 const hospitalSiteDAO = require("./hospitalSiteDAO.js");
+const scheduleDAO = require('./scheduleDAO.js')
 
 const hospitalLogin = async function (loginData) {
   try {
@@ -307,9 +308,48 @@ const getHospitals = async function () {
   }
 };
 
+// DELETE
+// tbl_campaign
+// tbl_photo
+// tbl_phone
+// tbl_review
+// tbl_donation_bank
+
+// tbl_schedule_status
+// tbl_schedule
+// tbl_book_schedule
+// tbl_hospital_site
+
 async function deleteHospitalById(hospitalId) {
   try {
-    await prisma.hospitalSite.deleteMany({
+    // await prisma.hospitalSite.deleteMany({
+    //   where: {
+    //     idHospital: Number(hospitalId),
+    //   },
+    // });
+
+    const idSchedule = await scheduleDAO.getScheduleByHospitalId(hospitalId)
+
+    console.log(idSchedule);
+    await prisma.scheduleStatus.deleteMany({
+      where: {
+        idSchedule: idSchedule
+      },
+    });
+
+    await prisma.campaign.deleteMany({
+      where: {
+        idHospital: Number(hospitalId),
+      },
+    });
+
+    await prisma.review.deleteMany({
+      where: {
+        idHospital: Number(hospitalId),
+      },
+    });
+
+    await prisma.donationBank.deleteMany({
       where: {
         idHospital: Number(hospitalId),
       },

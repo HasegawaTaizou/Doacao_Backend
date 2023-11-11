@@ -204,6 +204,25 @@ const getScheduleIdByUserId = async function (userId) {
   }
 };
 
+const getScheduleIdByHospitalId = async function (hospitalId) {
+  const sql = `
+  SELECT tbl_schedule_status.id_schedule FROM tbl_schedule_status
+  INNER JOIN tbl_schedule ON tbl_schedule_status.id_schedule = tbl_schedule.id
+  INNER JOIN tbl_book_schedule ON tbl_schedule.id_book_schedule = tbl_book_schedule.id
+  INNER JOIN tbl_hospital_site ON tbl_book_schedule.id_hospital_site = tbl_hospital_site.id
+  INNER JOIN tbl_hospital ON tbl_hospital_site.id_hospital = tbl_hospital.id
+  WHERE tbl_hospital.id = ${hospitalId};
+  `;
+
+  const responseScheduleId = await prisma.$queryRawUnsafe(sql);
+
+  if (responseScheduleId) {
+    return responseScheduleId;
+  } else {
+    return false;
+  }
+};
+
 module.exports = {
   insertSchedule,
   getScheduleByHospitalId,
@@ -213,5 +232,6 @@ module.exports = {
   updateScheduleReschedule,
   getSchedules,
   getScheduleIdByBookScheduleId,
-  getScheduleIdByUserId
+  getScheduleIdByUserId,
+  getScheduleIdByHospitalId
 };
