@@ -51,7 +51,7 @@ const insertCampaign = async function (campaignData) {
         hour: ISOhour,
         description: campaignData.description,
         image: campaignData.image,
-        idHospital: campaignData.hospitalId,
+        idHospital: Number(campaignData.hospitalId),
       },
     });
 
