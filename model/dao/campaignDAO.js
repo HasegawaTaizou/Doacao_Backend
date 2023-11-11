@@ -37,6 +37,29 @@ const getCampaignsByHospitalId = async function (hospitalId) {
   }
 };
 
+const getCampaigns = async function () {
+  const sql = `
+  SELECT 
+  tbl_campaign.id AS campaign_id,
+  tbl_hospital.id AS hospital_id,
+  tbl_hospital.name AS hospital_name,
+  DATE_FORMAT(tbl_campaign.date, '%d/%m/%Y') AS date,
+  TIME_FORMAT(tbl_campaign.hour, '%H:%i') AS hour,
+  tbl_campaign.description,
+  tbl_campaign.image
+  FROM tbl_campaign
+  INNER JOIN tbl_hospital ON tbl_hospital.id = tbl_campaign.id_hospital;
+  `;
+
+  const responseCampaigns = await prisma.$queryRawUnsafe(sql);
+
+  if (responseCampaigns) {
+    return responseCampaigns;
+  } else {
+    return false;
+  }
+};
+
 const insertCampaign = async function (campaignData) {
   try {
     const [day, month, year] = campaignData.date.split("/");
@@ -113,4 +136,5 @@ module.exports = {
   insertCampaign,
   updateCampaign,
   deleteCampaignById,
+  getCampaigns
 };

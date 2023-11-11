@@ -527,7 +527,20 @@ app.get(
   async function (request, response) {
     const hospitalId = request.params.id;
 
-    const resultGetData = await campaignController.campaignsGet(hospitalId);
+    const resultGetData = await campaignController.campaignsHospitalGet(hospitalId);
+
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
+
+//Get All Campaigns
+app.get(
+  "/api/v1/campaigns",
+  cors(),
+  async function (request, response) {
+
+    const resultGetData = await campaignController.campaignsGet();
 
     response.status(resultGetData.status);
     response.json(resultGetData);

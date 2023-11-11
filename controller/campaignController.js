@@ -31,12 +31,29 @@ const campaignInsert = async function (campaignData) {
   }
 };
 
-const campaignsGet = async function (hospitalId) {
+const campaignsHospitalGet = async function (hospitalId) {
   if (!validateId(hospitalId)) {
     return message.ERROR_INVALID_ID;
   }
 
   const campaignsData = await campaignDAO.getCampaignsByHospitalId(hospitalId);
+
+  if (campaignsData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (campaignsData) {
+    const jsonCampaignsData = {};
+
+    jsonCampaignsData.status = message.OK.status;
+    jsonCampaignsData.campaigns = campaignsData;
+
+    return jsonCampaignsData;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
+const campaignsGet = async function () {
+  const campaignsData = await campaignDAO.getCampaigns();
 
   if (campaignsData.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;
@@ -99,6 +116,7 @@ const campaignDelete = async function (campaignId) {
 
 module.exports = {
   campaignInsert,
+  campaignsHospitalGet,
   campaignsGet,
   campaignUpdate,
   campaignDelete,
