@@ -207,6 +207,35 @@ const getSchedulesUserById = async function (userId) {
   }
 };
 
+const getSchedulesUserByHospitalId = async function (hospitalId, userId) {
+  const sql = `
+  SELECT 
+  tbl_schedule_status.id_schedule, 
+  DATE_FORMAT(tbl_book_schedule.date, '%d/%m/%Y') AS date,
+  TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour, 
+  tbl_status.status, 
+  tbl_site.site,
+  tbl_hospital.name
+  FROM tbl_schedule_status
+  INNER JOIN tbl_schedule ON tbl_schedule.id = tbl_schedule_status.id_schedule
+  INNER JOIN tbl_user ON tbl_user.id = tbl_schedule.id_user
+  INNER JOIN tbl_book_schedule ON tbl_book_schedule.id = tbl_schedule.id_book_schedule
+  INNER JOIN tbl_status ON tbl_status.id = tbl_schedule_status.id_status
+  INNER JOIN tbl_hospital_site ON tbl_hospital_site.id = tbl_book_schedule.id_hospital_site
+  INNER JOIN tbl_site ON tbl_site.id = tbl_hospital_site.id_site
+  INNER JOIN tbl_hospital ON tbl_hospital_site.id_hospital = tbl_hospital.id
+  WHERE tbl_hospital.id = ${hospitalId} AND tbl_schedule.id_user = ${userId};
+  `;
+
+  const responseSchedulesUser = await prisma.$queryRawUnsafe(sql);
+
+  if (responseSchedulesUser) {
+    return responseSchedulesUser;
+  } else {
+    return false;
+  }
+};
+
 async function updateUserPassword(userId, userData) {
   try {
     const updatedUser = await prisma.user.update({
@@ -275,4 +304,5 @@ module.exports = {
   getSchedulesUserById,
   updateUserPassword,
   deleteUserById,
+  getSchedulesUserByHospitalId,
 };

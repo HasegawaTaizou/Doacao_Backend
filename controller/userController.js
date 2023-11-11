@@ -237,6 +237,40 @@ const userGetSchedules = async function (userId) {
   }
 };
 
+const userGetSchedulesHospital = async function (hospitalId, userId) {
+  if (!validateId(userId) || !validateId(hospitalId)) {
+    return message.ERROR_INVALID_ID;
+  }
+
+  const userSchedulesData = await userDAO.getSchedulesUserByHospitalId(hospitalId, userId);
+
+  if (userSchedulesData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (userSchedulesData) {
+    let jsonUserSchedulesData = {};
+    jsonUserSchedulesData.status = message.OK.status;
+    jsonUserSchedulesData.schedules = [];
+
+    for (userSchedule in userSchedulesData) {
+      if (userSchedulesData) {
+        let userSchedulesObject = {
+          scheduleId: userSchedulesData[userSchedule].id_schedule,
+          date: userSchedulesData[userSchedule].date,
+          hour: userSchedulesData[userSchedule].hour,
+          site: userSchedulesData[userSchedule].site,
+          status: userSchedulesData[userSchedule].status,
+          hospital: userSchedulesData[userSchedule].name,
+        };
+
+        jsonUserSchedulesData.schedules.push(userSchedulesObject);
+      }
+    }
+    return jsonUserSchedulesData;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
 const userPasswordUpdate = async function (userId, userData) {
   if (!validateId(userId)) {
     return message.ERROR_INVALID_ID;
@@ -284,4 +318,5 @@ module.exports = {
   userGetSchedules,
   userPasswordUpdate,
   userDelete,
+  userGetSchedulesHospital
 };

@@ -9,7 +9,6 @@ const message = require("./module/config.js");
 const scheduleStatusInsert = async function (scheduleStatusData) {
   if (
     !validateOpinion(scheduleStatusData.observation) ||
-    !validateId(scheduleStatusData.idStatus) ||
     !validateId(scheduleStatusData.idSchedule)
   ) {
     return message.ERROR_REQUIRED_DATA;

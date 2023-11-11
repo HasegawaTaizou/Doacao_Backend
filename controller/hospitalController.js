@@ -126,6 +126,7 @@ const hospitalGet = async function (hospitalId) {
       neighborhood: hospitalData[0].neighborhood,
       street: hospitalData[0].street,
       complement: hospitalData[0].complement,
+      number: hospitalData[0].number,
     };
 
     return jsonHospitalData;

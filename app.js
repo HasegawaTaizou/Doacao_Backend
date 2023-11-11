@@ -220,6 +220,21 @@ app.get(
   }
 );
 
+//Get User Schedules Hospital
+app.get(
+  "/api/v1/hospital/:idHospital/users/:idUser/schedules",
+  cors(),
+  async function (request, response) {
+    const hospitalId = request.params.idHospital;
+    const userId = request.params.idUser;
+
+    const resultGetData = await userController.userGetSchedulesHospital(hospitalId, userId);
+
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
+
 //Get Hospital Book Schedules
 app.get(
   "/api/v1/hospital/:id/book-schedules",
