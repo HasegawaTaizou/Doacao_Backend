@@ -214,6 +214,7 @@ const getSchedulesUserByHospitalId = async function (hospitalId, userId) {
   DATE_FORMAT(tbl_book_schedule.date, '%d/%m/%Y') AS date,
   TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour, 
   tbl_status.status, 
+  tbl_site.id AS site_id,
   tbl_site.site,
   tbl_hospital.name
   FROM tbl_schedule_status
