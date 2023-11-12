@@ -7,6 +7,7 @@ const message = require("./module/config.js");
 const { validateId } = require("../validations/validate-id.js");
 const { validateYear } = require("../validations/validate-year.js");
 const { validateBloodMl } = require("../validations/validate-blood-ml.js");
+const { validateBloodType } = require("../validations/validate-blood-type.js");
 
 const donationBankInsert = async function (donationBankData) {
   const bloodTypeId = await bloodTypeDAO.getBloodTypeIdByName(
@@ -57,26 +58,17 @@ const donationBanksGet = async function (hospitalId) {
   }
 };
 
-const donationBankUpdate = async function (donationBankId, donationBankData) {
-  const bloodTypeId = await bloodTypeDAO.getBloodTypeIdByName(
-    donationBankData.bloodType
-  );
-
-  if (!validateId(donationBankId)) {
-    return message.ERROR_INVALID_ID;
-  } else if (
+const donationBankUpdate = async function (donationBankData) {
+  if (
     !validateId(donationBankData.hospitalId) ||
-    !validateId(bloodTypeId) ||
+    !validateBloodType(donationBankData.bloodType) ||
     !validateYear(donationBankData.year) ||
     !validateBloodMl(donationBankData.bloodMl)
   ) {
     return message.ERROR_REQUIRED_DATA;
   }
 
-  const status = await donationBankDAO.updateDonationBank(
-    donationBankId,
-    donationBankData
-  );
+  const status = await donationBankDAO.updateDonationBank(donationBankData);
   if (status) {
     return message.UPDATED_ITEM;
   } else {

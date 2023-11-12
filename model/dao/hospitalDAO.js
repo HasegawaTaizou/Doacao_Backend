@@ -8,6 +8,7 @@ const siteDAO = require("./siteDAO.js");
 const hospitalSiteDAO = require("./hospitalSiteDAO.js");
 const scheduleDAO = require("./scheduleDAO.js");
 const bookScheduleDAO = require("./bookScheduleDAO.js");
+const donationBankDAO = require("./donationBankDAO.js");
 
 const hospitalLogin = async function (loginData) {
   try {
@@ -69,6 +70,9 @@ async function insertHospital(hospitalData) {
       hospitalData.hospital,
       hospitalId
     );
+
+    //Donation Bank Inserts
+    let insertDonationBanks = await donationBankDAO.insertBloodTypeDataByHospitalId(hospitalId)
 
     return true;
   } catch (error) {
