@@ -1,6 +1,8 @@
 var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
+const cron = require("node-cron");
+
 const addressDAO = require("./addressDAO.js");
 const phoneDAO = require("./phoneDAO.js");
 const photoDAO = require("./photoDAO.js");
@@ -314,6 +316,22 @@ const getHospitals = async function () {
   }
 };
 
+const getHospitalsId = async function () {
+  const sql = `
+  SELECT 
+  tbl_hospital.id
+  FROM tbl_hospital;
+  `;
+
+  const responseHospitalsId = await prisma.$queryRawUnsafe(sql);
+
+  if (responseHospitalsId) {
+    return responseHospitalsId;
+  } else {
+    return false;
+  }
+};
+
 // DELETE
 // tbl_campaign
 // tbl_photo
@@ -409,10 +427,60 @@ async function deleteHospitalById(hospitalId) {
   }
 }
 
+const insertBloodTypeData = async function () {
+  const bloodTypes = ["NA", "O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"];
+  const newDate = new Date();
+  const currentYear = newDate.getFullYear();
+
+  const hospitalsId = await getHospitalsId();
+
+  try {
+    bloodTypes.map(async (bloodType) => {
+      const bloodTypeId = await getBloodTypeIdByName(bloodType);
+
+      hospitalsId.forEach(async (hospitalId) => {
+        const sql = `
+        INSERT INTO tbl_donation_bank (blood_ml, id_hospital, year, id_blood_type)
+        VALUES (0, ${hospitalId}, ${currentYear}, ${bloodTypeId});
+      `;
+
+        await prisma.$executeRawUnsafe(sql);
+      });
+    });
+  } catch (e) {
+    console.error("Failed to create blood type records", e);
+  }
+};
+
+const checkAndInsertNewYearRecord = async () => {
+  const currentYear = new Date().getFullYear();
+
+  // Consulta para verificar se já existe um registro para o ano atual
+  const existingRecord = await prisma.donationBank.findUnique({
+    where: {
+      year: currentYear,
+    },
+  });
+
+  if (!existingRecord) {
+    // Se não houver um registro para o ano atual, faça o INSERT
+    await insertBloodTypeData();
+    console.log(`Registro inserido para o ano ${currentYear}`);
+  } else {
+    console.log(`Registro já existe para o ano ${currentYear}`);
+  }
+};
+
+cron.schedule("0 0 1 1 *", async () => {
+  await checkAndInsertNewYearRecord();
+  console.log("Verificação e inserção do ano concluídas.");
+});
+
 module.exports = {
   hospitalLogin,
   insertHospital,
   getHospitalById,
+  getHospitalsId,
   getHospitalByEmail,
   getHospitalSchedules,
   updateHospital,
