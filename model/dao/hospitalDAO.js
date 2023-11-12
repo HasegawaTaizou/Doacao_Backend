@@ -74,7 +74,8 @@ async function insertHospital(hospitalData) {
     );
 
     //Donation Bank Inserts
-    let insertDonationBanks = await donationBankDAO.insertBloodTypeDataByHospitalId(hospitalId)
+    let insertDonationBanks =
+      await donationBankDAO.insertBloodTypeDataByHospitalId(hospitalId);
 
     return true;
   } catch (error) {
@@ -332,98 +333,153 @@ const getHospitalsId = async function () {
   }
 };
 
-// DELETE
-// tbl_campaign
-// tbl_photo
-// tbl_phone
-// tbl_review
-// tbl_donation_bank
+// -- Delete unico
+// DELETE FROM tbl_campaign
+// WHERE id_hospital = 1;
 
-// tbl_schedule_status
-// tbl_schedule
-// tbl_book_schedule
-// tbl_hospital_site
+// -- Delete unico
+// DELETE FROM tbl_donation_bank
+// WHERE id_hospital = 1;
+
+// -- Multiplos deletes
+// DELETE FROM tbl_schedule_status
+// WHERE id_schedule = 2;
+
+// -- Multiplos deletes
+// DELETE FROM tbl_schedule
+// WHERE id_book_schedule = 2;
+
+// -- Multiplos deletes
+// DELETE FROM tbl_book_schedule
+// WHERE id_hospital_site = 2;
+
+// -- Delete unico
+// DELETE FROM tbl_hospital_site
+// WHERE id_hospital = 1;
+
+// -- Delete unico
+// DELETE FROM tbl_phone
+// WHERE id_hospital = 1;
+
+// -- Delete unico
+// DELETE FROM tbl_photo
+// WHERE id_hospital = 1;
+
+// -- Delete unico
+// DELETE FROM tbl_review
+// WHERE id_hospital = 1;
+
+// -- Delete unico
+// DELETE FROM tbl_hospital
+// WHERE id = 1;
 
 async function deleteHospitalById(hospitalId) {
-  try {
-    const idSchedule = await scheduleDAO.getSchedulesIdByHospitalId(hospitalId);
+  const sqlDeleteCampaign = `
+  DELETE FROM tbl_campaign
+  WHERE id_hospital = ${hospitalId};
+  `;
+  const responseDeleteCampaign = await prisma.$executeRawUnsafe(
+    sqlDeleteCampaign
+  );
 
-    idSchedule.forEach(async (schedule) => {
-      await prisma.scheduleStatus.deleteMany({
-        where: {
-          idSchedule: Number(schedule.schedule_id),
-        },
-      });
-    });
+  const sqlDeleteDonationBank = `
+  DELETE FROM tbl_donation_bank
+  WHERE id_hospital = ${hospitalId};
+  `;
+  const responseDeleteDonationBank = await prisma.$executeRawUnsafe(
+    sqlDeleteDonationBank
+  );
 
-    idSchedule.forEach(async (schedule) => {
-      await prisma.schedule.delete({
-        where: {
-          id: Number(schedule.schedule_id),
-        },
-      });
-    });
+  const bookSchedulesId = await bookScheduleDAO.getBookSchedulesByHospitalId(
+    hospitalId
+  );
 
-    await prisma.campaign.deleteMany({
-      where: {
-        idHospital: Number(hospitalId),
-      },
-    });
+  const responseDeleteSchedulesStatus = bookSchedulesId.forEach(
+    async (bookSchedule) => {
+      let scheduleId = await scheduleDAO.getScheduleIdByBookScheduleId(
+        bookSchedule.id
+      );
 
-    await prisma.review.deleteMany({
-      where: {
-        idHospital: Number(hospitalId),
-      },
-    });
+      let sqlDeleteSchedulesStatus = `
+      DELETE FROM tbl_schedule_status
+      WHERE id_schedule = ${scheduleId[0].id_schedule};
+      `;
 
-    await prisma.donationBank.deleteMany({
-      where: {
-        idHospital: Number(hospitalId),
-      },
-    });
+      await prisma.$executeRawUnsafe(sqlDeleteSchedulesStatus);
+    }
+  );
 
-    await prisma.phone.deleteMany({
-      where: {
-        idHospital: Number(hospitalId),
-      },
-    });
+  const responseDeleteSchedules = bookSchedulesId.forEach(
+    async (bookSchedule) => {
+      let sqlDeleteSchedules = `
+      DELETE FROM tbl_schedule
+      WHERE id_book_schedule = ${bookSchedule.id};
+      `;
 
-    await prisma.photo.deleteMany({
-      where: {
-        idHospital: Number(hospitalId),
-      },
-    });
+      await prisma.$executeRawUnsafe(sqlDeleteSchedules);
+    }
+  );
 
-    await prisma.hospital.delete({
-      where: {
-        id: Number(hospitalId),
-      },
-    });
+  const responseDeleteBookSchedules = bookSchedulesId.forEach(
+    async (bookSchedule) => {
+      let sqlDeleteBookSchedules = `
+      DELETE FROM tbl_book_schedule
+      WHERE id = ${bookSchedule.id};
+      `;
 
-    await prisma.hospitalSite.deleteMany({
-      where: {
-        idHospital: Number(hospitalId),
-      },
-    });
+      await prisma.$executeRawUnsafe(sqlDeleteBookSchedules);
+    }
+  );
 
-    const bookScheduleId = await bookScheduleDAO.getBookSchedulesByHospitalId(
-      hospitalId
-    );
-    console.log(bookScheduleId);
+  const sqlDeleteHospitalSite = `
+  DELETE FROM tbl_hospital_site
+  WHERE id_hospital = ${hospitalId};
+  `;
+  const responseDeleteHospitalSite = await prisma.$executeRawUnsafe(
+    sqlDeleteHospitalSite
+  );
 
-    bookScheduleId.forEach(async (bookSchedule) => {
-      await prisma.bookSchedule.deleteMany({
-        where: {
-          id: Number(bookSchedule.id),
-        },
-      });
-    });
+  const sqlDeletePhone = `
+  DELETE FROM tbl_phone
+  WHERE id_hospital = ${hospitalId};
+  `;
+  const responseDeletePhone = await prisma.$executeRawUnsafe(sqlDeletePhone);
 
-    return true;
-  } catch (error) {
-    console.error("Erro ao excluir o hospital:", error);
-  } finally {
-    await prisma.$disconnect();
+  const sqlDeletePhoto = `
+  DELETE FROM tbl_photo
+  WHERE id_hospital = ${hospitalId};
+  `;
+  const responseDeletePhoto = await prisma.$executeRawUnsafe(sqlDeletePhoto);
+
+  const sqlDeleteReview = `
+  DELETE FROM tbl_review
+  WHERE id_hospital = ${hospitalId};
+  `;
+  const responseDeleteReview = await prisma.$executeRawUnsafe(sqlDeleteReview);
+
+  const sqlDeleteHospital = `
+  DELETE FROM tbl_hospital
+  WHERE id = ${hospitalId};
+  `;
+  const responseDeleteHospital = await prisma.$executeRawUnsafe(
+    sqlDeleteHospital
+  );
+
+  if (
+    responseDeleteCampaign &&
+    responseDeleteDonationBank &&
+    responseDeleteSchedulesStatus &&
+    responseDeleteSchedules &&
+    responseDeleteBookSchedules &&
+    responseDeleteHospitalSite &&
+    responseDeletePhone &&
+    responseDeletePhoto &&
+    responseDeleteReview &&
+    responseDeleteHospital
+  ) {
+    return responseDeleteHospital;
+  } else {
+    return false;
   }
 }
 
