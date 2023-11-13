@@ -1847,4 +1847,34 @@ describe("Unitary Tests DONATION-BANK", () => {
     expect(response.status).toBe(404);
     expect(response.message).toBe("No items found.");
   });
+
+  test("donationBankUpdate with correct data", async () => {
+    const data = {
+      year: 2023,
+      bloodMl: 350,
+      bloodType: "A+",
+      hospitalId: 1,
+    };
+
+    const response = await donationBankController.donationBankUpdate(data);
+
+    expect(response.status).toBe(204);
+    expect(response.body).toStrictEqual({});
+  });
+
+  test("donationBankUpdate with incorrect data", async () => {
+    const data = {
+      year: "fes",
+      bloodMl: 350,
+      bloodType: "A+",
+      hospitalId: 1,
+    };
+
+    const response = await donationBankController.donationBankUpdate(data);
+
+    expect(response.status).toBe(400);
+    expect(response.message).toBe(
+      "There are mandatory data that have not been filled in."
+    );
+  });
 });
