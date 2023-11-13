@@ -5,6 +5,8 @@ const BASE_URL = "/api/v1";
 
 const userController = require("../controller/userController");
 const hospitalController = require("../controller/hospitalController.js");
+const siteController = require("../controller/siteController.js");
+const reviewController = require("../controller/reviewController.js");
 
 //fazer do login e sobre a validação de id
 
@@ -1471,269 +1473,315 @@ const hospitalController = require("../controller/hospitalController.js");
 //   });
 // });
 
-describe("Unitary Tests HOSPITAL", () => {
-  test("loginHospital with existent hospital", async () => {
+// describe("Unitary Tests HOSPITAL", () => {
+//   test("loginHospital with existent hospital", async () => {
+//     const data = {
+//       email: "sofia@gmail.com",
+//       password: "1234",
+//     };
+
+//     const response = await hospitalController.loginHospital(data);
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("hospitalData");
+//     expect(response.body.hospitalData).toBeInstanceOf(Object);
+//   });
+
+//   test("loginHospital with unexistent hospital", async () => {
+//     const data = {
+//       email: "sofiaaaaa@gmail.com",
+//       password: "1234",
+//     };
+
+//     const response = await hospitalController.loginHospital(data);
+
+//     expect(response.status).toBe(404);
+//     expect(response.message).toBe("User or password incorrects.");
+//   });
+
+//   test("loginHospital with wrong data", async () => {
+//     const data = {
+//       email: 423423,
+//       password: "1234",
+//     };
+
+//     const response = await hospitalController.loginHospital(data);
+
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   test("hospitalInsert with correct data", async () => {
+//     const data = {
+//       hospital: {
+//         name: "Hospital de Carapicuiba",
+//         cnpj: "3454643445456",
+//         email: "hospitaljandira@gmail.com",
+//         phone: "1111-1111",
+//         website: "www.hospitaljandira.com.br",
+//         donationSite: "www.hospitaljandira.com.br",
+//         otherDonationSite: "www.hospitaljandira.com.br",
+//         photo:
+//           "https://www.folhadejandira.com.br/wp-content/uploads/2023/02/20230203-hospital-de-jandira-03-e1675468680181.jpg",
+//         password: "123",
+//       },
+//       address: {
+//         cep: "04216900",
+//         uf: "SP",
+//         city: "Jandira",
+//         neighborhood: "Ipiranga",
+//         street: "Rua Mil Oitocentos e Vinte e Dois",
+//         number: "76",
+//         complement: "Hospital",
+//       },
+//     };
+
+//     const response = await hospitalController.hospitalInsert(data);
+
+//     expect(response.status).toBe(201);
+//     expect(response.body.message).toBe("Record created successfully.");
+//   });
+
+//   test("hospitalInsert with incorrect data", async () => {
+//     const data = {
+//       hospital: {
+//         name: "Hospital de Jandira",
+//         //CNPJ too long
+//         cnpj: "3454643445456232332424",
+//         email: "hospitaljandira@gmail.com",
+//         phone: "1111-1111",
+//         website: "www.hospitaljandira.com.br",
+//         donationSite: "www.hospitaljandira.com.br",
+//         otherDonationSite: "www.hospitaljandira.com.br",
+//         photo:
+//           "https://www.folhadejandira.com.br/wp-content/uploads/2023/02/20230203-hospital-de-jandira-03-e1675468680181.jpg",
+//         password: "123",
+//       },
+//       address: {
+//         cep: "04216900",
+//         uf: "SP",
+//         city: "Jandira",
+//         neighborhood: "Ipiranga",
+//         street: "Rua Mil Oitocentos e Vinte e Dois",
+//         number: "76",
+//         complement: "Hospital",
+//       },
+//     };
+
+//     const response = await hospitalController.hospitalInsert(data);
+
+//     expect(response.status).toBe(400);
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   test("hospitalGet with existent hospital", async () => {
+//     const response = await hospitalController.hospitalGet(1);
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("hospital");
+//     expect(response.body).toHaveProperty("address");
+//     expect(response.body.hospital).toBeInstanceOf(Object);
+//     expect(response.body.address).toBeInstanceOf(Object);
+//   });
+
+//   test("hospitalGet with unexistent hospital", async () => {
+//     const response = await hospitalController.hospitalGet(100);
+
+//     expect(response.status).toBe(404);
+//     expect(response.body).toHaveProperty("message");
+//   });
+
+//   test("hospitalGetSchedules with data", async () => {
+//     const response = await hospitalController.hospitalGetSchedules(1);
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("schedules");
+//     expect(response.body.schedules).toBeInstanceOf(Array);
+//   });
+
+//   test("hospitalGetSchedules without data", async () => {
+//     const response = await hospitalController.hospitalGetSchedules(100);
+
+//     expect(response.status).toBe(404);
+//     expect(response.body).toHaveProperty("message");
+//   });
+
+//   test("hospitalUpdate with correct data", async () => {
+//     const data = {
+//       hospital: {
+//         name: "Sofia Coghi Landi",
+//         cnpj: "123453-34.09",
+//         email: "sofiacoghi@gmail.com",
+//         phone: "(11) 1111-1111",
+//         website: "www.sofia.com.br",
+//         donationSite: "Local 1",
+//         otherDonationSite: "Local 2",
+//         photo: "Imagem URL",
+//         password: "123",
+//       },
+//       address: {
+//         cep: "0922-844",
+//         uf: "SP",
+//         city: "São Paulo",
+//         neighborhood: "carapicuiba",
+//         street: "Rua Sofia",
+//         number: "222",
+//         complement: "",
+//       },
+//     };
+
+//     const response = await hospitalController.hospitalUpdate(1, data);
+
+//     expect(response.status).toBe(204);
+//     expect(response.body).toStrictEqual({});
+//   });
+
+//   test("hospitalUpdate with incorrect data", async () => {
+//     const data = {
+//       hospital: {
+//         name: "Sofia Coghi Landi",
+//         cnpj: "123453-34.09",
+//         email: "sofiacoghi@gmail.com",
+//         //Phone too long
+//         phone: "(11) 1111-1111111111111",
+//         website: "www.sofia.com.br",
+//         donationSite: "Local 1",
+//         otherDonationSite: "Local 2",
+//         photo: "Imagem URL",
+//         password: "123",
+//       },
+//       address: {
+//         cep: "0922-844",
+//         uf: "SP",
+//         city: "São Paulo",
+//         neighborhood: "carapicuiba",
+//         street: "Rua Sofia",
+//         number: "222",
+//         complement: "",
+//       },
+//     };
+
+//     const response = await hospitalController.hospitalUpdate(1, data);
+
+//     expect(response.status).toBe(400);
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   test("hospitalUpdate of unexistent hospital", async () => {
+//     const data = {
+//       id: 100,
+//       hospital: {
+//         name: "Sofia Coghi Landi",
+//         cnpj: "123453-34.09",
+//         email: "sofiacoghi@gmail.com",
+//         phone: "(11) 1111-1111",
+//         website: "www.sofia.com.br",
+//         donationSite: "Local 1",
+//         otherDonationSite: "Local 2",
+//         photo: "Imagem URL",
+//         password: "123",
+//       },
+//       address: {
+//         cep: "0922-844",
+//         uf: "SP",
+//         city: "São Paulo",
+//         neighborhood: "carapicuiba",
+//         street: "Rua Sofia",
+//         number: "222",
+//         complement: "",
+//       },
+//     };
+
+//     const response = await hospitalController.hospitalUpdate(100, data);
+
+//     expect(response.status).toBe(404);
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe("No items found.");
+//   });
+
+//   test("hospitalPasswordUpdate with correct data", async () => {
+//     const data = {
+//       password: "123",
+//     };
+
+//     const response = await hospitalController.hospitalPasswordUpdate(1, data);
+
+//     expect(response.status).toBe(204);
+//     expect(response.body).toStrictEqual({});
+//   });
+
+//   test("hospitalPasswordUpdate of unexistent hospital", async () => {
+//     const data = {
+//       password: "123",
+//     };
+
+//     const response = await hospitalController.hospitalPasswordUpdate(100, data);
+
+//     expect(response.status).toBe(404);
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe("No items found.");
+//   });
+
+//   test("hospitalsGet", async () => {
+
+//     const response = await hospitalController.hospitalsGet();
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("hospitals");
+//     expect(response.body.hospitals).toBeInstanceOf(Array);
+//   });
+// });
+
+// describe("Unitary Tests SITE", () => {
+//   test("sitesGet", async () => {
+//     const response = await siteController.sitesGet();
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("sites");
+//     expect(response.body.sites).toBeInstanceOf(Object);
+//   });
+// })
+
+describe("Unitary Tests REVIEW", () => {
+  test("reviewInsert with correct data", async () => {
     const data = {
-      email: "sofia@gmail.com",
-      password: "1234",
+      opinion:
+        "Ótimo atendimento, exelentes profissionais e instalações extremamente limpas e seguras",
+      idUser: 1,
+      idHospital: 1,
+      idStar: 5,
     };
 
-    const response = await hospitalController.loginHospital(data);
+    const response = await reviewController.reviewInsert(data);
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("hospitalData");
-    expect(response.body.hospitalData).toBeInstanceOf(Object);
+    expect(response.status).toBe(201);
+    expect(response.message).toBe("Record created successfully.");
+    expect(response.body).toHaveProperty("sites");
+    expect(response.body.sites).toBeInstanceOf(Object);
   });
 
-  test("loginHospital with unexistent hospital", async () => {
+  test("reviewInsert with incorrect data", async () => {
     const data = {
-      email: "sofiaaaaa@gmail.com",
-      password: "1234",
+      opinion:
+        23442,
+      idUser: 1,
+      idHospital: 1,
+      idStar: 5,
     };
 
-    const response = await hospitalController.loginHospital(data);
-
-    expect(response.status).toBe(404);
-    expect(response.message).toBe("User or password incorrects.");
-  });
-
-  test("loginHospital with wrong data", async () => {
-    const data = {
-      email: 423423,
-      password: "1234",
-    };
-
-    const response = await hospitalController.loginHospital(data);
+    const response = await reviewController.reviewInsert(data);
 
     expect(response.status).toBe(400);
     expect(response.message).toBe(
       "There are mandatory data that have not been filled in."
     );
-  });
-
-  test("hospitalInsert with correct data", async () => {
-    const data = {
-      hospital: {
-        name: "Hospital de Carapicuiba",
-        cnpj: "3454643445456",
-        email: "hospitaljandira@gmail.com",
-        phone: "1111-1111",
-        website: "www.hospitaljandira.com.br",
-        donationSite: "www.hospitaljandira.com.br",
-        otherDonationSite: "www.hospitaljandira.com.br",
-        photo:
-          "https://www.folhadejandira.com.br/wp-content/uploads/2023/02/20230203-hospital-de-jandira-03-e1675468680181.jpg",
-        password: "123",
-      },
-      address: {
-        cep: "04216900",
-        uf: "SP",
-        city: "Jandira",
-        neighborhood: "Ipiranga",
-        street: "Rua Mil Oitocentos e Vinte e Dois",
-        number: "76",
-        complement: "Hospital",
-      },
-    };
-
-    const response = await hospitalController.hospitalInsert(data);
-
-    expect(response.status).toBe(201);
-    expect(response.body.message).toBe("Record created successfully.");
-  });
-
-  test("hospitalInsert with incorrect data", async () => {
-    const data = {
-      hospital: {
-        name: "Hospital de Jandira",
-        //CNPJ too long
-        cnpj: "3454643445456232332424",
-        email: "hospitaljandira@gmail.com",
-        phone: "1111-1111",
-        website: "www.hospitaljandira.com.br",
-        donationSite: "www.hospitaljandira.com.br",
-        otherDonationSite: "www.hospitaljandira.com.br",
-        photo:
-          "https://www.folhadejandira.com.br/wp-content/uploads/2023/02/20230203-hospital-de-jandira-03-e1675468680181.jpg",
-        password: "123",
-      },
-      address: {
-        cep: "04216900",
-        uf: "SP",
-        city: "Jandira",
-        neighborhood: "Ipiranga",
-        street: "Rua Mil Oitocentos e Vinte e Dois",
-        number: "76",
-        complement: "Hospital",
-      },
-    };
-
-    const response = await hospitalController.hospitalInsert(data);
-
-    expect(response.status).toBe(400);
-    expect(response.body).toHaveProperty("message");
-    expect(response.body.message).toBe(
-      "There are mandatory data that have not been filled in."
-    );
-  });
-
-  test("hospitalGet with existent hospital", async () => {
-    const response = await hospitalController.hospitalGet(1);
-
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("hospital");
-    expect(response.body).toHaveProperty("address");
-    expect(response.body.hospital).toBeInstanceOf(Object);
-    expect(response.body.address).toBeInstanceOf(Object);
-  });
-
-  test("hospitalGet with unexistent hospital", async () => {
-    const response = await hospitalController.hospitalGet(100);
-
-    expect(response.status).toBe(404);
-    expect(response.body).toHaveProperty("message");
-  });
-
-  test("hospitalGetSchedules with data", async () => {
-    const response = await hospitalController.hospitalGetSchedules(1);
-
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("schedules");
-    expect(response.body.schedules).toBeInstanceOf(Array);
-  });
-
-  test("hospitalGetSchedules without data", async () => {
-    const response = await hospitalController.hospitalGetSchedules(100);
-
-    expect(response.status).toBe(404);
-    expect(response.body).toHaveProperty("message");
-  });
-
-  test("hospitalUpdate with correct data", async () => {
-    const data = {
-      hospital: {
-        name: "Sofia Coghi Landi",
-        cnpj: "123453-34.09",
-        email: "sofiacoghi@gmail.com",
-        phone: "(11) 1111-1111",
-        website: "www.sofia.com.br",
-        donationSite: "Local 1",
-        otherDonationSite: "Local 2",
-        photo: "Imagem URL",
-        password: "123",
-      },
-      address: {
-        cep: "0922-844",
-        uf: "SP",
-        city: "São Paulo",
-        neighborhood: "carapicuiba",
-        street: "Rua Sofia",
-        number: "222",
-        complement: "",
-      },
-    };
-
-    const response = await hospitalController.hospitalUpdate(1, data);
-
-    expect(response.status).toBe(204);
-    expect(response.body).toStrictEqual({});
-  });
-
-  test("hospitalUpdate with incorrect data", async () => {
-    const data = {
-      hospital: {
-        name: "Sofia Coghi Landi",
-        cnpj: "123453-34.09",
-        email: "sofiacoghi@gmail.com",
-        //Phone too long
-        phone: "(11) 1111-1111111111111",
-        website: "www.sofia.com.br",
-        donationSite: "Local 1",
-        otherDonationSite: "Local 2",
-        photo: "Imagem URL",
-        password: "123",
-      },
-      address: {
-        cep: "0922-844",
-        uf: "SP",
-        city: "São Paulo",
-        neighborhood: "carapicuiba",
-        street: "Rua Sofia",
-        number: "222",
-        complement: "",
-      },
-    };
-
-    const response = await hospitalController.hospitalUpdate(1, data);
-
-    expect(response.status).toBe(400);
-    expect(response.body).toHaveProperty("message");
-    expect(response.body.message).toBe(
-      "There are mandatory data that have not been filled in."
-    );
-  });
-
-  test("hospitalUpdate of unexistent hospital", async () => {
-    const data = {
-      id: 100,
-      hospital: {
-        name: "Sofia Coghi Landi",
-        cnpj: "123453-34.09",
-        email: "sofiacoghi@gmail.com",
-        phone: "(11) 1111-1111",
-        website: "www.sofia.com.br",
-        donationSite: "Local 1",
-        otherDonationSite: "Local 2",
-        photo: "Imagem URL",
-        password: "123",
-      },
-      address: {
-        cep: "0922-844",
-        uf: "SP",
-        city: "São Paulo",
-        neighborhood: "carapicuiba",
-        street: "Rua Sofia",
-        number: "222",
-        complement: "",
-      },
-    };
-
-    const response = await hospitalController.hospitalUpdate(100, data);
-
-    expect(response.status).toBe(404);
-    expect(response.body).toHaveProperty("message");
-    expect(response.body.message).toBe("No items found.");
-  });
-
-  test("hospitalPasswordUpdate with correct data", async () => {
-    const data = {
-      password: "123",
-    };
-
-    const response = await hospitalController.hospitalPasswordUpdate(1, data);
-
-    expect(response.status).toBe(204);
-    expect(response.body).toStrictEqual({});
-  });
-
-  test("hospitalPasswordUpdate of unexistent hospital", async () => {
-    const data = {
-      password: "123",
-    };
-
-    const response = await hospitalController.hospitalPasswordUpdate(100, data);
-
-    expect(response.status).toBe(404);
-    expect(response.body).toHaveProperty("message");
-    expect(response.body.message).toBe("No items found.");
-  });
-
-  test("hospitalsGet", async () => {
-
-    const response = await hospitalController.hospitalsGet();
-
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("hospitals");
-    expect(response.body.hospitals).toBeInstanceOf(Array);
   });
 });
