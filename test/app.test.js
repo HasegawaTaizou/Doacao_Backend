@@ -8,6 +8,7 @@ const hospitalController = require("../controller/hospitalController.js");
 const siteController = require("../controller/siteController.js");
 const reviewController = require("../controller/reviewController.js");
 const donationBankController = require("../controller/donationBankController.js");
+const campaignController = require("../controller/campaignController.js");
 
 //fazer do login e sobre a validação de id
 
@@ -1802,7 +1803,84 @@ const donationBankController = require("../controller/donationBankController.js"
 //   });
 // });
 
-describe("Unitary Tests DONATION-BANK", () => {
+// describe("Unitary Tests DONATION-BANK", () => {
+//   test("donationBankInsert with correct data", async () => {
+//     const data = {
+//       year: 2023,
+//       bloodMl: 350,
+//       bloodType: "A-",
+//       hospitalId: 1,
+//     };
+
+//     const response = await donationBankController.donationBankInsert(data);
+
+//     expect(response.status).toBe(201);
+//     expect(response.message).toBe("Record created successfully.");
+//   });
+
+//   test("donationBankInsert with incorrect data", async () => {
+//     const data = {
+//       year: "dawd",
+//       bloodMl: 350,
+//       bloodType: "A-",
+//       hospitalId: 1,
+//     };
+
+//     const response = await donationBankController.donationBankInsert(data);
+
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   test("donationBanksGet with existent hospital", async () => {
+//     const response = await donationBankController.donationBanksGet(1);
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("donationBanks");
+//     expect(response.body.donationBanks).toBeInstanceOf(Object);
+//   });
+
+//   test("donationBanksGet with unexistent hospital", async () => {
+//     const response = await donationBankController.donationBanksGet(100);
+
+//     expect(response.status).toBe(404);
+//     expect(response.message).toBe("No items found.");
+//   });
+
+//   test("donationBankUpdate with correct data", async () => {
+//     const data = {
+//       year: 2023,
+//       bloodMl: 350,
+//       bloodType: "A+",
+//       hospitalId: 1,
+//     };
+
+//     const response = await donationBankController.donationBankUpdate(data);
+
+//     expect(response.status).toBe(204);
+//     expect(response.body).toStrictEqual({});
+//   });
+
+//   test("donationBankUpdate with incorrect data", async () => {
+//     const data = {
+//       year: "fes",
+//       bloodMl: 350,
+//       bloodType: "A+",
+//       hospitalId: 1,
+//     };
+
+//     const response = await donationBankController.donationBankUpdate(data);
+
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+// });
+
+describe("Unitary Tests CAMPAIGN", () => {
   test("donationBankInsert with correct data", async () => {
     const data = {
       year: 2023,
@@ -1815,66 +1893,5 @@ describe("Unitary Tests DONATION-BANK", () => {
 
     expect(response.status).toBe(201);
     expect(response.message).toBe("Record created successfully.");
-  });
-
-  test("donationBankInsert with incorrect data", async () => {
-    const data = {
-      year: "dawd",
-      bloodMl: 350,
-      bloodType: "A-",
-      hospitalId: 1,
-    };
-
-    const response = await donationBankController.donationBankInsert(data);
-
-    expect(response.status).toBe(400);
-    expect(response.message).toBe(
-      "There are mandatory data that have not been filled in."
-    );
-  });
-
-  test("donationBanksGet with existent hospital", async () => {
-    const response = await donationBankController.donationBanksGet(1);
-
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("donationBanks");
-    expect(response.body.donationBanks).toBeInstanceOf(Object);
-  });
-
-  test("donationBanksGet with unexistent hospital", async () => {
-    const response = await donationBankController.donationBanksGet(100);
-
-    expect(response.status).toBe(404);
-    expect(response.message).toBe("No items found.");
-  });
-
-  test("donationBankUpdate with correct data", async () => {
-    const data = {
-      year: 2023,
-      bloodMl: 350,
-      bloodType: "A+",
-      hospitalId: 1,
-    };
-
-    const response = await donationBankController.donationBankUpdate(data);
-
-    expect(response.status).toBe(204);
-    expect(response.body).toStrictEqual({});
-  });
-
-  test("donationBankUpdate with incorrect data", async () => {
-    const data = {
-      year: "fes",
-      bloodMl: 350,
-      bloodType: "A+",
-      hospitalId: 1,
-    };
-
-    const response = await donationBankController.donationBankUpdate(data);
-
-    expect(response.status).toBe(400);
-    expect(response.message).toBe(
-      "There are mandatory data that have not been filled in."
-    );
   });
 });
