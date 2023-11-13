@@ -1770,8 +1770,7 @@ describe("Unitary Tests REVIEW", () => {
 
   test("reviewInsert with incorrect data", async () => {
     const data = {
-      opinion:
-        23442,
+      opinion: 23442,
       idUser: 1,
       idHospital: 1,
       idStar: 5,
@@ -1783,5 +1782,21 @@ describe("Unitary Tests REVIEW", () => {
     expect(response.message).toBe(
       "There are mandatory data that have not been filled in."
     );
+  });
+
+  test("ratingsStatisticsGet", async () => {
+    const response = await reviewController.ratingsStatisticsGet(1);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("ratingsStatistics");
+    expect(response.body.ratingsStatistics).toBeInstanceOf(Object);
+  });
+
+  test("reviewsStatisticsGet", async () => {
+    const response = await reviewController.reviewsStatisticsGet(1);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("reviewsStatistics");
+    expect(response.body.reviewsStatistics).toBeInstanceOf(Object);
   });
 });
