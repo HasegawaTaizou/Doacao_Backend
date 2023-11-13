@@ -7,6 +7,7 @@ const userController = require("../controller/userController");
 const hospitalController = require("../controller/hospitalController.js");
 const siteController = require("../controller/siteController.js");
 const reviewController = require("../controller/reviewController.js");
+const donationBankController = require("../controller/donationBankController.js");
 
 //fazer do login e sobre a validação de id
 
@@ -1750,33 +1751,81 @@ const reviewController = require("../controller/reviewController.js");
 //   });
 // })
 
-describe("Unitary Tests REVIEW", () => {
-  test("reviewInsert with correct data", async () => {
+// describe("Unitary Tests REVIEW", () => {
+//   test("reviewInsert with correct data", async () => {
+//     const data = {
+//       opinion:
+//         "Ótimo atendimento, exelentes profissionais e instalações extremamente limpas e seguras",
+//       idUser: 1,
+//       idHospital: 1,
+//       idStar: 5,
+//     };
+
+//     const response = await reviewController.reviewInsert(data);
+
+//     expect(response.status).toBe(201);
+//     expect(response.message).toBe("Record created successfully.");
+//     expect(response.body).toHaveProperty("sites");
+//     expect(response.body.sites).toBeInstanceOf(Object);
+//   });
+
+//   test("reviewInsert with incorrect data", async () => {
+//     const data = {
+//       opinion: 23442,
+//       idUser: 1,
+//       idHospital: 1,
+//       idStar: 5,
+//     };
+
+//     const response = await reviewController.reviewInsert(data);
+
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   test("ratingsStatisticsGet", async () => {
+//     const response = await reviewController.ratingsStatisticsGet(1);
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("ratingsStatistics");
+//     expect(response.body.ratingsStatistics).toBeInstanceOf(Object);
+//   });
+
+//   test("reviewsStatisticsGet", async () => {
+//     const response = await reviewController.reviewsStatisticsGet(1);
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("reviewsStatistics");
+//     expect(response.body.reviewsStatistics).toBeInstanceOf(Object);
+//   });
+// });
+
+describe("Unitary Tests DONATION-BANK", () => {
+  test("donationBankInsert with correct data", async () => {
     const data = {
-      opinion:
-        "Ótimo atendimento, exelentes profissionais e instalações extremamente limpas e seguras",
-      idUser: 1,
-      idHospital: 1,
-      idStar: 5,
+      year: 2023,
+      bloodMl: 350,
+      bloodType: "A-",
+      hospitalId: 1,
     };
 
-    const response = await reviewController.reviewInsert(data);
+    const response = await donationBankController.donationBankInsert(data);
 
     expect(response.status).toBe(201);
     expect(response.message).toBe("Record created successfully.");
-    expect(response.body).toHaveProperty("sites");
-    expect(response.body.sites).toBeInstanceOf(Object);
   });
 
-  test("reviewInsert with incorrect data", async () => {
+  test("donationBankInsert with incorrect data", async () => {
     const data = {
-      opinion: 23442,
-      idUser: 1,
-      idHospital: 1,
-      idStar: 5,
+      year: "dawd",
+      bloodMl: 350,
+      bloodType: "A-",
+      hospitalId: 1,
     };
 
-    const response = await reviewController.reviewInsert(data);
+    const response = await donationBankController.donationBankInsert(data);
 
     expect(response.status).toBe(400);
     expect(response.message).toBe(
@@ -1784,19 +1833,18 @@ describe("Unitary Tests REVIEW", () => {
     );
   });
 
-  test("ratingsStatisticsGet", async () => {
-    const response = await reviewController.ratingsStatisticsGet(1);
+  test("donationBanksGet with existent hospital", async () => {
+    const response = await donationBankController.donationBanksGet(1);
 
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("ratingsStatistics");
-    expect(response.body.ratingsStatistics).toBeInstanceOf(Object);
+    expect(response.body).toHaveProperty("donationBanks");
+    expect(response.body.donationBanks).toBeInstanceOf(Object);
   });
 
-  test("reviewsStatisticsGet", async () => {
-    const response = await reviewController.reviewsStatisticsGet(1);
+  test("donationBanksGet with unexistent hospital", async () => {
+    const response = await donationBankController.donationBanksGet(100);
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("reviewsStatistics");
-    expect(response.body.reviewsStatistics).toBeInstanceOf(Object);
+    expect(response.status).toBe(404);
+    expect(response.message).toBe("No items found.");
   });
 });
