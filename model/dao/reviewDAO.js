@@ -2,8 +2,8 @@ var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
 async function insertReview(reviewData) {
-  const [day, month, year] = reviewData.date.split('/');
-  const ISOdate = `${year}-${month}-${day}T00:00:00Z`;
+  // const [day, month, year] = reviewData.date.split('/');
+  // const ISOdate = `${year}-${month}-${day}T00:00:00Z`;
 
   try {
     const insertReviewData = await prisma.review.create({
