@@ -164,7 +164,7 @@ model Star {
 model Review {
   id      Int      @id @unique @default(autoincrement())
   opinion String   @db.Text
-  date    DateTime @db.Date
+  date    DateTime @db.Date @default(now())
 
   idUser     Int      @map("id_user")
   User       User     @relation(fields: [idUser], references: [id])
