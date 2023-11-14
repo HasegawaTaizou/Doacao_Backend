@@ -1,4 +1,5 @@
 # Executar o prisma
+## quando for pela primeira vez: npx prisma init
 
 ## npx prisma migrate reset --skip-seed (DROP DATABASE)
 ## npx prisma generate 
