@@ -8,7 +8,8 @@ const hospitalController = require("../controller/hospitalController.js");
 const siteController = require("../controller/siteController.js");
 const reviewController = require("../controller/reviewController.js");
 const donationBankController = require("../controller/donationBankController.js");
-const campaignController = require("../controller/campaignController.js");
+const scheduleController = require("../controller/scheduleController.js");
+const scheduleStatusController = require("../controller/scheduleStatusController.js");
 
 //fazer do login e sobre a validação de id
 
@@ -1880,34 +1881,114 @@ const campaignController = require("../controller/campaignController.js");
 //   });
 // });
 
-describe("Unitary Tests CAMPAIGN", () => {
-  test("campaignInsert with correct data", async () => {
+// describe("Unitary Tests CAMPAIGN", () => {
+//   test("campaignInsert with correct data", async () => {
+//     const data = {
+//       date: "13/01/2024",
+//       hour: "14:30",
+//       description: "Campanha de Doacao de Sangue",
+//       image:
+//         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWiD1lvqficG2rIaApU7lzgb8GUZ3nm1OqZkoUgTCD&s",
+//       hospitalId: 1,
+//     };
+
+//     const response = await campaignController.campaignInsert(data);
+
+//     expect(response.status).toBe(201);
+//     expect(response.message).toBe("Record created successfully.");
+//   });
+
+//   test("campaignInsert with incorrect data", async () => {
+//     const data = {
+//       date: "13/01/2024543546", //Incorrect Date
+//       hour: "14:30",
+//       description: "Campanha de Doacao de Sangue",
+//       image:
+//         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWiD1lvqficG2rIaApU7lzgb8GUZ3nm1OqZkoUgTCD&s",
+//       hospitalId: 1,
+//     };
+
+//     const response = await campaignController.campaignInsert(data);
+
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   test("campaignUpdate with correct data", async () => {
+//     const data = {
+//       id: 1,
+//       date: "13/01/2024",
+//       hour: "14:30",
+//       description: "Campanha de Doacao de Sangue",
+//       image:
+//         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWiD1lvqficG2rIaApU7lzgb8GUZ3nm1OqZkoUgTCD&s",
+//       hospitalId: 1,
+//     };
+
+//     const response = await campaignController.campaignUpdate(data);
+
+//     expect(response.status).toBe(204);
+//     expect(response.message).toBe("Record updated successfully.");
+//     expect(response.body).toStrictEqual({});
+//   });
+
+//   test("campaignUpdate with incorrect data", async () => {
+//     const data = {
+//       id: 1,
+//       date: "13/01/202424234", //Incorrect Date
+//       hour: "14:30",
+//       description: "Campanha de Doacao de Sangue",
+//       image:
+//         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWiD1lvqficG2rIaApU7lzgb8GUZ3nm1OqZkoUgTCD&s",
+//       hospitalId: 1,
+//     };
+
+//     const response = await campaignController.campaignUpdate(data);
+
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+
+//   test("campaignUpdate with unexistent campaign", async () => {
+//     const response = await campaignController.campaignUpdate(100);
+
+//     expect(response.status).toBe(404);
+//     expect(response.message).toBe("No items found.");
+//   });
+
+//   test("campaignsGet", async () => {
+//     const response = await campaignController.campaignsGet();
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("campaigns");
+//     expect(response.body.campaigns).toBeInstanceOf(Array);
+//   });
+// });
+
+describe("Unitary Tests SCHEDULE", () => {
+  test("scheduleInsert with correct data", async () => {
     const data = {
-      date: "13/01/2024",
-      hour: "14:30",
-      description: "Campanha de Doacao de Sangue",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWiD1lvqficG2rIaApU7lzgb8GUZ3nm1OqZkoUgTCD&s",
-      hospitalId: 1,
+      idUser: 1,
+      idBookSchedule: 1,
     };
 
-    const response = await campaignController.campaignInsert(data);
+    const response = await scheduleController.scheduleInsert(data);
 
     expect(response.status).toBe(201);
     expect(response.message).toBe("Record created successfully.");
   });
 
-  test("campaignInsert with incorrect data", async () => {
+  test("scheduleInsert with incorrect data", async () => {
     const data = {
-      date: "13/01/2024543546", //Incorrect Date
-      hour: "14:30",
-      description: "Campanha de Doacao de Sangue",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWiD1lvqficG2rIaApU7lzgb8GUZ3nm1OqZkoUgTCD&s",
-      hospitalId: 1,
+      idUser: "efwe",
+      idBookSchedule: 1,
     };
 
-    const response = await campaignController.campaignInsert(data);
+    const response = await scheduleController.scheduleInsert(data);
 
     expect(response.status).toBe(400);
     expect(response.message).toBe(
@@ -1915,36 +1996,25 @@ describe("Unitary Tests CAMPAIGN", () => {
     );
   });
 
-  test("campaignUpdate with correct data", async () => {
+  test("scheduleCancelUpdate with correct data", async () => {
     const data = {
       id: 1,
-      date: "13/01/2024",
-      hour: "14:30",
-      description: "Campanha de Doacao de Sangue",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWiD1lvqficG2rIaApU7lzgb8GUZ3nm1OqZkoUgTCD&s",
-      hospitalId: 1,
+      observation: "Sofia Linda Melhor Filha Te Amo",
     };
 
-    const response = await campaignController.campaignUpdate(data);
+    const response = await scheduleController.scheduleCancelUpdate(data);
 
     expect(response.status).toBe(204);
-    expect(response.message).toBe("Record updated successfully.");
     expect(response.body).toStrictEqual({});
   });
 
-  test("campaignUpdate with incorrect data", async () => {
+  test("scheduleCancelUpdate with incorrect data", async () => {
     const data = {
       id: 1,
-      date: "13/01/202424234", //Incorrect Date
-      hour: "14:30",
-      description: "Campanha de Doacao de Sangue",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWiD1lvqficG2rIaApU7lzgb8GUZ3nm1OqZkoUgTCD&s",
-      hospitalId: 1,
+      observation: 243423,
     };
 
-    const response = await campaignController.campaignUpdate(data);
+    const response = await scheduleController.scheduleCancelUpdate(data);
 
     expect(response.status).toBe(400);
     expect(response.message).toBe(
@@ -1952,18 +2022,103 @@ describe("Unitary Tests CAMPAIGN", () => {
     );
   });
 
-  test("campaignUpdate with unexistent campaign", async () => {
-    const response = await campaignController.campaignUpdate(100);
+  test("scheduleRescheduleUpdate with correct data", async () => {
+    const data = {
+      id: 1,
+      date: "20/03/2000",
+      hour: "12:00",
+      siteId: 2,
+    };
 
-    expect(response.status).toBe(404);
-    expect(response.message).toBe("No items found.");
+    const response = await scheduleController.scheduleRescheduleUpdate(data);
+
+    expect(response.status).toBe(204);
+    expect(response.body).toStrictEqual({});
   });
 
-  test("campaignsGet", async () => {
-    const response = await campaignController.campaignsGet();
+  test("scheduleRescheduleUpdate with incorrect data", async () => {
+    const data = {
+      id: 1,
+      date: "20/03/200032131",
+      hour: "12:00",
+      siteId: 2,
+    };
+
+    const response = await scheduleController.scheduleRescheduleUpdate(data);
+
+    expect(response.status).toBe(400);
+    expect(response.message).toBe(
+      "There are mandatory data that have not been filled in."
+    );
+  });
+
+  test("scheduleConcludeUpdate with correct data", async () => {
+    const data = {
+      id: 1,
+    };
+
+    const response = await scheduleController.scheduleConcludeUpdate(data);
+
+    expect(response.status).toBe(204);
+    expect(response.body).toStrictEqual({});
+  });
+
+  test("scheduleConcludeUpdate with incorrect data", async () => {
+    const data = {
+      id: "efwefe",
+    };
+
+    const response = await scheduleController.scheduleConcludeUpdate(data);
+
+    expect(response.status).toBe(400);
+    expect(response.message).toBe(
+      "The specified ID is invalid. Make sure it is a numeric value."
+    );
+  });
+
+  test("schedulesGet", async () => {
+    const response = await scheduleController.schedulesGet();
 
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("campaigns");
-    expect(response.body.campaigns).toBeInstanceOf(Array);
+    expect(response.body).toHaveProperty("schedules");
+    expect(response.body.schedules).toBeInstanceOf(Object);
+  });
+
+  test("schedulesStatistics", async () => {
+    const response = await scheduleController.schedulesStatisticsGet(1);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("schedulesStatistics");
+    expect(response.body.schedulesStatistics).toBeInstanceOf(Object);
   });
 });
+
+// describe("Unitary Tests SCHEDULE-STATUS", () => {
+//   test("scheduleStatusInsert with correct data", async () => {
+//     const data = {
+//       observation: "",
+//       status: "SCHEDULED",
+//       idSchedule: 1,
+//     };
+
+//     const response = await scheduleStatusController.scheduleStatusInsert(data);
+
+//     expect(response.status).toBe(201);
+//     expect(response.message).toBe("Record created successfully.");
+//   });
+
+//   test("scheduleStatusInsert with incorrect data", async () => {
+//     const data = {
+//       observation: 23424244,
+//       status: "SCHEDULED",
+//       idSchedule: 1,
+//     };
+
+//     const response = await scheduleStatusController.scheduleStatusInsert(data);
+
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+// });
