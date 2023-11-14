@@ -1881,17 +1881,89 @@ const campaignController = require("../controller/campaignController.js");
 // });
 
 describe("Unitary Tests CAMPAIGN", () => {
-  test("donationBankInsert with correct data", async () => {
+  test("campaignInsert with correct data", async () => {
     const data = {
-      year: 2023,
-      bloodMl: 350,
-      bloodType: "A-",
+      date: "13/01/2024",
+      hour: "14:30",
+      description: "Campanha de Doacao de Sangue",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWiD1lvqficG2rIaApU7lzgb8GUZ3nm1OqZkoUgTCD&s",
       hospitalId: 1,
     };
 
-    const response = await donationBankController.donationBankInsert(data);
+    const response = await campaignController.campaignInsert(data);
 
     expect(response.status).toBe(201);
     expect(response.message).toBe("Record created successfully.");
+  });
+
+  test("campaignInsert with incorrect data", async () => {
+    const data = {
+      date: "13/01/2024543546", //Incorrect Date
+      hour: "14:30",
+      description: "Campanha de Doacao de Sangue",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWiD1lvqficG2rIaApU7lzgb8GUZ3nm1OqZkoUgTCD&s",
+      hospitalId: 1,
+    };
+
+    const response = await campaignController.campaignInsert(data);
+
+    expect(response.status).toBe(400);
+    expect(response.message).toBe(
+      "There are mandatory data that have not been filled in."
+    );
+  });
+
+  test("campaignUpdate with correct data", async () => {
+    const data = {
+      id: 1,
+      date: "13/01/2024",
+      hour: "14:30",
+      description: "Campanha de Doacao de Sangue",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWiD1lvqficG2rIaApU7lzgb8GUZ3nm1OqZkoUgTCD&s",
+      hospitalId: 1,
+    };
+
+    const response = await campaignController.campaignUpdate(data);
+
+    expect(response.status).toBe(204);
+    expect(response.message).toBe("Record updated successfully.");
+    expect(response.body).toStrictEqual({});
+  });
+
+  test("campaignUpdate with incorrect data", async () => {
+    const data = {
+      id: 1,
+      date: "13/01/202424234", //Incorrect Date
+      hour: "14:30",
+      description: "Campanha de Doacao de Sangue",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWiD1lvqficG2rIaApU7lzgb8GUZ3nm1OqZkoUgTCD&s",
+      hospitalId: 1,
+    };
+
+    const response = await campaignController.campaignUpdate(data);
+
+    expect(response.status).toBe(400);
+    expect(response.message).toBe(
+      "There are mandatory data that have not been filled in."
+    );
+  });
+
+  test("campaignUpdate with unexistent campaign", async () => {
+    const response = await campaignController.campaignUpdate(100);
+
+    expect(response.status).toBe(404);
+    expect(response.message).toBe("No items found.");
+  });
+
+  test("campaignsGet", async () => {
+    const response = await campaignController.campaignsGet();
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("campaigns");
+    expect(response.body.campaigns).toBeInstanceOf(Array);
   });
 });
