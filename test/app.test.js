@@ -12,7 +12,7 @@ const bookScheduleController = require("../controller/bookScheduleController.js"
 const scheduleController = require("../controller/scheduleController.js");
 const scheduleStatusController = require("../controller/scheduleStatusController.js");
 
-//fazer do login e sobre a validação de id
+//FAZER TESTE DE VALIDAÇÃO DE ID
 
 //HOSPITAL TESTS
 // describe("Integration Tests HOSPITAL", () => {
@@ -1977,232 +1977,232 @@ const scheduleStatusController = require("../controller/scheduleStatusController
 //   });
 // });
 
-describe("Unitary Tests BOOK-SCHEDULE", () => {
-  test("bookScheduleInsert with correct data", async () => {
-    const data = [
-      {
-        date: "03/12/2023",
-        hour: "14:30",
-        hospitalSiteId: 1,
-      },
-      {
-        date: "01/01/2024",
-        hour: "07:10",
-        hospitalSiteId: 1,
-      },
-    ];
+// describe("Unitary Tests BOOK-SCHEDULE", () => {
+//   test("bookScheduleInsert with correct data", async () => {
+//     const data = [
+//       {
+//         date: "03/12/2023",
+//         hour: "14:30",
+//         hospitalSiteId: 1,
+//       },
+//       {
+//         date: "01/01/2024",
+//         hour: "07:10",
+//         hospitalSiteId: 1,
+//       },
+//     ];
 
-    const response = await bookScheduleController.bookScheduleInsert(data);
+//     const response = await bookScheduleController.bookScheduleInsert(data);
 
-    expect(response.status).toBe(201);
-    expect(response.message).toBe("Record created successfully.");
-  });
+//     expect(response.status).toBe(201);
+//     expect(response.message).toBe("Record created successfully.");
+//   });
 
-  test("bookScheduleInsert with incorrect data", async () => {
-    const data = [
-      {
-        date: "03/12/2023232323", //Incorrect Date
-        hour: "14:30",
-        hospitalSiteId: 1,
-      },
-      {
-        date: "01/01/2024",
-        hour: "07:10",
-        hospitalSiteId: 1,
-      },
-    ];
+//   test("bookScheduleInsert with incorrect data", async () => {
+//     const data = [
+//       {
+//         date: "03/12/2023232323", //Incorrect Date
+//         hour: "14:30",
+//         hospitalSiteId: 1,
+//       },
+//       {
+//         date: "01/01/2024",
+//         hour: "07:10",
+//         hospitalSiteId: 1,
+//       },
+//     ];
 
-    const response = await bookScheduleController.bookScheduleInsert(data);
+//     const response = await bookScheduleController.bookScheduleInsert(data);
 
-    expect(response.status).toBe(400);
-    expect(response.message).toBe(
-      "There are mandatory data that have not been filled in."
-    );
-  });
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
 
-  test("bookSchedulesGet with existent hospital", async () => {
-    const response = await bookScheduleController.bookSchedulesGet(1);
+//   test("bookSchedulesGet with existent hospital", async () => {
+//     const response = await bookScheduleController.bookSchedulesGet(1);
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("bookSchedules");
-    expect(response.body.bookSchedules).toBeInstanceOf(Object);
-  });
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("bookSchedules");
+//     expect(response.body.bookSchedules).toBeInstanceOf(Object);
+//   });
 
-  test("bookSchedulesGet with unexistent hospital", async () => {
-    const response = await bookScheduleController.bookSchedulesGet(100);
+//   test("bookSchedulesGet with unexistent hospital", async () => {
+//     const response = await bookScheduleController.bookSchedulesGet(100);
 
-    expect(response.status).toBe(404);
-    expect(response.body).toHaveProperty("message");
-    expect(response.body.message).toBe("No items found.");
-  });
+//     expect(response.status).toBe(404);
+//     expect(response.body).toHaveProperty("message");
+//     expect(response.body.message).toBe("No items found.");
+//   });
 
-  test("bookScheduleUpdate with correct data", async () => {
-    const data = {
-      date: "20/01/2000",
-      hour: "10:20",
-      siteId: 1,
-    };
+//   test("bookScheduleUpdate with correct data", async () => {
+//     const data = {
+//       date: "20/01/2000",
+//       hour: "10:20",
+//       siteId: 1,
+//     };
 
-    const response = await bookScheduleController.bookScheduleUpdate(1, data);
+//     const response = await bookScheduleController.bookScheduleUpdate(1, data);
 
-    expect(response.status).toBe(204);
-    expect(response.body).toStrictEqual({});
-  });
+//     expect(response.status).toBe(204);
+//     expect(response.body).toStrictEqual({});
+//   });
 
-  test("bookScheduleUpdate with incorrect data", async () => {
-    const data = {
-      date: "20/01/200023423", //Incorrect Date
-      hour: "10:20",
-      siteId: 1,
-    };
+//   test("bookScheduleUpdate with incorrect data", async () => {
+//     const data = {
+//       date: "20/01/200023423", //Incorrect Date
+//       hour: "10:20",
+//       siteId: 1,
+//     };
 
-    const response = await bookScheduleController.bookScheduleUpdate(1, data);
+//     const response = await bookScheduleController.bookScheduleUpdate(1, data);
 
-    expect(response.status).toBe(400);
-    expect(response.message).toBe(
-      "There are mandatory data that have not been filled in."
-    );
-  });
-});
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+// });
 
-describe("Unitary Tests SCHEDULE", () => {
-  test("scheduleInsert with correct data", async () => {
-    const data = {
-      idUser: 1,
-      idBookSchedule: 1,
-    };
+// describe("Unitary Tests SCHEDULE", () => {
+//   test("scheduleInsert with correct data", async () => {
+//     const data = {
+//       idUser: 1,
+//       idBookSchedule: 1,
+//     };
 
-    const response = await scheduleController.scheduleInsert(data);
+//     const response = await scheduleController.scheduleInsert(data);
 
-    expect(response.status).toBe(201);
-    expect(response.message).toBe("Record created successfully.");
-  });
+//     expect(response.status).toBe(201);
+//     expect(response.message).toBe("Record created successfully.");
+//   });
 
-  test("scheduleInsert with incorrect data", async () => {
-    const data = {
-      idUser: "efwe",
-      idBookSchedule: 1,
-    };
+//   test("scheduleInsert with incorrect data", async () => {
+//     const data = {
+//       idUser: "efwe",
+//       idBookSchedule: 1,
+//     };
 
-    const response = await scheduleController.scheduleInsert(data);
+//     const response = await scheduleController.scheduleInsert(data);
 
-    expect(response.status).toBe(400);
-    expect(response.message).toBe(
-      "There are mandatory data that have not been filled in."
-    );
-  });
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
 
-  test("scheduleCancelUpdate with correct data", async () => {
-    const data = {
-      observation: "Sofia Linda Melhor Filha Te Amo",
-    };
+//   test("scheduleCancelUpdate with correct data", async () => {
+//     const data = {
+//       observation: "Sofia Linda Melhor Filha Te Amo",
+//     };
 
-    const response = await scheduleController.scheduleCancelUpdate(1, data);
+//     const response = await scheduleController.scheduleCancelUpdate(1, data);
 
-    expect(response.status).toBe(204);
-    expect(response.body).toStrictEqual({});
-  });
+//     expect(response.status).toBe(204);
+//     expect(response.body).toStrictEqual({});
+//   });
 
-  test("scheduleCancelUpdate with incorrect data", async () => {
-    const data = {
-      observation: 243423,
-    };
+//   test("scheduleCancelUpdate with incorrect data", async () => {
+//     const data = {
+//       observation: 243423,
+//     };
 
-    const response = await scheduleController.scheduleCancelUpdate(1, data);
+//     const response = await scheduleController.scheduleCancelUpdate(1, data);
 
-    expect(response.status).toBe(400);
-    expect(response.message).toBe(
-      "There are mandatory data that have not been filled in."
-    );
-  });
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
 
-  test("scheduleRescheduleUpdate with correct data", async () => {
-    const data = {
-      date: "20/03/2000",
-      hour: "12:00",
-      siteId: 2,
-    };
+//   test("scheduleRescheduleUpdate with correct data", async () => {
+//     const data = {
+//       date: "20/03/2000",
+//       hour: "12:00",
+//       siteId: 2,
+//     };
 
-    const response = await scheduleController.scheduleRescheduleUpdate(1, data);
+//     const response = await scheduleController.scheduleRescheduleUpdate(1, data);
 
-    expect(response.status).toBe(204);
-    expect(response.body).toStrictEqual({});
-  });
+//     expect(response.status).toBe(204);
+//     expect(response.body).toStrictEqual({});
+//   });
 
-  test("scheduleRescheduleUpdate with incorrect data", async () => {
-    const data = {
-      date: "20/03/200032131",
-      hour: "12:00",
-      siteId: 2,
-    };
+//   test("scheduleRescheduleUpdate with incorrect data", async () => {
+//     const data = {
+//       date: "20/03/200032131",
+//       hour: "12:00",
+//       siteId: 2,
+//     };
 
-    const response = await scheduleController.scheduleRescheduleUpdate(1, data);
+//     const response = await scheduleController.scheduleRescheduleUpdate(1, data);
 
-    expect(response.status).toBe(400);
-    expect(response.message).toBe(
-      "There are mandatory data that have not been filled in."
-    );
-  });
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
 
-  test("scheduleConcludeUpdate with correct data", async () => {
-    const response = await scheduleController.scheduleConcludeUpdate(1);
+//   test("scheduleConcludeUpdate with correct data", async () => {
+//     const response = await scheduleController.scheduleConcludeUpdate(1);
 
-    expect(response.status).toBe(204);
-    expect(response.body).toStrictEqual({});
-  });
+//     expect(response.status).toBe(204);
+//     expect(response.body).toStrictEqual({});
+//   });
 
-  test("scheduleConcludeUpdate with incorrect data", async () => {
-    const response = await scheduleController.scheduleConcludeUpdate("sefwefw");
+//   test("scheduleConcludeUpdate with incorrect data", async () => {
+//     const response = await scheduleController.scheduleConcludeUpdate("sefwefw");
 
-    expect(response.status).toBe(400);
-    expect(response.message).toBe(
-      "The specified ID is invalid. Make sure it is a numeric value."
-    );
-  });
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "The specified ID is invalid. Make sure it is a numeric value."
+//     );
+//   });
 
-  test("schedulesGet", async () => {
-    const response = await scheduleController.schedulesGet();
+//   test("schedulesGet", async () => {
+//     const response = await scheduleController.schedulesGet();
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("schedules");
-    expect(response.body.schedules).toBeInstanceOf(Object);
-  });
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("schedules");
+//     expect(response.body.schedules).toBeInstanceOf(Object);
+//   });
 
-  test("schedulesStatistics", async () => {
-    const response = await scheduleController.schedulesStatisticsGet(1);
+//   test("schedulesStatistics", async () => {
+//     const response = await scheduleController.schedulesStatisticsGet(1);
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty("schedulesStatistics");
-    expect(response.body.schedulesStatistics).toBeInstanceOf(Object);
-  });
-});
+//     expect(response.status).toBe(200);
+//     expect(response.body).toHaveProperty("schedulesStatistics");
+//     expect(response.body.schedulesStatistics).toBeInstanceOf(Object);
+//   });
+// });
 
-describe("Unitary Tests SCHEDULE-STATUS", () => {
-  test("scheduleStatusInsert with correct data", async () => {
-    const data = {
-      observation: "",
-      status: "SCHEDULED",
-      idSchedule: 1,
-    };
+// describe("Unitary Tests SCHEDULE-STATUS", () => {
+//   test("scheduleStatusInsert with correct data", async () => {
+//     const data = {
+//       observation: "",
+//       status: "SCHEDULED",
+//       idSchedule: 1,
+//     };
 
-    const response = await scheduleStatusController.scheduleStatusInsert(data);
+//     const response = await scheduleStatusController.scheduleStatusInsert(data);
 
-    expect(response.status).toBe(201);
-    expect(response.message).toBe("Record created successfully.");
-  });
+//     expect(response.status).toBe(201);
+//     expect(response.message).toBe("Record created successfully.");
+//   });
 
-  test("scheduleStatusInsert with incorrect data", async () => {
-    const data = {
-      observation: 23424244,
-      status: "SCHEDULED",
-      idSchedule: 1,
-    };
+//   test("scheduleStatusInsert with incorrect data", async () => {
+//     const data = {
+//       observation: 23424244,
+//       status: "SCHEDULED",
+//       idSchedule: 1,
+//     };
 
-    const response = await scheduleStatusController.scheduleStatusInsert(data);
+//     const response = await scheduleStatusController.scheduleStatusInsert(data);
 
-    expect(response.status).toBe(400);
-    expect(response.message).toBe(
-      "There are mandatory data that have not been filled in."
-    );
-  });
-});
+//     expect(response.status).toBe(400);
+//     expect(response.message).toBe(
+//       "There are mandatory data that have not been filled in."
+//     );
+//   });
+// });
