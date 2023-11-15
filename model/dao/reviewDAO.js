@@ -9,7 +9,7 @@ async function insertReview(reviewData) {
     const insertReviewData = await prisma.review.create({
       data: {
         opinion: reviewData.opinion,
-        // date: ISOdate,
+        date: new Date(),
         idUser: reviewData.idUser,
         idHospital: reviewData.idHospital,
         idStar: reviewData.idStar,
