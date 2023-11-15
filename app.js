@@ -665,11 +665,9 @@ app.put(
   cors(),
   bodyJSON,
   async function (request, response) {
-    const donationBankId = request.body.id;
     const bodyData = request.body;
 
     const resultUpdateData = await donationBankController.donationBankUpdate(
-      donationBankId,
       bodyData
     );
 
