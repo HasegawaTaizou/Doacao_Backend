@@ -627,6 +627,21 @@ app.get(
   }
 );
 
+app.get(
+  "/api/v1/hospital/:id/donation-banks-years",
+  cors(),
+  async function (request, response) {
+    const hospitalId = request.params.id;
+
+    const resultGetData = await donationBankController.donationBankYearsGet(
+      hospitalId
+    );
+
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
+
 //Insert Donation Bank
 app.post(
   "/api/v1/donation-bank",

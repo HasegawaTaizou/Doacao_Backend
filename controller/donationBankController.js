@@ -58,6 +58,29 @@ const donationBanksGet = async function (hospitalId) {
   }
 };
 
+const donationBankYearsGet = async function (hospitalId) {
+  if (!validateId(hospitalId)) {
+    return message.ERROR_INVALID_ID;
+  }
+
+  const donationBanksData = await donationBankDAO.getDonationBanksYearByHospitalId(
+    hospitalId
+  );
+
+  if (donationBanksData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (donationBanksData) {
+    const jsonDonationBanksData = {};
+
+    jsonDonationBanksData.status = message.OK.status;
+    jsonDonationBanksData.years = donationBanksData;
+
+    return jsonDonationBanksData;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
 const donationBankUpdate = async function (donationBankData) {
   if (
     !validateId(donationBankData.hospitalId) ||
@@ -80,4 +103,5 @@ module.exports = {
   donationBankInsert,
   donationBanksGet,
   donationBankUpdate,
+  donationBankYearsGet
 };

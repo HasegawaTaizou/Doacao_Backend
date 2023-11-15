@@ -41,6 +41,23 @@ const getDonationBankId = async function (hospitalId, year, bloodType) {
   }
 };
 
+const getDonationBanksYearByHospitalId = async function (hospitalId) {
+  const sql = `
+  SELECT year FROM tbl_donation_bank
+  WHERE id_hospital = ${hospitalId}
+  GROUP BY year
+  ORDER BY year;
+  `;
+
+  const responseDonationBanksYears = await prisma.$queryRawUnsafe(sql);
+
+  if (responseDonationBanksYears) {
+    return responseDonationBanksYears;
+  } else {
+    return false;
+  }
+};
+
 const insertDonationBank = async function (
   donationBankData,
   bloodTypeId,
@@ -110,4 +127,5 @@ module.exports = {
   insertDonationBank,
   updateDonationBank,
   insertBloodTypeDataByHospitalId,
+  getDonationBanksYearByHospitalId,
 };
