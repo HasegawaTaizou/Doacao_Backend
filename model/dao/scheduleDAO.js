@@ -3,6 +3,7 @@ var prisma = new PrismaClient();
 
 const statusDAO = require("../dao/statusDAO");
 const hospitalSiteDAO = require("../dao/hospitalSiteDAO");
+const donationBankDAO = require("../dao/donationBankDAO");
 
 const insertSchedule = async function (scheduleData) {
   try {
@@ -81,6 +82,41 @@ const getSchedulesStatisticsByHospitalId = async function (hospitalId) {
   }
 };
 
+const getBloodTypeByScheduleId = async function (scheduleId) {
+  const sql = `
+  SELECT tbl_blood_type.type FROM tbl_schedule
+  INNER JOIN tbl_user ON tbl_user.id = tbl_schedule.id_user
+  INNER JOIN tbl_blood_type ON tbl_blood_type.id = tbl_user.id_blood_type
+  WHERE tbl_schedule.id = ${scheduleId};
+  `;
+
+  const responseBloodType = await prisma.$queryRawUnsafe(sql);
+
+  if (responseBloodType) {
+    return responseBloodType;
+  } else {
+    return false;
+  }
+};
+
+const getHospitalIdByScheduleId = async function (scheduleId) {
+  const sql = `
+  SELECT tbl_hospital.id AS id_hospital FROM tbl_schedule
+  INNER JOIN tbl_book_schedule ON tbl_book_schedule.id = tbl_schedule.id_book_schedule
+  INNER JOIN tbl_hospital_site ON tbl_hospital_site.id = tbl_book_schedule.id_hospital_site
+  INNER JOIN tbl_hospital ON tbl_hospital.id = tbl_hospital_site.id_hospital
+  WHERE tbl_schedule.id = ${scheduleId};
+  `;
+
+  const responseHospitalId = await prisma.$queryRawUnsafe(sql);
+
+  if (responseHospitalId) {
+    return responseHospitalId;
+  } else {
+    return false;
+  }
+};
+
 async function updateScheduleCancel(scheduleId, scheduleData) {
   const statusId = await statusDAO.getStatusIdByName("PENDING");
 
@@ -112,6 +148,24 @@ async function updateScheduleConclude(scheduleId) {
   `;
 
   const updateSchedule = await prisma.$queryRawUnsafe(sql);
+
+  //FAZER UPDATE DO DONATIONBANK AQUI
+  const newDate = new Date();
+  const currentYear = newDate.getFullYear();
+
+  const bloodType = await getBloodTypeByScheduleId(scheduleId)
+
+  const hospitalId = await getHospitalIdByScheduleId(scheduleId)
+
+  const donationBankData = {
+    year: currentYear,
+    bloodMl: 350,
+    bloodType: bloodType[0].type,
+    hospitalId: hospitalId[0].id_hospital,
+  };
+
+  //Increment Donation Bank
+  await donationBankDAO.updateDonationBank(donationBankData);
 
   if (updateSchedule) {
     return updateSchedule;
@@ -148,7 +202,9 @@ async function updateScheduleReschedule(scheduleId, scheduleData) {
   where id = ${bookScheduleId[0].id_book_schedule};
   `;
 
-  const hospitalSiteId = await hospitalSiteDAO.getHospitalSiteIdBySiteId(scheduleData.siteId)
+  const hospitalSiteId = await hospitalSiteDAO.getHospitalSiteIdBySiteId(
+    scheduleData.siteId
+  );
 
   const sqlUpdateSite = `
   UPDATE tbl_book_schedule
@@ -266,5 +322,5 @@ module.exports = {
   getScheduleIdByBookScheduleId,
   getScheduleIdByUserId,
   getScheduleIdByHospitalId,
-  getSchedulesIdByHospitalId
+  getSchedulesIdByHospitalId,
 };
