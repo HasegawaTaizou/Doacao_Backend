@@ -63,6 +63,52 @@ const getBookSchedulesByHospitalId = async function (hospitalId) {
   }
 };
 
+const getBookSchedulesByHospitalIdMobile = async function (hospitalId) {
+  const sql = `
+SELECT 
+  tbl_book_schedule.id AS book_schedule_id, 
+  tbl_hospital.name,
+  DATE_FORMAT(tbl_book_schedule.date, '%d/%m/%Y') AS date,
+  TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour, 
+  tbl_site.site,
+  tbl_site.id AS site_id
+FROM tbl_book_schedule
+LEFT JOIN tbl_schedule ON tbl_schedule.id_book_schedule = tbl_book_schedule.id
+LEFT JOIN tbl_schedule_status ON tbl_schedule.id = tbl_schedule_status.id_schedule
+LEFT JOIN tbl_status ON tbl_status.id = tbl_schedule_status.id_status
+LEFT JOIN tbl_hospital_site ON tbl_book_schedule.id_hospital_site = tbl_hospital_site.id
+LEFT JOIN tbl_hospital ON tbl_hospital_site.id_hospital = tbl_hospital.id
+LEFT JOIN tbl_site ON tbl_hospital_site.id = tbl_site.id
+WHERE tbl_hospital.id = 1 AND tbl_status.status IS NULL
+
+UNION
+
+SELECT 
+  tbl_book_schedule.id AS book_schedule_id, 
+  tbl_hospital.name,
+  DATE_FORMAT(tbl_book_schedule.date, '%d/%m/%Y') AS date,
+  TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour, 
+  tbl_site.site,
+  tbl_site.id AS site_id
+FROM tbl_book_schedule
+RIGHT JOIN tbl_schedule ON tbl_schedule.id_book_schedule = tbl_book_schedule.id
+RIGHT JOIN tbl_schedule_status ON tbl_schedule.id = tbl_schedule_status.id_schedule
+RIGHT JOIN tbl_status ON tbl_status.id = tbl_schedule_status.id_status
+RIGHT JOIN tbl_hospital_site ON tbl_book_schedule.id_hospital_site = tbl_hospital_site.id
+RIGHT JOIN tbl_hospital ON tbl_hospital_site.id_hospital = tbl_hospital.id
+RIGHT JOIN tbl_site ON tbl_hospital_site.id = tbl_site.id
+WHERE tbl_hospital.id = 1 AND tbl_status.status IS NULL;
+  `;
+
+  const responseBookSchedules = await prisma.$queryRawUnsafe(sql);
+
+  if (responseBookSchedules) {
+    return responseBookSchedules;
+  } else {
+    return false;
+  }
+};
+
 async function updateBookSchedule(bookScheduleId, bookScheduleData) {
   let [day, month, year] = bookScheduleData.date.split("/");
   let ISOdate = `${year}-${month}-${day}T00:00:00Z`;
@@ -148,6 +194,7 @@ module.exports = {
   insertBookSchedule,
   getBookScheduleByHospitalId,
   getBookSchedulesByHospitalId,
+  getBookSchedulesByHospitalIdMobile,
   updateBookSchedule,
   deleteBookSchedule,
 };

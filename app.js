@@ -251,6 +251,22 @@ app.get(
   }
 );
 
+//Get Hospital Book Schedules Mobile
+app.get(
+  "/api/v1/hospital/:id/book-schedules-mobile",
+  cors(),
+  async function (request, response) {
+    const hospitalId = request.params.id;
+
+    const resultGetData = await bookScheduleController.bookSchedulesMobileGet(
+      hospitalId
+    );
+
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
+
 //Get Hospital Schedules Statistics
 app.get(
   "/api/v1/hospital/:id/statistics/schedules",

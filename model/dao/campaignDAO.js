@@ -43,12 +43,14 @@ const getCampaigns = async function () {
   tbl_campaign.id AS campaign_id,
   tbl_hospital.id AS hospital_id,
   tbl_hospital.name AS hospital_name,
+  tbl_photo.url AS hospital_photo,
   DATE_FORMAT(tbl_campaign.date, '%d/%m/%Y') AS date,
   TIME_FORMAT(tbl_campaign.hour, '%H:%i') AS hour,
   tbl_campaign.description,
   tbl_campaign.image
   FROM tbl_campaign
-  INNER JOIN tbl_hospital ON tbl_hospital.id = tbl_campaign.id_hospital;
+  INNER JOIN tbl_hospital ON tbl_hospital.id = tbl_campaign.id_hospital
+  INNER JOIN tbl_photo ON tbl_hospital.id = tbl_photo.id_hospital;
   `;
 
   const responseCampaigns = await prisma.$queryRawUnsafe(sql);

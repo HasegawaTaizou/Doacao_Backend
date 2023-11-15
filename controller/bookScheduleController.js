@@ -72,6 +72,32 @@ const bookSchedulesGet = async function (hospitalId) {
   }
 };
 
+const bookSchedulesMobileGet = async function (hospitalId) {
+  if (!validateId(hospitalId)) {
+    return message.ERROR_INVALID_ID;
+  }
+
+  const bookSchedulesData =
+    await bookScheduleDAO.getBookSchedulesByHospitalIdMobile(hospitalId);
+
+  if (bookSchedulesData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (bookSchedulesData) {
+    const jsonBookSchedulesData = {};
+
+    const filteredBookSchedules = bookSchedulesData.filter(bookSchedule => {
+      return bookSchedule.book_schedule_id != null
+    })
+
+    jsonBookSchedulesData.status = message.OK.status;
+    jsonBookSchedulesData.bookSchedules = filteredBookSchedules;
+
+    return jsonBookSchedulesData;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
 const bookScheduleUpdate = async function (bookScheduleId, bookScheduleData) {
   if (!validateId(bookScheduleId)) {
     return message.ERROR_INVALID_ID;
@@ -127,6 +153,7 @@ module.exports = {
   bookScheduleInsert,
   bookScheduleGet,
   bookSchedulesGet,
+  bookSchedulesMobileGet,
   bookScheduleUpdate,
   bookScheduleDelete,
 };
