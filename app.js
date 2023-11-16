@@ -720,13 +720,11 @@ app.post(
         passwordResetExpires: now,
       };
 
-      console.log(passwordResetData);
-
       const user = await userController.userEmailGet(body);
-      console.log("aaaaa", user);
 
       // TODO criar isso aqui
-      // const updateUser = await userController.userForgotPasswordUpdate(user.userData.id, passwordResetData)
+      const updateUser = await userController.userForgotPasswordUpdate(user.userData.id, passwordResetData)
+      console.log(updateUser);
     } catch (error) {
       response
         .status(400)
