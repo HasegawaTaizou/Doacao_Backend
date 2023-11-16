@@ -144,7 +144,7 @@ const userEmailGet = async function (userEmail) {
     return message.ERROR_REQUIRED_DATA;
   }
 
-  const userData = await userDAO.getUserById(userId);
+  const userData = await userDAO.getUserByEmail(userEmail);
 
   if (userData.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;
@@ -155,7 +155,7 @@ const userEmailGet = async function (userEmail) {
     jsonUserData.userData = {
       id: userData.id,
       email: userData.email,
-      password: userData.password,
+      // password: userData.password,
     };
 
     return jsonUserData;
@@ -196,6 +196,15 @@ const userUpdate = async function (userId, userData) {
   }
 
   const status = await userDAO.updateUser(userId, userData);
+  if (status) {
+    return message.UPDATED_ITEM;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
+const userForgotPasswordUpdate = async function (userId, userData) {
+  const status = await userDAO.updatePasswordForgotUser(userId, userData);
   if (status) {
     return message.UPDATED_ITEM;
   } else {
@@ -318,6 +327,7 @@ module.exports = {
   userUpdate,
   userGetSchedules,
   userPasswordUpdate,
+  userForgotPasswordUpdate,
   userDelete,
   userGetSchedulesHospital
 };

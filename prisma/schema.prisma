@@ -52,6 +52,8 @@ model User {
   email       String   @db.VarChar(256)
   photoUrl    String?  @map("photo_url") @db.Text
   phone       String   @db.VarChar(15)
+  passwordResetToken String? @map("password_reset_token")
+  passwordResetExpires DateTime? @db.Date @map("password_reset_expires")
 
   idAddress   Int        @map("id_address")
   Address     Address    @relation(fields: [idAddress], references: [id])

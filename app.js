@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const { request, response } = require("express");
+const crypto = require("crypto");
 
 const app = express();
 
@@ -228,7 +229,10 @@ app.get(
     const hospitalId = request.params.idHospital;
     const userId = request.params.idUser;
 
-    const resultGetData = await userController.userGetSchedulesHospital(hospitalId, userId);
+    const resultGetData = await userController.userGetSchedulesHospital(
+      hospitalId,
+      userId
+    );
 
     response.status(resultGetData.status);
     response.json(resultGetData);
@@ -534,9 +538,7 @@ app.delete(
   cors(),
   async function (request, response) {
     const userId = request.params.id;
-    const resultDeleteData = await userController.userDelete(
-      userId
-    );
+    const resultDeleteData = await userController.userDelete(userId);
 
     response.status(resultDeleteData.status);
     response.json(resultDeleteData);
@@ -558,7 +560,9 @@ app.get(
   async function (request, response) {
     const hospitalId = request.params.id;
 
-    const resultGetData = await campaignController.campaignsHospitalGet(hospitalId);
+    const resultGetData = await campaignController.campaignsHospitalGet(
+      hospitalId
+    );
 
     response.status(resultGetData.status);
     response.json(resultGetData);
@@ -566,17 +570,12 @@ app.get(
 );
 
 //Get All Campaigns
-app.get(
-  "/api/v1/campaigns",
-  cors(),
-  async function (request, response) {
+app.get("/api/v1/campaigns", cors(), async function (request, response) {
+  const resultGetData = await campaignController.campaignsGet();
 
-    const resultGetData = await campaignController.campaignsGet();
-
-    response.status(resultGetData.status);
-    response.json(resultGetData);
-  }
-);
+  response.status(resultGetData.status);
+  response.json(resultGetData);
+});
 
 //Insert Campaign
 app.post(
@@ -700,14 +699,49 @@ app.get("/api/v1/schedules", cors(), async function (request, response) {
   response.json(resultGetData);
 });
 
+/* ---------------------------------- AUTHENTICATION ----------------------------------*/
+app.post(
+  "/api/v1/forgot-password",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    const body = request.body;
+
+    try {
+      const token = crypto.randomBytes(20).toString("hex");
+
+      //Expiration Date
+      const now = new Date();
+      now.setHours(now.getHours() + 1);
+
+      //Update Password Reset Token
+      const passwordResetData = {
+        passwordResetToken: token,
+        passwordResetExpires: now,
+      };
+
+      console.log(passwordResetData);
+
+      const user = await userController.userEmailGet(body);
+      console.log("aaaaa", user);
+
+      // TODO criar isso aqui
+      // const updateUser = await userController.userForgotPasswordUpdate(user.userData.id, passwordResetData)
+    } catch (error) {
+      response
+        .status(400)
+        .send({ error: "Error on forgot password , try again" });
+    }
+  }
+);
+
 const PORT = process.env.PORT || 8080;
 
 // Verifica se está rodando em um ambiente de teste e usa uma porta diferente
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
     console.log(`Server waiting for requests on port ${PORT}!`);
   });
 }
 
-module.exports = app
-
+module.exports = app;

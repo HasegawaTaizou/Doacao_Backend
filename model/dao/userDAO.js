@@ -104,14 +104,14 @@ const getUserByEmail = async function (userEmail) {
   try {
     const user = await prisma.user.findFirst({
       where: {
-        email: userEmail,
+        email: userEmail.email,
       },
       select: {
         id: true,
         email: true,
-        name: true,
-        photoUrl: true,
-        password: true,
+        // name: true,
+        // photoUrl: true,
+        // password: true,
       },
     });
     return user;
@@ -167,6 +167,26 @@ async function updateUser(userId, userData) {
             complement: userData.address.complement,
           },
         },
+      },
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Erro ao atualizar o user:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function updatePasswordForgotUser(userId, userData) {
+  try {
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: Number(userId),
+      },
+      data: {
+        passwordResetToken: userData.passwordResetToken,
+        passwordResetExpires: userData.passwordResetExpires
       },
     });
 
@@ -301,6 +321,7 @@ module.exports = {
   insertUser,
   getUserById,
   updateUser,
+  updatePasswordForgotUser,
   getUserByEmail,
   getSchedulesUserById,
   updateUserPassword,
