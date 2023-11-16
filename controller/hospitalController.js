@@ -209,7 +209,7 @@ const hospitalUpdate = async function (hospitalId, hospitalData) {
     !validateWebsite(hospitalData.hospital.website) ||
     !validateDonationSite(hospitalData.hospital.donationSite) ||
     !validateDonationSite(hospitalData.hospital.otherDonationSite) ||
-    !validatePhoto(hospitalData.hospital.photo) ||
+    !validatePhoto(hospitalData.hospital.photo) || 
     !validateCEP(hospitalData.address.cep) ||
     !validateUF(hospitalData.address.uf) ||
     !validateCity(hospitalData.address.city) ||
@@ -218,6 +218,7 @@ const hospitalUpdate = async function (hospitalId, hospitalData) {
     !validateNumber(hospitalData.address.number) ||
     !validateComplement(hospitalData.address.complement)
   ) {
+    console.log('erro de validacao');
     return message.ERROR_REQUIRED_DATA;
   }
 

@@ -8,7 +8,7 @@ const validateCEP = function (CEP) {
     CEP == undefined ||
     isNaN(CEP.replace(/[\-\s]/g, '')) ||
     CEP == "" ||
-    CEP.length > 8
+    CEP.length > 9
   ) {
     status = false;
   }
