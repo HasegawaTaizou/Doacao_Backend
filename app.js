@@ -3,7 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const { request, response } = require("express");
 //Websocket
-const http = require('http');
+const http = require("http");
 const WebSocket = require("ws");
 const crypto = require("crypto");
 const mailer = require("./modules/mailer");
@@ -812,22 +812,24 @@ app.post(
 /* ---------------------------------- RUN BACKEND ----------------------------------*/
 const PORT = process.env.PORT || 8080;
 
-wss.on("connection", (ws) => {
-  ws.on("message", (message) => {
-    console.log(`Received: ${message}`);
-    wss.clients.forEach((client) => {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message);
-      }
-    });
-  });
-});
-
 // Verifica se está rodando em um ambiente de teste e usa uma porta diferente
 if (process.env.NODE_ENV !== "test") {
   server.listen(PORT, () => {
     console.log(`Server waiting for requests on port ${PORT}!`);
   });
 }
+
+
+wss.on("connection", (ws) => {
+  ws.on("message", (message) => {
+    console.log(`Received: ${message}`);
+    wss.clients.forEach((client) => {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(message);
+        console.log(`Sent: ${message}`);
+      }
+    });
+  });
+});
 
 module.exports = app;
