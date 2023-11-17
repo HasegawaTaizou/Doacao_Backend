@@ -101,21 +101,22 @@ const getUserById = async function (userId) {
 };
 
 const getUserByEmail = async function (userEmail) {
-  try {
-    const user = await prisma.user.findFirst({
-      where: {
-        email: userEmail.email,
-      },
-      select: {
-        id: true,
-        email: true,
-        // name: true,
-        // photoUrl: true,
-        // password: true,
-      },
-    });
-    return user;
-  } catch (error) {
+  const sql = `
+  SELECT 
+  tbl_user.id, 
+  tbl_user.email,
+  tbl_user.password_reset_token,
+  tbl_user.password_reset_expires,
+  tbl_user.password
+  FROM tbl_user
+  WHERE tbl_user.email = '${userEmail}';
+  `;
+
+  const responseUser = await prisma.$queryRawUnsafe(sql);
+
+  if (responseUser) {
+    return responseUser[0];
+  } else {
     return false;
   }
 };
@@ -186,7 +187,7 @@ async function updatePasswordForgotUser(userId, userData) {
       },
       data: {
         passwordResetToken: userData.passwordResetToken,
-        passwordResetExpires: userData.passwordResetExpires
+        passwordResetExpires: userData.passwordResetExpires,
       },
     });
 

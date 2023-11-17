@@ -144,7 +144,7 @@ const userEmailGet = async function (userEmail) {
     return message.ERROR_REQUIRED_DATA;
   }
 
-  const userData = await userDAO.getUserByEmail(userEmail);
+  const userData = await userDAO.getUserByEmail(userEmail.email);
 
   if (userData.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;
@@ -155,7 +155,9 @@ const userEmailGet = async function (userEmail) {
     jsonUserData.userData = {
       id: userData.id,
       email: userData.email,
-      // password: userData.password,
+      passwordResetToken: userData.password_reset_token,
+      passwordResetExpires: userData.password_reset_expires
+      // password: userData.password
     };
 
     return jsonUserData;

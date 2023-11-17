@@ -3,6 +3,9 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const { request, response } = require("express");
 const crypto = require("crypto");
+const mailer = require("./modules/mailer");
+const path = require("path");
+const fs = require("fs");
 
 const app = express();
 
@@ -707,32 +710,97 @@ app.post(
   async function (request, response) {
     const body = request.body;
 
-    try {
-      const token = crypto.randomBytes(20).toString("hex");
+    const token = crypto.randomBytes(20).toString("hex");
 
-      //Expiration Date
-      const now = new Date();
-      now.setHours(now.getHours() + 1);
+    //Expiration Date
+    const now = new Date();
+    now.setHours(now.getHours() + 1);
 
-      //Update Password Reset Token
-      const passwordResetData = {
-        passwordResetToken: token,
-        passwordResetExpires: now,
-      };
+    //Update Password Reset Token
+    const passwordResetData = {
+      passwordResetToken: token,
+      passwordResetExpires: now,
+    };
 
-      const user = await userController.userEmailGet(body);
+    const user = await userController.userEmailGet(body);
 
-      // TODO criar isso aqui
-      const updateUser = await userController.userForgotPasswordUpdate(user.userData.id, passwordResetData)
-      console.log(updateUser);
-    } catch (error) {
-      response
-        .status(400)
-        .send({ error: "Error on forgot password , try again" });
-    }
+    // TODO criar isso aqui
+    const updateUser = await userController.userForgotPasswordUpdate(
+      user.userData.id,
+      passwordResetData
+    );
+
+    // const templatePath = path.resolve(
+    //   __dirname,
+    //   "src",
+    //   "resources",
+    //   "mail",
+    //   "forgot_password.html"
+    // );
+
+    // const htmlContent = fs.readFileSync(templatePath, 'utf-8');
+    const htmlContent = fs.readFileSync(
+      "./src/resources/mail/forgot_password.html",
+      "utf-8"
+    );
+
+    const mailOptions = {
+      // to: body.email,
+      from: "caiocoghi@gmail.com",
+      to: "caiocoghi@gmail.com",
+      html: htmlContent,
+      context: { token },
+    };
+
+    // const mailOptions = {
+    //   // to: body.email,
+    //   from: "caiocoghi@gmail.com",
+    //   to: "pinheirocamila49800@gmail.com",
+    //   subject: "Assunto do E-mail",
+    //   text: "Corpo do E-mail",
+    // };
+
+    mailer.sendMail(mailOptions, (error) => {
+      if (error) {
+        return response
+          .status(400)
+          .send({ error: "Cannot send forgot password email" });
+      } else {
+        console.log("foi");
+        return response.send();
+      }
+    });
   }
 );
 
+//Insert Donation Bank
+app.post(
+  "/api/v1/reset-password",
+  cors(),
+  bodyJSON,
+  async function (request, response) {
+    const bodyData = request.body;
+
+    const user = await userController.userEmailGet(body);
+
+    if(bodyData.token !== user.userData.passwordResetToken) {
+      return response.status(400).send({error: 'Token Invalid'})
+    }
+
+    const now = new Date()
+
+    if(now > user.userData.passwordResetExpires) {
+      return response.status(400).send({error: 'Token Expired. Generate a new one'})
+    }
+
+    userController.userPasswordUpdate(user.userData.id, bodyData.password)
+
+    response.status(resultDonationBank.status);
+    response.json(resultDonationBank);
+  }
+);
+
+/* ---------------------------------- RUN BACKEND ----------------------------------*/
 const PORT = process.env.PORT || 8080;
 
 // Verifica se está rodando em um ambiente de teste e usa uma porta diferente
