@@ -168,7 +168,8 @@ const getHospitalSchedules = async function (hospitalId) {
   TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour,
   tbl_site.id AS site_id, 
   tbl_site.site, 
-  tbl_status.status 
+  tbl_status.status,
+  tbl_schedule_status.observation
   FROM tbl_user
   INNER JOIN tbl_schedule ON tbl_schedule.id_user = tbl_user.id
   INNER JOIN tbl_book_schedule ON tbl_book_schedule.id = tbl_schedule.id_book_schedule

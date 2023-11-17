@@ -187,6 +187,7 @@ const hospitalGetSchedules = async function (hospitalId) {
           site: schedulesData[scheduleData].site,
           siteId: schedulesData[scheduleData].site_id,
           status: schedulesData[scheduleData].status,
+          observation: schedulesData[scheduleData].observation,
         },
       };
 
