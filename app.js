@@ -2,12 +2,19 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const { request, response } = require("express");
+//Websocket
+const http = require('http');
+const WebSocket = require("ws");
 const crypto = require("crypto");
 const mailer = require("./modules/mailer");
 const path = require("path");
 const fs = require("fs");
 
 const app = express();
+
+//Websocket
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
 
 app.use((request, response, next) => {
   response.header("Access-Control-Allow-Origin", "*");
@@ -783,17 +790,19 @@ app.post(
 
     const user = await userController.userEmailGet(body);
 
-    if(bodyData.token !== user.userData.passwordResetToken) {
-      return response.status(400).send({error: 'Token Invalid'})
+    if (bodyData.token !== user.userData.passwordResetToken) {
+      return response.status(400).send({ error: "Token Invalid" });
     }
 
-    const now = new Date()
+    const now = new Date();
 
-    if(now > user.userData.passwordResetExpires) {
-      return response.status(400).send({error: 'Token Expired. Generate a new one'})
+    if (now > user.userData.passwordResetExpires) {
+      return response
+        .status(400)
+        .send({ error: "Token Expired. Generate a new one" });
     }
 
-    userController.userPasswordUpdate(user.userData.id, bodyData.password)
+    userController.userPasswordUpdate(user.userData.id, bodyData.password);
 
     response.status(resultDonationBank.status);
     response.json(resultDonationBank);
@@ -803,9 +812,20 @@ app.post(
 /* ---------------------------------- RUN BACKEND ----------------------------------*/
 const PORT = process.env.PORT || 8080;
 
+wss.on("connection", (ws) => {
+  ws.on("message", (message) => {
+    console.log(`Received: ${message}`);
+    wss.clients.forEach((client) => {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+  });
+});
+
 // Verifica se está rodando em um ambiente de teste e usa uma porta diferente
 if (process.env.NODE_ENV !== "test") {
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`Server waiting for requests on port ${PORT}!`);
   });
 }
