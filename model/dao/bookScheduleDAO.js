@@ -155,6 +155,7 @@ async function updateBookSchedule(bookScheduleId, bookScheduleData) {
 
 const deleteBookSchedule = async function (bookScheduleId) {
   try {
+    //Só pode um agendamento por reserva. A lógica está correta
     const scheduleId = await scheduleDAO.getScheduleIdByBookScheduleId(
       bookScheduleId
     );
@@ -174,6 +175,7 @@ const deleteBookSchedule = async function (bookScheduleId) {
         },
       });
     }
+
     // Excluir da tabela tbl_book_schedule
     await prisma.bookSchedule.delete({
       where: {

@@ -395,47 +395,30 @@ async function deleteHospitalById(hospitalId) {
     hospitalId
   );
 
-  const responseDeleteSchedulesStatus = bookSchedulesId.forEach(
-    async (bookSchedule) => {
-      let scheduleId = await scheduleDAO.getScheduleIdByBookScheduleId(
-        bookSchedule.id
-      );
+  const deletePromisesBookSchedules = bookSchedulesId.map(async (bookSchedule) => {
+    await bookScheduleDAO.deleteBookSchedule(bookSchedule.id);
+  });
 
-      let sqlDeleteSchedulesStatus = `
-      DELETE FROM tbl_schedule_status
-      WHERE id_schedule = ${scheduleId[0].id_schedule};
-      `;
+  // Wait for all promises to resolve
+  await Promise.all(deletePromisesBookSchedules);
 
-      await prisma.$executeRawUnsafe(sqlDeleteSchedulesStatus);
+  const independentBookSchedules =
+    await bookScheduleDAO.getBookSchedulesByHospitalIdMobile(hospitalId);
+
+  const deletePromisesIndependentBookSchedules = independentBookSchedules.map(async (bookSchedule) => {
+    if (bookSchedule.book_schedule_id != null) {
+      await bookScheduleDAO.deleteBookSchedule(bookSchedule.book_schedule_id);
     }
-  );
+  });
 
-  const responseDeleteSchedules = bookSchedulesId.forEach(
-    async (bookSchedule) => {
-      let sqlDeleteSchedules = `
-      DELETE FROM tbl_schedule
-      WHERE id_book_schedule = ${bookSchedule.id};
-      `;
-
-      await prisma.$executeRawUnsafe(sqlDeleteSchedules);
-    }
-  );
-
-  const responseDeleteBookSchedules = bookSchedulesId.forEach(
-    async (bookSchedule) => {
-      let sqlDeleteBookSchedules = `
-      DELETE FROM tbl_book_schedule
-      WHERE id = ${bookSchedule.id};
-      `;
-
-      await prisma.$executeRawUnsafe(sqlDeleteBookSchedules);
-    }
-  );
+  // Wait for all promises to resolve
+  await Promise.all(deletePromisesIndependentBookSchedules);
 
   const sqlDeleteHospitalSite = `
   DELETE FROM tbl_hospital_site
   WHERE id_hospital = ${hospitalId};
   `;
+
   const responseDeleteHospitalSite = await prisma.$executeRawUnsafe(
     sqlDeleteHospitalSite
   );
@@ -466,18 +449,7 @@ async function deleteHospitalById(hospitalId) {
     sqlDeleteHospital
   );
 
-  if (
-    responseDeleteCampaign &&
-    responseDeleteDonationBank &&
-    responseDeleteSchedulesStatus &&
-    responseDeleteSchedules &&
-    responseDeleteBookSchedules &&
-    responseDeleteHospitalSite &&
-    responseDeletePhone &&
-    responseDeletePhoto &&
-    responseDeleteReview &&
-    responseDeleteHospital
-  ) {
+  if (responseDeleteHospital) {
     return responseDeleteHospital;
   } else {
     return false;
