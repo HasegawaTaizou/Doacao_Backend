@@ -178,7 +178,76 @@ const getHospitalSchedules = async function (hospitalId) {
   INNER JOIN tbl_schedule_status ON tbl_schedule_status.id_schedule = tbl_schedule.id
   INNER JOIN tbl_status ON tbl_status.id = tbl_schedule_status.id_status
   INNER JOIN tbl_hospital ON tbl_hospital.id = tbl_hospital_site.id_hospital
-  WHERE tbl_hospital.id = ${hospitalId};
+  WHERE tbl_hospital.id = ${hospitalId}
+  ORDER BY tbl_schedule_status.id_schedule;
+  `;
+
+  const responseSchedules = await prisma.$queryRawUnsafe(sql);
+
+  if (responseSchedules) {
+    return responseSchedules;
+  } else {
+    return false;
+  }
+};
+
+const getHospitalFilteredStatusSchedules = async function (hospitalId, status) {
+  const sql = `
+  SELECT 
+  tbl_user.id, 
+  tbl_user.name, 
+  tbl_user.photo_url, 
+  tbl_schedule_status.id_schedule,
+  DATE_FORMAT(tbl_book_schedule.date, '%d/%m/%Y') AS date,
+  TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour,
+  tbl_site.id AS site_id, 
+  tbl_site.site, 
+  tbl_status.status,
+  tbl_schedule_status.observation
+  FROM tbl_user
+  INNER JOIN tbl_schedule ON tbl_schedule.id_user = tbl_user.id
+  INNER JOIN tbl_book_schedule ON tbl_book_schedule.id = tbl_schedule.id_book_schedule
+  INNER JOIN tbl_hospital_site ON tbl_hospital_site.id = tbl_book_schedule.id_hospital_site
+  INNER JOIN tbl_site ON tbl_site.id = tbl_hospital_site.id_site
+  INNER JOIN tbl_schedule_status ON tbl_schedule_status.id_schedule = tbl_schedule.id
+  INNER JOIN tbl_status ON tbl_status.id = tbl_schedule_status.id_status
+  INNER JOIN tbl_hospital ON tbl_hospital.id = tbl_hospital_site.id_hospital
+  WHERE tbl_hospital.id = ${hospitalId} AND tbl_status.status = '${status}'
+  ORDER BY tbl_schedule_status.id_schedule;
+  `;
+
+  const responseSchedules = await prisma.$queryRawUnsafe(sql);
+
+  if (responseSchedules) {
+    return responseSchedules;
+  } else {
+    return false;
+  }
+};
+
+const getHospitalFilteredNameSchedules = async function (hospitalId, userName) {
+  const sql = `
+  SELECT 
+  tbl_user.id, 
+  tbl_user.name, 
+  tbl_user.photo_url, 
+  tbl_schedule_status.id_schedule,
+  DATE_FORMAT(tbl_book_schedule.date, '%d/%m/%Y') AS date,
+  TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour,
+  tbl_site.id AS site_id, 
+  tbl_site.site, 
+  tbl_status.status,
+  tbl_schedule_status.observation
+  FROM tbl_user
+  INNER JOIN tbl_schedule ON tbl_schedule.id_user = tbl_user.id
+  INNER JOIN tbl_book_schedule ON tbl_book_schedule.id = tbl_schedule.id_book_schedule
+  INNER JOIN tbl_hospital_site ON tbl_hospital_site.id = tbl_book_schedule.id_hospital_site
+  INNER JOIN tbl_site ON tbl_site.id = tbl_hospital_site.id_site
+  INNER JOIN tbl_schedule_status ON tbl_schedule_status.id_schedule = tbl_schedule.id
+  INNER JOIN tbl_status ON tbl_status.id = tbl_schedule_status.id_status
+  INNER JOIN tbl_hospital ON tbl_hospital.id = tbl_hospital_site.id_hospital
+  WHERE tbl_hospital.id = ${hospitalId} AND tbl_user.name LIKE '%${userName}%'
+  ORDER BY tbl_schedule_status.id_schedule;
   `;
 
   const responseSchedules = await prisma.$queryRawUnsafe(sql);
@@ -512,6 +581,8 @@ module.exports = {
   getHospitalsId,
   getHospitalByEmail,
   getHospitalSchedules,
+  getHospitalFilteredStatusSchedules,
+  getHospitalFilteredNameSchedules,
   updateHospital,
   updateHospitalPassword,
   getHospitals,

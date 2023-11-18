@@ -199,6 +199,78 @@ const hospitalGetSchedules = async function (hospitalId) {
   }
 };
 
+const hospitalGetFilteredStatusSchedules = async function (hospitalId, status) {
+  const schedulesData = await hospitalDAO.getHospitalFilteredStatusSchedules(hospitalId, status);
+
+  if (schedulesData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (schedulesData) {
+    const jsonSchedulesData = {};
+    jsonSchedulesData.status = 200;
+    jsonSchedulesData.schedules = [];
+
+    for (scheduleData in schedulesData) {
+      let scheduleObject = {
+        user: {
+          userId: schedulesData[scheduleData].id,
+          name: schedulesData[scheduleData].name,
+          photo: schedulesData[scheduleData].photo_url,
+        },
+        schedule: {
+          scheduleId: schedulesData[scheduleData].id_schedule,
+          date: schedulesData[scheduleData].date,
+          hour: schedulesData[scheduleData].hour,
+          site: schedulesData[scheduleData].site,
+          siteId: schedulesData[scheduleData].site_id,
+          status: schedulesData[scheduleData].status,
+          observation: schedulesData[scheduleData].observation,
+        },
+      };
+
+      jsonSchedulesData.schedules.push(scheduleObject);
+    }
+    return jsonSchedulesData;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
+const hospitalGetFilteredNameSchedules = async function (hospitalId, userName) {
+  const schedulesData = await hospitalDAO.getHospitalFilteredNameSchedules(hospitalId, userName);
+
+  if (schedulesData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (schedulesData) {
+    const jsonSchedulesData = {};
+    jsonSchedulesData.status = 200;
+    jsonSchedulesData.schedules = [];
+
+    for (scheduleData in schedulesData) {
+      let scheduleObject = {
+        user: {
+          userId: schedulesData[scheduleData].id,
+          name: schedulesData[scheduleData].name,
+          photo: schedulesData[scheduleData].photo_url,
+        },
+        schedule: {
+          scheduleId: schedulesData[scheduleData].id_schedule,
+          date: schedulesData[scheduleData].date,
+          hour: schedulesData[scheduleData].hour,
+          site: schedulesData[scheduleData].site,
+          siteId: schedulesData[scheduleData].site_id,
+          status: schedulesData[scheduleData].status,
+          observation: schedulesData[scheduleData].observation,
+        },
+      };
+
+      jsonSchedulesData.schedules.push(scheduleObject);
+    }
+    return jsonSchedulesData;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
 const hospitalUpdate = async function (hospitalId, hospitalData) {
   if (!validateId(hospitalId)) {
     return message.ERROR_INVALID_ID;
@@ -318,6 +390,8 @@ module.exports = {
   hospitalGet,
   hospitalEmailGet,
   hospitalGetSchedules,
+  hospitalGetFilteredStatusSchedules,
+  hospitalGetFilteredNameSchedules,
   hospitalUpdate,
   hospitalPasswordUpdate,
   hospitalsGet,

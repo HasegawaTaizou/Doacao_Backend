@@ -165,7 +165,7 @@ async function updateScheduleConclude(scheduleId) {
   };
 
   //Increment Donation Bank
-  await donationBankDAO.updateDonationBank(donationBankData);
+  await donationBankDAO.updateOrInsertDonationBank(donationBankData);
 
   if (updateSchedule) {
     return updateSchedule;

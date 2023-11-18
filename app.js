@@ -193,6 +193,43 @@ app.get(
   }
 );
 
+//Get Schedules
+app.get(
+  "/api/v1/hospital/:id/schedules-status/:status",
+  cors(),
+  async function (request, response) {
+    const hospitalId = request.params.id;
+    const status = request.params.status;
+
+    const resultGetData = await hospitalController.hospitalGetFilteredStatusSchedules(
+      hospitalId,
+      status
+    );
+
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
+
+//Get Schedules
+app.get(
+  "/api/v1/hospital/:id/schedules/:name",
+  cors(),
+  async function (request, response) {
+    const hospitalId = request.params.id;
+    const name = request.params.name;
+
+    console.log(name);
+    const resultGetData = await hospitalController.hospitalGetFilteredNameSchedules(
+      hospitalId,
+      name
+    );
+
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+);
+
 //Get Hospital Sites
 app.get(
   "/api/v1/hospital/:id/sites",
@@ -709,7 +746,6 @@ app.get("/api/v1/schedules", cors(), async function (request, response) {
   response.json(resultGetData);
 });
 
-
 /* ---------------------------------- AUTHENTICATION ----------------------------------*/
 app.post(
   "/api/v1/forgot-password",
@@ -794,9 +830,12 @@ app.post(
       return response
         .status(400)
         .send({ error: "Token Expired. Generate a new one" });
-    } 
+    }
 
-    const responseUpdate = await userController.userPasswordUpdate(user.userData.id, bodyData);
+    const responseUpdate = await userController.userPasswordUpdate(
+      user.userData.id,
+      bodyData
+    );
 
     response.status(responseUpdate.status);
     response.json(responseUpdate);
