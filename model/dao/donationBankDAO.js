@@ -81,22 +81,70 @@ const insertDonationBank = async function (
   }
 };
 
-async function updateDonationBank(donationBankData) {
-  const sql = `
-  UPDATE tbl_donation_bank
-  INNER JOIN tbl_blood_type ON tbl_donation_bank.id_blood_type = tbl_blood_type.id
-  SET
-  tbl_donation_bank.blood_ml = ${donationBankData.bloodMl}
-  WHERE 
-  tbl_donation_bank.year = ${donationBankData.year} AND tbl_blood_type.type = '${donationBankData.bloodType}' AND tbl_donation_bank.id_hospital = ${donationBankData.hospitalId};
-  `;
+// async function updateDonationBank(donationBankData) {
+//   const sql = `
+//   UPDATE tbl_donation_bank
+//   INNER JOIN tbl_blood_type ON tbl_donation_bank.id_blood_type = tbl_blood_type.id
+//   SET
+//   tbl_donation_bank.blood_ml = ${donationBankData.bloodMl}
+//   WHERE 
+//   tbl_donation_bank.year = ${donationBankData.year} AND tbl_blood_type.type = '${donationBankData.bloodType}' AND tbl_donation_bank.id_hospital = ${donationBankData.hospitalId};
+//   `;
 
-  const responseDonationBankUpdate = await prisma.$executeRawUnsafe(sql);
+//   const responseDonationBankUpdate = await prisma.$executeRawUnsafe(sql);
 
-  if (responseDonationBankUpdate) {
-    return responseDonationBankUpdate;
+//   if (responseDonationBankUpdate) {
+//     return responseDonationBankUpdate;
+//   } else {
+//     return false;
+//   }
+// }
+
+async function updateOrInsertDonationBank(donationBankData) {
+  const { year, bloodType, hospitalId, bloodMl } = donationBankData;
+
+  const existingRecord = await prisma.donationBank.findFirst({
+    where: {
+      year,
+      BloodType: {
+        type: bloodType,
+      },
+      idHospital: hospitalId,
+    },
+  });
+
+  if (existingRecord) {
+    // Update existing record
+    const updatedRecord = await prisma.donationBank.update({
+      where: {
+        id: existingRecord.id,
+      },
+      data: {
+        bloodMl: bloodMl,
+      },
+    });
+
+    return updatedRecord;
   } else {
-    return false;
+    // Insert new record
+    const newRecord = await prisma.donationBank.create({
+      data: {
+        year,
+        bloodMl: bloodMl,
+        BloodType: {
+          connect: {
+            type: bloodType,
+          },
+        },
+        Hospital: {
+          connect: {
+            id: hospitalId,
+          },
+        },
+      },
+    });
+
+    return newRecord;
   }
 }
 
@@ -125,7 +173,7 @@ module.exports = {
   getDonationBanksByHospitalId,
   getDonationBankId,
   insertDonationBank,
-  updateDonationBank,
+  updateOrInsertDonationBank,
   insertBloodTypeDataByHospitalId,
   getDonationBanksYearByHospitalId,
 };

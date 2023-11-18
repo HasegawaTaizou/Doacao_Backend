@@ -91,7 +91,7 @@ const donationBankUpdate = async function (donationBankData) {
     return message.ERROR_REQUIRED_DATA;
   }
 
-  const status = await donationBankDAO.updateDonationBank(donationBankData);
+  const status = await donationBankDAO.updateOrInsertDonationBank(donationBankData);
   if (status) {
     return message.UPDATED_ITEM;
   } else {

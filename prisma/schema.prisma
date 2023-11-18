@@ -9,7 +9,7 @@ datasource db {
 
 model BloodType {
   id   Int    @id @unique @default(autoincrement())
-  type String @db.VarChar(3)
+  type String @unique @db.VarChar(3)
 
   User         User[]
   DonationBank DonationBank[]
@@ -43,17 +43,17 @@ model Address {
 }
 
 model User {
-  id          Int      @id @unique @default(autoincrement())
-  name        String   @db.VarChar(100)
-  cpf         String   @db.VarChar(14)
-  dateOfBirth DateTime @map("date_of_birth") @db.Date
-  password    String   @db.VarChar(50)
-  weight      Decimal  @db.Decimal(5, 2)
-  email       String   @db.VarChar(256)
-  photoUrl    String?  @map("photo_url") @db.Text
-  phone       String   @db.VarChar(15)
-  passwordResetToken String? @map("password_reset_token")
-  passwordResetExpires DateTime? @db.Date @map("password_reset_expires")
+  id                   Int       @id @unique @default(autoincrement())
+  name                 String    @db.VarChar(100)
+  cpf                  String    @db.VarChar(14)
+  dateOfBirth          DateTime  @map("date_of_birth") @db.Date
+  password             String    @db.VarChar(50)
+  weight               Decimal   @db.Decimal(5, 2)
+  email                String    @db.VarChar(256)
+  photoUrl             String?   @map("photo_url") @db.Text
+  phone                String    @db.VarChar(15)
+  passwordResetToken   String?   @map("password_reset_token")
+  passwordResetExpires DateTime? @map("password_reset_expires") @db.Date
 
   idAddress   Int        @map("id_address")
   Address     Address    @relation(fields: [idAddress], references: [id])
@@ -103,7 +103,7 @@ model Campaign {
 model DonationBank {
   id      Int     @id @unique @default(autoincrement())
   year    Int
-  bloodMl Decimal @db.Decimal(7, 2) @map("blood_ml")
+  bloodMl Decimal @map("blood_ml") @db.Decimal(7, 2)
 
   idHospital  Int       @map("id_hospital")
   Hospital    Hospital  @relation(fields: [idHospital], references: [id])
