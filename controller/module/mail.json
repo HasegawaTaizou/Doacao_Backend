@@ -1,6 +1,8 @@
 {
-    "host": "sandbox.smtp.mailtrap.io",
-    "port": 2525,
-    "user": "8aa316a28908df",
-    "pass": "f68a9619bd6dbd"
+    "service": "gmail",
+    "host": "smtp.gmail.com",
+    "secure": true,
+    "port": 456,
+    "user": "caiocoghi@gmail.com",
+    "pass": "cWHBSLA_86"
 }

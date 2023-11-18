@@ -724,7 +724,6 @@ app.post(
     const now = new Date();
     now.setHours(now.getHours() + 1);
 
-    console.log(now);
     //Update Password Reset Token
     const passwordResetData = {
       passwordResetToken: token,
