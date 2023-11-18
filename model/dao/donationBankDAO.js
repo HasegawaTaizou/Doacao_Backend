@@ -81,25 +81,6 @@ const insertDonationBank = async function (
   }
 };
 
-// async function updateDonationBank(donationBankData) {
-//   const sql = `
-//   UPDATE tbl_donation_bank
-//   INNER JOIN tbl_blood_type ON tbl_donation_bank.id_blood_type = tbl_blood_type.id
-//   SET
-//   tbl_donation_bank.blood_ml = ${donationBankData.bloodMl}
-//   WHERE 
-//   tbl_donation_bank.year = ${donationBankData.year} AND tbl_blood_type.type = '${donationBankData.bloodType}' AND tbl_donation_bank.id_hospital = ${donationBankData.hospitalId};
-//   `;
-
-//   const responseDonationBankUpdate = await prisma.$executeRawUnsafe(sql);
-
-//   if (responseDonationBankUpdate) {
-//     return responseDonationBankUpdate;
-//   } else {
-//     return false;
-//   }
-// }
-
 async function updateOrInsertDonationBank(donationBankData) {
   const { year, bloodType, hospitalId, bloodMl } = donationBankData;
 

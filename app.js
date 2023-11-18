@@ -709,6 +709,7 @@ app.get("/api/v1/schedules", cors(), async function (request, response) {
   response.json(resultGetData);
 });
 
+
 /* ---------------------------------- AUTHENTICATION ----------------------------------*/
 app.post(
   "/api/v1/forgot-password",
@@ -723,6 +724,7 @@ app.post(
     const now = new Date();
     now.setHours(now.getHours() + 1);
 
+    console.log(now);
     //Update Password Reset Token
     const passwordResetData = {
       passwordResetToken: token,
@@ -731,56 +733,49 @@ app.post(
 
     const user = await userController.userEmailGet(body);
 
-    // TODO criar isso aqui
     const updateUser = await userController.userForgotPasswordUpdate(
       user.userData.id,
       passwordResetData
     );
 
-    // const templatePath = path.resolve(
-    //   __dirname,
-    //   "src",
-    //   "resources",
-    //   "mail",
-    //   "forgot_password.html"
+    // const htmlContent = fs.readFileSync(
+    //   "./src/resources/mail/forgot_password.html",
+    //   "utf-8"
     // );
 
-    // const htmlContent = fs.readFileSync(templatePath, 'utf-8');
-    const htmlContent = fs.readFileSync(
-      "./src/resources/mail/forgot_password.html",
-      "utf-8"
-    );
-
     const mailOptions = {
-      // to: body.email,
+      subject: "Assunto do E-mail",
+      to: body.email,
       from: "caiocoghi@gmail.com",
-      to: "caiocoghi@gmail.com",
-      html: htmlContent,
-      context: { token },
+      html: `
+    <html>
+      <head>
+        <title>Assunto do E-mail</title>
+      </head>
+      <body>
+        <p>Olá,</p>
+        <p>Aqui está o seu token: ${token}</p>
+        <p>Atenciosamente,</p>
+        <p>Seu Nome</p>
+      </body>
+    </html>
+  `,
     };
-
-    // const mailOptions = {
-    //   // to: body.email,
-    //   from: "caiocoghi@gmail.com",
-    //   to: "pinheirocamila49800@gmail.com",
-    //   subject: "Assunto do E-mail",
-    //   text: "Corpo do E-mail",
-    // };
 
     mailer.sendMail(mailOptions, (error) => {
       if (error) {
+        console.log(error);
         return response
           .status(400)
           .send({ error: "Cannot send forgot password email" });
       } else {
-        console.log("foi");
         return response.send();
       }
     });
   }
 );
 
-//Insert Donation Bank
+//User Reset Password
 app.post(
   "/api/v1/reset-password",
   cors(),
@@ -788,7 +783,7 @@ app.post(
   async function (request, response) {
     const bodyData = request.body;
 
-    const user = await userController.userEmailGet(body);
+    const user = await userController.userEmailGet(bodyData);
 
     if (bodyData.token !== user.userData.passwordResetToken) {
       return response.status(400).send({ error: "Token Invalid" });
@@ -800,12 +795,12 @@ app.post(
       return response
         .status(400)
         .send({ error: "Token Expired. Generate a new one" });
-    }
+    } 
 
-    userController.userPasswordUpdate(user.userData.id, bodyData.password);
+    const responseUpdate = await userController.userPasswordUpdate(user.userData.id, bodyData);
 
-    response.status(resultDonationBank.status);
-    response.json(resultDonationBank);
+    response.status(responseUpdate.status);
+    response.json(responseUpdate);
   }
 );
 
@@ -818,7 +813,6 @@ if (process.env.NODE_ENV !== "test") {
     console.log(`Server waiting for requests on port ${PORT}!`);
   });
 }
-
 
 wss.on("connection", (ws) => {
   ws.on("message", (message) => {
