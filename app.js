@@ -201,10 +201,11 @@ app.get(
     const hospitalId = request.params.id;
     const status = request.params.status;
 
-    const resultGetData = await hospitalController.hospitalGetFilteredStatusSchedules(
-      hospitalId,
-      status
-    );
+    const resultGetData =
+      await hospitalController.hospitalGetFilteredStatusSchedules(
+        hospitalId,
+        status
+      );
 
     response.status(resultGetData.status);
     response.json(resultGetData);
@@ -220,10 +221,11 @@ app.get(
     const name = request.params.name;
 
     console.log(name);
-    const resultGetData = await hospitalController.hospitalGetFilteredNameSchedules(
-      hospitalId,
-      name
-    );
+    const resultGetData =
+      await hospitalController.hospitalGetFilteredNameSchedules(
+        hospitalId,
+        name
+      );
 
     response.status(resultGetData.status);
     response.json(resultGetData);
@@ -340,9 +342,29 @@ app.post(
   cors(),
   bodyJSON,
   async function (request, response) {
-    let bodyData = request.body;
+    const bodyData = request.body;
 
-    let resultInsertData = await reviewController.reviewInsert(bodyData);
+    const resultInsertData = await reviewController.reviewInsert(bodyData);
+
+    try {
+      if (resultInsertData.status === 201) {
+        const updatedStatistics = await reviewController.reviewsStatisticsGet(
+          bodyData.idHospital
+        );
+
+        wss.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            const jsonData = JSON.stringify({
+              type: "review",
+              data: updatedStatistics.reviewsStatistics[updatedStatistics.reviewsStatistics.length - 1],
+            });
+            client.send(jsonData);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao enviar mensagem via WebSocket:", error.message);
+    }
 
     response.status(resultInsertData.status);
     response.json(resultInsertData);
@@ -853,14 +875,14 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 wss.on("connection", (ws) => {
+  console.log("Cliente conectado ao WebSocket");
+
   ws.on("message", (message) => {
-    console.log(`Received: ${message}`);
-    wss.clients.forEach((client) => {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message);
-        console.log(`Sent: ${message}`);
-      }
-    });
+    console.log(`Mensagem recebida: ${message}`);
+  });
+
+  ws.on("close", () => {
+    console.log("Cliente desconectado do WebSocket");
   });
 });
 
