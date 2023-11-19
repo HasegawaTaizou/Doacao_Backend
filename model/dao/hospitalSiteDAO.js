@@ -42,5 +42,5 @@ async function getHospitalSiteIdBySiteId(siteId) {
 
 module.exports = {
   insertHospitalSite,
-  getHospitalSiteIdBySiteId
+  getHospitalSiteIdBySiteId,
 };

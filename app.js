@@ -105,11 +105,33 @@ app.post(
   cors(),
   bodyJSON,
   async function (request, response) {
-    let bodyData = request.body;
+    const bodyData = request.body;
 
-    let resultInsertData = await bookScheduleController.bookScheduleInsert(
+    const resultInsertData = await bookScheduleController.bookScheduleInsert(
       bodyData
     );
+
+    try {
+      if (resultInsertData.status === 201) {
+        const hospitalId = await siteController.hospitalIdSiteIdGet(bodyData[0].hospitalSiteId)
+        
+        const updatedBookSchedules = await bookScheduleController.bookSchedulesGet(
+          hospitalId.hospitalId[0].hospital_id
+        );
+
+        wss.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            const jsonData = JSON.stringify({
+              type: "bookSchedule",
+              data: updatedBookSchedules,
+            });
+            client.send(jsonData);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao enviar mensagem via WebSocket:", error.message);
+    }
 
     response.status(resultInsertData.status);
     response.json(resultInsertData);

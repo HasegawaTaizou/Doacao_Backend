@@ -51,7 +51,8 @@ const getBookSchedulesByHospitalId = async function (hospitalId) {
   INNER JOIN tbl_hospital_site ON tbl_book_schedule.id_hospital_site = tbl_hospital_site.id
   INNER JOIN tbl_hospital ON tbl_hospital_site.id_hospital = tbl_hospital.id
   INNER JOIN tbl_site ON tbl_hospital_site.id = tbl_site.id
-  WHERE tbl_hospital.id = ${hospitalId};
+  WHERE tbl_hospital.id = ${hospitalId}
+  ORDER BY tbl_book_schedule.date, tbl_book_schedule.hour;
   `;
 
   const responseBookSchedules = await prisma.$queryRawUnsafe(sql);
