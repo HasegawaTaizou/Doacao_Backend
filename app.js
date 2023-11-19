@@ -191,11 +191,34 @@ app.post(
   cors(),
   bodyJSON,
   async function (request, response) {
-    let bodyData = request.body;
+    const bodyData = request.body;
 
-    let resultInsertData = await scheduleStatusController.scheduleStatusInsert(
-      bodyData
-    );
+    const resultInsertData =
+      await scheduleStatusController.scheduleStatusInsert(bodyData);
+
+    try {
+      if (resultInsertData.status === 201) {
+        const hospitalId = await scheduleController.hospitalIdScheduleIdGet(
+          bodyData.idSchedule
+        );
+
+        const updatedSchedules = await hospitalController.hospitalGetSchedules(
+          hospitalId.hospitalId[0].id_hospital
+        );
+
+        wss.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            const jsonData = JSON.stringify({
+              type: "schedules",
+              data: updatedSchedules.schedules,
+            });
+            client.send(jsonData);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao enviar mensagem via WebSocket:", error.message);
+    }
 
     response.status(resultInsertData.status);
     response.json(resultInsertData);
@@ -373,9 +396,8 @@ app.post(
 
     try {
       if (resultInsertData.status === 201) {
-        const updatedReviewsStatistics = await reviewController.reviewsStatisticsGet(
-          bodyData.idHospital
-        );
+        const updatedReviewsStatistics =
+          await reviewController.reviewsStatisticsGet(bodyData.idHospital);
 
         const updatedRatingsStatistics =
           await reviewController.ratingsStatisticsGet(bodyData.idHospital);
@@ -392,7 +414,7 @@ app.post(
 
             const jsonReviewStatisticsData = JSON.stringify({
               type: "ratings",
-              data: updatedRatingsStatistics.ratingsStatistics
+              data: updatedRatingsStatistics.ratingsStatistics,
             });
             client.send(jsonReviewStatisticsData);
           }
@@ -468,6 +490,30 @@ app.put(
       bodyData
     );
 
+    try {
+      if (resultUpdateData.status === 204) {
+        const hospitalId = await scheduleController.hospitalIdScheduleIdGet(
+          scheduleId
+        );
+
+        const updatedSchedules = await hospitalController.hospitalGetSchedules(
+          hospitalId.hospitalId[0].id_hospital
+        );
+
+        wss.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            const jsonData = JSON.stringify({
+              type: "schedules",
+              data: updatedSchedules.schedules,
+            });
+            client.send(jsonData);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao enviar mensagem via WebSocket:", error.message);
+    }
+
     response.status(resultUpdateData.status);
     response.json(resultUpdateData);
   }
@@ -484,6 +530,30 @@ app.put(
     const resultUpdateData = await scheduleController.scheduleConcludeUpdate(
       scheduleId
     );
+
+    try {
+      if (resultUpdateData.status === 204) {
+        const hospitalId = await scheduleController.hospitalIdScheduleIdGet(
+          scheduleId
+        );
+
+        const updatedSchedules = await hospitalController.hospitalGetSchedules(
+          hospitalId.hospitalId[0].id_hospital
+        );
+
+        wss.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            const jsonData = JSON.stringify({
+              type: "schedules",
+              data: updatedSchedules.schedules,
+            });
+            client.send(jsonData);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao enviar mensagem via WebSocket:", error.message);
+    }
 
     response.status(resultUpdateData.status);
     response.json(resultUpdateData);
@@ -504,6 +574,30 @@ app.put(
       bodyData
     );
 
+    try {
+      if (resultUpdateData.status === 204) {
+        const hospitalId = await scheduleController.hospitalIdScheduleIdGet(
+          scheduleId
+        );
+
+        const updatedSchedules = await hospitalController.hospitalGetSchedules(
+          hospitalId.hospitalId[0].id_hospital
+        );
+
+        wss.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            const jsonData = JSON.stringify({
+              type: "schedules",
+              data: updatedSchedules.schedules,
+            });
+            client.send(jsonData);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao enviar mensagem via WebSocket:", error.message);
+    }
+
     response.status(resultUpdateData.status);
     response.json(resultUpdateData);
   }
@@ -523,6 +617,31 @@ app.put(
       bodyData
     );
 
+    try {
+      if (resultUpdateData.status === 204) {
+        const hospitalId =
+          await bookScheduleController.hospitalIdBookScheduleIdGet(
+            bookScheduleId
+          );
+
+        const updatedSchedules = await bookScheduleController.bookSchedulesGet(
+          hospitalId.hospitalId[0].id_hospital
+        );
+
+        wss.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            const jsonData = JSON.stringify({
+              type: "bookSchedules",
+              data: updatedSchedules.bookSchedules,
+            });
+            client.send(jsonData);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao enviar mensagem via WebSocket:", error.message);
+    }
+
     response.status(resultUpdateData.status);
     response.json(resultUpdateData);
   }
@@ -534,9 +653,35 @@ app.delete(
   cors(),
   async function (request, response) {
     const bookScheduleId = request.params.id;
+
+    const hospitalId = await bookScheduleController.hospitalIdBookScheduleIdGet(
+      bookScheduleId
+    );
+
     const resultDeleteData = await bookScheduleController.bookScheduleDelete(
       bookScheduleId
     );
+
+    try {
+      if (resultDeleteData.status === 204) {
+        console.log(hospitalId);
+        const updatedSchedules = await bookScheduleController.bookSchedulesGet(
+          hospitalId.hospitalId[0].id_hospital
+        );
+
+        wss.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            const jsonData = JSON.stringify({
+              type: "bookSchedules",
+              data: updatedSchedules.bookSchedules,
+            });
+            client.send(jsonData);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao enviar mensagem via WebSocket:", error.message);
+    }
 
     response.status(resultDeleteData.status);
     response.json(resultDeleteData);
@@ -711,6 +856,30 @@ app.put(
       bodyData
     );
 
+    try {
+      if (resultUpdateData.status === 204) {
+        const hospitalId = await campaignController.hospitalIdCampaignIdGet(
+          campaignId
+        );
+
+        const updatedCampaigns = await campaignController.campaignsHospitalGet(
+          hospitalId.hospitalId[0].id_hospital
+        );
+
+        wss.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            const jsonData = JSON.stringify({
+              type: "campaigns",
+              data: updatedCampaigns.campaigns,
+            });
+            client.send(jsonData);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao enviar mensagem via WebSocket:", error.message);
+    }
+
     response.status(resultUpdateData.status);
     response.json(resultUpdateData);
   }
@@ -722,9 +891,36 @@ app.delete(
   cors(),
   async function (request, response) {
     const campaignId = request.params.id;
+    
+    const hospitalId = await campaignController.hospitalIdCampaignIdGet(
+      campaignId
+    );
+    
     const resultDeleteData = await campaignController.campaignDelete(
       campaignId
     );
+
+    console.log(hospitalId);
+
+    try {
+      if (resultDeleteData.status === 204) {
+        const updatedCampaigns = await campaignController.campaignsHospitalGet(
+          hospitalId.hospitalId[0].id_hospital
+        );
+
+        wss.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            const jsonData = JSON.stringify({
+              type: "campaigns",
+              data: updatedCampaigns.campaigns,
+            });
+            client.send(jsonData);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao enviar mensagem via WebSocket:", error.message);
+    }
 
     response.status(resultDeleteData.status);
     response.json(resultDeleteData);

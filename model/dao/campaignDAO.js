@@ -132,11 +132,30 @@ async function deleteCampaignById(campaignId) {
   }
 }
 
+const getHospitalIdByCampaignId = async function (campaignId) {
+  const sql = `
+  SELECT 
+  id_hospital
+  FROM tbl_campaign
+  WHERE id = ${campaignId};
+  `;
+
+  const responseCampaigns = await prisma.$queryRawUnsafe(sql);
+  
+  console.log(responseCampaigns);
+  if (responseCampaigns) {
+    return responseCampaigns;
+  } else {
+    return false;
+  }
+};
+
 module.exports = {
   getCampaignById,
   getCampaignsByHospitalId,
   insertCampaign,
   updateCampaign,
   deleteCampaignById,
-  getCampaigns
+  getCampaigns,
+  getHospitalIdByCampaignId
 };

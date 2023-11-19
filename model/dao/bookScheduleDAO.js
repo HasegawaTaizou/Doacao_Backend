@@ -193,6 +193,23 @@ const deleteBookSchedule = async function (bookScheduleId) {
   }
 };
 
+const getHospitalIdByBookScheduleId = async function (bookScheduleId) {
+  const sql = `
+  SELECT tbl_hospital.id AS id_hospital FROM tbl_book_schedule
+  INNER JOIN tbl_hospital_site ON tbl_hospital_site.id = tbl_book_schedule.id_hospital_site
+  INNER JOIN tbl_hospital ON tbl_hospital.id = tbl_hospital_site.id_hospital
+  WHERE tbl_book_schedule.id = ${bookScheduleId};
+  `;
+
+  const responseHospitalId = await prisma.$queryRawUnsafe(sql);
+
+  if (responseHospitalId) {
+    return responseHospitalId;
+  } else {
+    return false;
+  }
+};
+
 module.exports = {
   insertBookSchedule,
   getBookScheduleByHospitalId,
@@ -200,4 +217,5 @@ module.exports = {
   getBookSchedulesByHospitalIdMobile,
   updateBookSchedule,
   deleteBookSchedule,
+  getHospitalIdByBookScheduleId,
 };

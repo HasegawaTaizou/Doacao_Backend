@@ -18,11 +18,11 @@ const scheduleInsert = async function (scheduleData) {
 
   const status = await scheduleDAO.insertSchedule(scheduleData);
   if (status) {
-    const jsonScheduleInsert = {}
-    jsonScheduleInsert.message = message.CREATED_ITEM.message
-    jsonScheduleInsert.status = message.CREATED_ITEM.status
+    const jsonScheduleInsert = {};
+    jsonScheduleInsert.message = message.CREATED_ITEM.message;
+    jsonScheduleInsert.status = message.CREATED_ITEM.status;
     jsonScheduleInsert.idSchedule = status.id;
-    
+
     return jsonScheduleInsert;
   } else {
     return message.ERROR_INTERNAL_SERVER;
@@ -149,8 +149,7 @@ const scheduleRescheduleUpdate = async function (scheduleId, scheduleData) {
 };
 
 const schedulesGet = async function () {
-  const schedulesData =
-    await scheduleDAO.getSchedules();
+  const schedulesData = await scheduleDAO.getSchedules();
 
   if (schedulesData.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;
@@ -166,6 +165,27 @@ const schedulesGet = async function () {
   }
 };
 
+const hospitalIdScheduleIdGet = async function (scheduleId) {
+  if (!validateId(scheduleId)) {
+    return message.ERROR_INVALID_ID;
+  }
+
+  const schedulesData = await scheduleDAO.getHospitalIdByScheduleId(scheduleId);
+
+  if (schedulesData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (schedulesData) {
+    const jsonSchedulesData = {};
+
+    jsonSchedulesData.status = message.OK.status;
+    jsonSchedulesData.hospitalId = schedulesData;
+
+    return jsonSchedulesData;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
 module.exports = {
   scheduleInsert,
   scheduleGet,
@@ -173,5 +193,6 @@ module.exports = {
   scheduleCancelUpdate,
   scheduleConcludeUpdate,
   scheduleRescheduleUpdate,
-  schedulesGet
+  schedulesGet,
+  hospitalIdScheduleIdGet,
 };

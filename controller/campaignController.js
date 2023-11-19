@@ -114,10 +114,32 @@ const campaignDelete = async function (campaignId) {
   }
 };
 
+const hospitalIdCampaignIdGet = async function (campaignId) {
+  if (!validateId(campaignId)) {
+    return message.ERROR_INVALID_ID;
+  }
+
+  const hospitalIdData = await campaignDAO.getHospitalIdByCampaignId(campaignId);
+
+  if (hospitalIdData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (hospitalIdData) {
+    const jsonHospitalIdData = {};
+
+    jsonHospitalIdData.status = message.OK.status;
+    jsonHospitalIdData.hospitalId = hospitalIdData;
+
+    return jsonHospitalIdData;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
 module.exports = {
   campaignInsert,
   campaignsHospitalGet,
   campaignsGet,
   campaignUpdate,
   campaignDelete,
+  hospitalIdCampaignIdGet
 };

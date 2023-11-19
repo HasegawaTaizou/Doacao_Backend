@@ -323,4 +323,5 @@ module.exports = {
   getScheduleIdByUserId,
   getScheduleIdByHospitalId,
   getSchedulesIdByHospitalId,
+  getHospitalIdByScheduleId,
 };
