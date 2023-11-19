@@ -113,17 +113,20 @@ app.post(
 
     try {
       if (resultInsertData.status === 201) {
-        const hospitalId = await siteController.hospitalIdSiteIdGet(bodyData[0].hospitalSiteId)
-        
-        const updatedBookSchedules = await bookScheduleController.bookSchedulesGet(
-          hospitalId.hospitalId[0].hospital_id
+        const hospitalId = await siteController.hospitalIdSiteIdGet(
+          bodyData[0].hospitalSiteId
         );
+
+        const updatedBookSchedules =
+          await bookScheduleController.bookSchedulesGet(
+            hospitalId.hospitalId[0].hospital_id
+          );
 
         wss.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
             const jsonData = JSON.stringify({
               type: "bookSchedule",
-              data: updatedBookSchedules,
+              data: updatedBookSchedules.bookSchedules,
             });
             client.send(jsonData);
           }
@@ -370,17 +373,28 @@ app.post(
 
     try {
       if (resultInsertData.status === 201) {
-        const updatedStatistics = await reviewController.reviewsStatisticsGet(
+        const updatedReviewsStatistics = await reviewController.reviewsStatisticsGet(
           bodyData.idHospital
         );
 
+        const updatedRatingsStatistics =
+          await reviewController.ratingsStatisticsGet(bodyData.idHospital);
+
         wss.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
-            const jsonData = JSON.stringify({
+            const jsonReviewData = JSON.stringify({
               type: "review",
-              data: updatedStatistics.reviewsStatistics[updatedStatistics.reviewsStatistics.length - 1],
+              data: updatedReviewsStatistics.reviewsStatistics[
+                updatedReviewsStatistics.reviewsStatistics.length - 1
+              ],
             });
-            client.send(jsonData);
+            client.send(jsonReviewData);
+
+            const jsonReviewStatisticsData = JSON.stringify({
+              type: "ratings",
+              data: updatedRatingsStatistics.ratingsStatistics
+            });
+            client.send(jsonReviewStatisticsData);
           }
         });
       }
