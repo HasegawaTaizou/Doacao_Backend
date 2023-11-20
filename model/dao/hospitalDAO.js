@@ -403,46 +403,6 @@ const getHospitalsId = async function () {
   }
 };
 
-// -- Delete unico
-// DELETE FROM tbl_campaign
-// WHERE id_hospital = 1;
-
-// -- Delete unico
-// DELETE FROM tbl_donation_bank
-// WHERE id_hospital = 1;
-
-// -- Multiplos deletes
-// DELETE FROM tbl_schedule_status
-// WHERE id_schedule = 2;
-
-// -- Multiplos deletes
-// DELETE FROM tbl_schedule
-// WHERE id_book_schedule = 2;
-
-// -- Multiplos deletes
-// DELETE FROM tbl_book_schedule
-// WHERE id_hospital_site = 2;
-
-// -- Delete unico
-// DELETE FROM tbl_hospital_site
-// WHERE id_hospital = 1;
-
-// -- Delete unico
-// DELETE FROM tbl_phone
-// WHERE id_hospital = 1;
-
-// -- Delete unico
-// DELETE FROM tbl_photo
-// WHERE id_hospital = 1;
-
-// -- Delete unico
-// DELETE FROM tbl_review
-// WHERE id_hospital = 1;
-
-// -- Delete unico
-// DELETE FROM tbl_hospital
-// WHERE id = 1;
-
 async function deleteHospitalById(hospitalId) {
   const sqlDeleteCampaign = `
   DELETE FROM tbl_campaign

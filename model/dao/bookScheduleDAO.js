@@ -2,6 +2,7 @@ var { PrismaClient } = require("@prisma/client");
 var prisma = new PrismaClient();
 
 const scheduleDAO = require("./scheduleDAO");
+const hospitalSiteDAO = require("./hospitalSiteDAO");
 
 const insertBookSchedule = async function (bookScheduleData) {
   for (bookSchedule in bookScheduleData) {
@@ -111,46 +112,43 @@ WHERE tbl_hospital.id = 1 AND tbl_status.status IS NULL;
 };
 
 async function updateBookSchedule(bookScheduleId, bookScheduleData) {
-  let [day, month, year] = bookScheduleData.date.split("/");
-  let ISOdate = `${year}-${month}-${day}T00:00:00Z`;
+  const splitDate = bookScheduleData.date.split("/");
 
-  let [hour, minute] = bookScheduleData.hour.split(":");
-  let ISOhour = `1970-01-01T${hour}:${minute}:00Z`;
+  const day = splitDate[0];
+  const month = splitDate[1];
+  const year = splitDate[2];
 
-  try {
-    const oldBookScheduleData = await prisma.bookSchedule.findUnique({
-      where: {
-        id: Number(bookScheduleId),
-      },
-      include: {
-        HospitalSite: {
-          select: {
-            idSite: true,
-          },
-        },
-      },
-    });
+  const formattedDate = `${year}/${month}/${day}`;
 
-    const updatedBookSchedule = await prisma.bookSchedule.update({
-      where: {
-        id: Number(bookScheduleId),
-      },
-      data: {
-        date: ISOdate,
-        hour: ISOhour,
-        HospitalSite: {
-          update: {
-            idSite: bookScheduleData.idSite,
-          },
-        },
-      },
-    });
+  const sqlUpdateBookSchedule = `
+  UPDATE tbl_book_schedule
+  SET 
+  date = '${formattedDate}',
+  hour = '${bookScheduleData.hour}'
+  where id = ${bookScheduleId};
+  `;
 
-    return true;
-  } catch (error) {
-    console.error("Erro ao atualizar o schedule:", error);
-  } finally {
-    await prisma.$disconnect();
+  const hospitalSiteId = await hospitalSiteDAO.getHospitalSiteIdBySiteId(
+    bookScheduleData.siteId
+  );
+
+  const sqlUpdateSite = `
+  UPDATE tbl_book_schedule
+  INNER JOIN tbl_hospital_site ON tbl_book_schedule.id_hospital_site = tbl_hospital_site.id
+  INNER JOIN tbl_site ON tbl_site.id = tbl_hospital_site.id_site
+  SET tbl_book_schedule.id_hospital_site = ${hospitalSiteId[0].hospital_site_id}
+  WHERE tbl_book_schedule.id = ${bookScheduleId};
+  `;
+
+  const updateBookSchedule = await prisma.$queryRawUnsafe(
+    sqlUpdateBookSchedule
+  );
+  const updateSite = await prisma.$queryRawUnsafe(sqlUpdateSite);
+
+  if (updateBookSchedule && updateSite) {
+    return updateBookSchedule;
+  } else {
+    return false;
   }
 }
 
