@@ -81,7 +81,7 @@ LEFT JOIN tbl_status ON tbl_status.id = tbl_schedule_status.id_status
 LEFT JOIN tbl_hospital_site ON tbl_book_schedule.id_hospital_site = tbl_hospital_site.id
 LEFT JOIN tbl_hospital ON tbl_hospital_site.id_hospital = tbl_hospital.id
 LEFT JOIN tbl_site ON tbl_hospital_site.id = tbl_site.id
-WHERE tbl_hospital.id = 1 AND tbl_status.status IS NULL
+WHERE tbl_hospital.id = ${hospitalId} AND tbl_status.status IS NULL
 
 UNION
 
@@ -99,7 +99,7 @@ RIGHT JOIN tbl_status ON tbl_status.id = tbl_schedule_status.id_status
 RIGHT JOIN tbl_hospital_site ON tbl_book_schedule.id_hospital_site = tbl_hospital_site.id
 RIGHT JOIN tbl_hospital ON tbl_hospital_site.id_hospital = tbl_hospital.id
 RIGHT JOIN tbl_site ON tbl_hospital_site.id = tbl_site.id
-WHERE tbl_hospital.id = 1 AND tbl_status.status IS NULL;
+WHERE tbl_hospital.id = ${hospitalId} AND tbl_status.status IS NULL;
   `;
 
   const responseBookSchedules = await prisma.$queryRawUnsafe(sql);
