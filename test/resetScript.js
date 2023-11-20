@@ -3,7 +3,6 @@ const path = require('path');
 
 // Obter o caminho do diretório pai do diretório atual do script
 const parentDir = path.resolve(__dirname, '..');
-console.log(parentDir);
 
 // Comando para dropar o banco de dados
 execSync('npx prisma migrate reset --skip-seed --force', { stdio: 'inherit', cwd: parentDir });

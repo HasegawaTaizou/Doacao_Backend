@@ -156,7 +156,6 @@ const hospitalIdBookScheduleIdGet = async function (bookScheduleId) {
 
   const schedulesData = await bookScheduleDAO.getHospitalIdByBookScheduleId(bookScheduleId);
 
-  console.log(schedulesData);
   if (schedulesData.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;
   } else if (schedulesData) {

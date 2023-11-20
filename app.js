@@ -125,7 +125,7 @@ app.post(
         wss.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
             const jsonData = JSON.stringify({
-              type: "bookSchedule",
+              type: "bookSchedules",
               data: updatedBookSchedules.bookSchedules,
             });
             client.send(jsonData);
@@ -268,7 +268,6 @@ app.get(
     const hospitalId = request.params.id;
     const name = request.params.name;
 
-    console.log(name);
     const resultGetData =
       await hospitalController.hospitalGetFilteredNameSchedules(
         hospitalId,
@@ -664,7 +663,6 @@ app.delete(
 
     try {
       if (resultDeleteData.status === 204) {
-        console.log(hospitalId);
         const updatedSchedules = await bookScheduleController.bookSchedulesGet(
           hospitalId.hospitalId[0].id_hospital
         );
@@ -899,8 +897,6 @@ app.delete(
     const resultDeleteData = await campaignController.campaignDelete(
       campaignId
     );
-
-    console.log(hospitalId);
 
     try {
       if (resultDeleteData.status === 204) {

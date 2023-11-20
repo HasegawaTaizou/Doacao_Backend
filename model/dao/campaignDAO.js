@@ -142,7 +142,6 @@ const getHospitalIdByCampaignId = async function (campaignId) {
 
   const responseCampaigns = await prisma.$queryRawUnsafe(sql);
   
-  console.log(responseCampaigns);
   if (responseCampaigns) {
     return responseCampaigns;
   } else {
