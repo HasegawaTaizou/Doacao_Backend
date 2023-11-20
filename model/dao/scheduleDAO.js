@@ -117,6 +117,21 @@ const getHospitalIdByScheduleId = async function (scheduleId) {
   }
 };
 
+const getUserIdByScheduleId = async function (scheduleId) {
+  const sql = `
+  SELECT tbl_schedule.id_user FROM tbl_schedule
+  WHERE tbl_schedule.id = ${scheduleId};
+  `;
+
+  const responseUserId = await prisma.$queryRawUnsafe(sql);
+
+  if (responseUserId) {
+    return responseUserId;
+  } else {
+    return false;
+  }
+};
+
 async function updateScheduleCancel(scheduleId, scheduleData) {
   const statusId = await statusDAO.getStatusIdByName("PENDING");
 
@@ -324,4 +339,5 @@ module.exports = {
   getScheduleIdByHospitalId,
   getSchedulesIdByHospitalId,
   getHospitalIdByScheduleId,
+  getUserIdByScheduleId,
 };

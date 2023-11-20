@@ -186,6 +186,27 @@ const hospitalIdScheduleIdGet = async function (scheduleId) {
   }
 };
 
+const userIdScheduleIdGet = async function (scheduleId) {
+  if (!validateId(scheduleId)) {
+    return message.ERROR_INVALID_ID;
+  }
+
+  const schedulesData = await scheduleDAO.getUserIdByScheduleId(scheduleId);
+
+  if (schedulesData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (schedulesData) {
+    const jsonSchedulesData = {};
+
+    jsonSchedulesData.status = message.OK.status;
+    jsonSchedulesData.userId = schedulesData;
+
+    return jsonSchedulesData;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
 module.exports = {
   scheduleInsert,
   scheduleGet,
@@ -195,4 +216,5 @@ module.exports = {
   scheduleRescheduleUpdate,
   schedulesGet,
   hospitalIdScheduleIdGet,
+  userIdScheduleIdGet
 };

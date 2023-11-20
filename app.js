@@ -494,18 +494,28 @@ app.put(
         const hospitalId = await scheduleController.hospitalIdScheduleIdGet(
           scheduleId
         );
-
         const updatedSchedules = await hospitalController.hospitalGetSchedules(
           hospitalId.hospitalId[0].id_hospital
         );
 
+        const userId = await scheduleController.userIdScheduleIdGet(scheduleId);
+        const updatedUserSchedules = await userController.userGetSchedules(
+          userId.userId[0].id_user
+        );
+
         wss.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
-            const jsonData = JSON.stringify({
+            const jsonSchedulesData = JSON.stringify({
               type: "schedules",
               data: updatedSchedules.schedules,
             });
-            client.send(jsonData);
+            client.send(jsonSchedulesData);
+
+            const jsonUserSchedulesData = JSON.stringify({
+              type: "userSchedules",
+              data: updatedUserSchedules.schedules,
+            });
+            client.send(jsonUserSchedulesData);
           }
         });
       }
@@ -535,18 +545,28 @@ app.put(
         const hospitalId = await scheduleController.hospitalIdScheduleIdGet(
           scheduleId
         );
-
         const updatedSchedules = await hospitalController.hospitalGetSchedules(
           hospitalId.hospitalId[0].id_hospital
         );
 
+        const userId = await scheduleController.userIdScheduleIdGet(scheduleId);
+        const updatedUserSchedules = await userController.userGetSchedules(
+          userId.userId[0].id_user
+        );
+
         wss.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
-            const jsonData = JSON.stringify({
+            const jsonSchedulesData = JSON.stringify({
               type: "schedules",
               data: updatedSchedules.schedules,
             });
-            client.send(jsonData);
+            client.send(jsonSchedulesData);
+
+            const jsonUserSchedulesData = JSON.stringify({
+              type: "userSchedules",
+              data: updatedUserSchedules.schedules,
+            });
+            client.send(jsonUserSchedulesData);
           }
         });
       }
@@ -578,18 +598,28 @@ app.put(
         const hospitalId = await scheduleController.hospitalIdScheduleIdGet(
           scheduleId
         );
-
         const updatedSchedules = await hospitalController.hospitalGetSchedules(
           hospitalId.hospitalId[0].id_hospital
         );
 
+        const userId = await scheduleController.userIdScheduleIdGet(scheduleId);
+        const updatedUserSchedules = await userController.userGetSchedules(
+          userId.userId[0].id_user
+        );
+
         wss.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
-            const jsonData = JSON.stringify({
+            const jsonSchedulesData = JSON.stringify({
               type: "schedules",
               data: updatedSchedules.schedules,
             });
-            client.send(jsonData);
+            client.send(jsonSchedulesData);
+
+            const jsonUserSchedulesData = JSON.stringify({
+              type: "userSchedules",
+              data: updatedUserSchedules.schedules,
+            });
+            client.send(jsonUserSchedulesData);
           }
         });
       }
@@ -889,11 +919,11 @@ app.delete(
   cors(),
   async function (request, response) {
     const campaignId = request.params.id;
-    
+
     const hospitalId = await campaignController.hospitalIdCampaignIdGet(
       campaignId
     );
-    
+
     const resultDeleteData = await campaignController.campaignDelete(
       campaignId
     );
@@ -978,10 +1008,30 @@ app.put(
   bodyJSON,
   async function (request, response) {
     const bodyData = request.body;
+    const hospitalId = bodyData.hospitalId;
 
     const resultUpdateData = await donationBankController.donationBankUpdate(
       bodyData
     );
+
+    try {
+      if (resultUpdateData.status === 204) {
+        const updatedDonationBanks =
+          await donationBankController.donationBanksGet(hospitalId);
+
+        wss.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            const jsonData = JSON.stringify({
+              type: "donationBanks",
+              data: updatedDonationBanks.donationBanks,
+            });
+            client.send(jsonData);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao enviar mensagem via WebSocket:", error.message);
+    }
 
     response.status(resultUpdateData.status);
     response.json(resultUpdateData);
