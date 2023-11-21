@@ -9,7 +9,7 @@ const crypto = require("crypto");
 const mailer = require("./modules/mailer");
 const path = require("path");
 const fs = require("fs");
-const handlebars = require("nodemailer-express-handlebars");
+const handlebars = require("handlebars");
 
 const app = express();
 
@@ -1123,19 +1123,17 @@ app.post(
     );
 
     const __dirname = path.resolve();
-    const filePath = path.join(__dirname, "./src/resources/mail/forgot_password.html");
+    const filePath = path.join(
+      __dirname,
+      "./src/resources/mail/forgot_password.html"
+    );
     const source = fs.readFileSync(filePath, "utf-8").toString();
     const template = handlebars.compile(source);
     const replacements = {
-      token: token
+      token: token,
+      logo: "https://firebasestorage.googleapis.com/v0/b/greenworld-f2763.appspot.com/o/images%2Fdoevida-logo.png?alt=media&token=ad61f588-f9df-4433-b87e-f0490f7fc366",
     };
     const htmlToSend = template(replacements);
-
-    // const htmlContent = fs.readFileSync(
-    //   "./src/resources/mail/forgot_password.html",
-    //   "utf-8"
-    // );
-    // const modifiedHtmlContent = htmlContent.replace("{{ token }}", token);
 
     const mailOptions = {
       subject: "Assunto do E-mail",
