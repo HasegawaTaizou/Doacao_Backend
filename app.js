@@ -9,6 +9,7 @@ const crypto = require("crypto");
 const mailer = require("./modules/mailer");
 const path = require("path");
 const fs = require("fs");
+const handlebars = require("nodemailer-express-handlebars");
 
 const app = express();
 
@@ -1121,19 +1122,27 @@ app.post(
       passwordResetData
     );
 
-    const htmlContent = fs.readFileSync(
-      "./src/resources/mail/forgot_password.html",
-      "utf-8"
-    );
+    const __dirname = path.resolve();
+    const filePath = path.join(__dirname, "./src/resources/mail/forgot_password.html");
+    const source = fs.readFileSync(filePath, "utf-8").toString();
+    const template = handlebars.compile(source);
+    const replacements = {
+      token: token
+    };
+    const htmlToSend = template(replacements);
 
-    const modifiedHtmlContent = htmlContent.replace("{{ token }}", token);
+    // const htmlContent = fs.readFileSync(
+    //   "./src/resources/mail/forgot_password.html",
+    //   "utf-8"
+    // );
+    // const modifiedHtmlContent = htmlContent.replace("{{ token }}", token);
 
     const mailOptions = {
       subject: "Assunto do E-mail",
       // to: body.email,
       to: "caiocoghi@gmail.com",
       from: "doevida.suporte@gmail.com",
-      html: modifiedHtmlContent,
+      html: htmlToSend,
     };
 
     mailer.sendMail(mailOptions, (error) => {
