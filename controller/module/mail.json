@@ -1,8 +1,7 @@
 {
-    "service": "gmail",
-    "host": "smtp.gmail.com",
-    "secure": true,
-    "port": 456,
-    "user": "caiocoghi@gmail.com",
-    "pass": "cWHBSLA_86"
+  "service": "smtp.gmail.com",
+  "host": "smtp.gmail.com",
+  "port": 587,
+  "secure": false,
+  "rejectUnauthorized": false
 }

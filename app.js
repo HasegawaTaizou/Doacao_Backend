@@ -726,9 +726,10 @@ app.delete(
         const updatedUserSchedules = await userController.userGetSchedules(
           userId.userId[0].id_user
         );
-        const updatedUserBookSchedules = await bookScheduleController.bookSchedulesMobileGet(
-          hospitalId.hospitalId[0].id_hospital
-        );
+        const updatedUserBookSchedules =
+          await bookScheduleController.bookSchedulesMobileGet(
+            hospitalId.hospitalId[0].id_hospital
+          );
 
         //get book schedules mobile
 
@@ -1120,29 +1121,19 @@ app.post(
       passwordResetData
     );
 
-    // const htmlContent = fs.readFileSync(
-    //   "./src/resources/mail/forgot_password.html",
-    //   "utf-8"
-    // );
+    const htmlContent = fs.readFileSync(
+      "./src/resources/mail/forgot_password.html",
+      "utf-8"
+    );
+
+    const modifiedHtmlContent = htmlContent.replace("{{ token }}", token);
 
     const mailOptions = {
       subject: "Assunto do E-mail",
       // to: body.email,
       to: "caiocoghi@gmail.com",
-      from: "emailtesteremailtester123@gmail.com",
-      html: `
-    <html>
-      <head>
-        <title>Assunto do E-mail</title>
-      </head>
-      <body>
-        <p>Olá,</p>
-        <p>Aqui está o seu token: ${token}</p>
-        <p>Atenciosamente,</p>
-        <p>Seu Nome</p>
-      </body>
-    </html>
-  `,
+      from: "doevida.suporte@gmail.com",
+      html: modifiedHtmlContent,
     };
 
     mailer.sendMail(mailOptions, (error) => {

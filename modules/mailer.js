@@ -1,39 +1,54 @@
 const path = require("path");
 const nodemailer = require("nodemailer");
 const handlebars = require("nodemailer-express-handlebars");
+
+//Gmail
+// const {
+//   service,
+//   host,
+//   port,
+//   secure,
+//   rejectUnauthorized,
+// } = require("../controller/module/mail.json");
+
+//Mailtrap.io
 const {
-  service,
   host,
-  secure,
   port,
   user,
   pass,
-} = require("../controller/module/mail.json");
+} = require("../controller/module/mailMailbox.json");
 
-// const transport = nodemailer.createTransport({
+//Env Path
+const envPath = path.resolve(__dirname, "../prisma/");
+require("dotenv").config({ path: `${envPath}/.env` });
+
+//Mailtrap.io Config
+const mailtrapConfig = {
+  host,
+  port,
+  auth: {
+    user,
+    pass,
+  },
+};
+
+//Gmail Config
+// const gmailConfig = {
 //   service,
 //   host,
+//   port,
 //   secure,
-//   // port,
-//   auth: {
-//     user,
-//     pass,
+//   tls: {
+//     rejectUnauthorized,
 //   },
-// });
+//   auth: {
+//     user: process.env.USER_EMAIL,
+//     pass: process.env.PASS_EMAIL,
+//   },
+// };
 
-const transport = nodemailer.createTransport({
-  service: "smtp.gmail.com",
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // true for 465, false for other ports
-  tls: {
-    rejectUnauthorized: false,
-  },
-  auth: {
-    user: "emailtesteremailtester123@gmail.com", // Use variáveis de ambiente para armazenar o nome de usuário
-    pass: "wykxeptrluwazmvr", // Use variáveis de ambiente para armazenar a senha
-  },
-});
+const transport = nodemailer.createTransport(mailtrapConfig);
 
 transport.use(
   "compile",
