@@ -122,6 +122,11 @@ app.post(
             hospitalId.hospitalId[0].hospital_id
           );
 
+        const updatedBookSchedulesMobile =
+          await bookScheduleController.bookSchedulesMobileGet(
+            hospitalId.hospitalId[0].hospital_id
+          );
+
         wss.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
             const jsonData = JSON.stringify({
@@ -129,6 +134,12 @@ app.post(
               data: updatedBookSchedules.bookSchedules,
             });
             client.send(jsonData);
+
+            const jsonMobileData = JSON.stringify({
+              type: "bookSchedulesMobile",
+              data: updatedBookSchedulesMobile.bookSchedules,
+            });
+            client.send(jsonMobileData);
           }
         });
       }
@@ -201,9 +212,15 @@ app.post(
         const hospitalId = await scheduleController.hospitalIdScheduleIdGet(
           bodyData.idSchedule
         );
-
         const updatedSchedules = await hospitalController.hospitalGetSchedules(
           hospitalId.hospitalId[0].id_hospital
+        );
+
+        const userId = await scheduleController.userIdScheduleIdGet(
+          bodyData.idSchedule
+        );
+        const updatedUserSchedules = await userController.userGetSchedules(
+          userId.userId[0].id_user
         );
 
         wss.clients.forEach((client) => {
@@ -213,6 +230,12 @@ app.post(
               data: updatedSchedules.schedules,
             });
             client.send(jsonData);
+
+            const jsonUserData = JSON.stringify({
+              type: "userSchedules",
+              data: updatedUserSchedules.schedules,
+            });
+            client.send(jsonUserData);
           }
         });
       }
@@ -697,6 +720,18 @@ app.delete(
           hospitalId.hospitalId[0].id_hospital
         );
 
+        const userId = await scheduleController.userIdScheduleIdGet(
+          bodyData.idSchedule
+        );
+        const updatedUserSchedules = await userController.userGetSchedules(
+          userId.userId[0].id_user
+        );
+        const updatedUserBookSchedules = await bookScheduleController.bookSchedulesMobileGet(
+          hospitalId.hospitalId[0].id_hospital
+        );
+
+        //get book schedules mobile
+
         wss.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
             const jsonData = JSON.stringify({
@@ -704,6 +739,18 @@ app.delete(
               data: updatedSchedules.bookSchedules,
             });
             client.send(jsonData);
+
+            const jsonUserData = JSON.stringify({
+              type: "userSchedules",
+              data: updatedUserSchedules.schedules,
+            });
+            client.send(jsonUserData);
+
+            const jsonUserBookSchedulesData = JSON.stringify({
+              type: "bookSchedules",
+              data: updatedUserBookSchedules.bookSchedules,
+            });
+            client.send(jsonUserBookSchedulesData);
           }
         });
       }
@@ -1080,8 +1127,9 @@ app.post(
 
     const mailOptions = {
       subject: "Assunto do E-mail",
-      to: body.email,
-      from: "caiocoghi@gmail.com",
+      // to: body.email,
+      to: "caiocoghi@gmail.com",
+      from: "emailtesteremailtester123@gmail.com",
       html: `
     <html>
       <head>

@@ -30,8 +30,8 @@ const transport = nodemailer.createTransport({
     rejectUnauthorized: false,
   },
   auth: {
-    user: "aa@gmail.com", // Use variáveis de ambiente para armazenar o nome de usuário
-    pass: "aa", // Use variáveis de ambiente para armazenar a senha
+    user: "emailtesteremailtester123@gmail.com", // Use variáveis de ambiente para armazenar o nome de usuário
+    pass: "wykxeptrluwazmvr", // Use variáveis de ambiente para armazenar a senha
   },
 });
 
