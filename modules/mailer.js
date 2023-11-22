@@ -3,13 +3,13 @@ const nodemailer = require("nodemailer");
 const handlebars = require("nodemailer-express-handlebars");
 
 //Gmail
-const {
-  service,
-  host,
-  port,
-  secure,
-  rejectUnauthorized,
-} = require("../controller/module/mail.json");
+// const {
+//   service,
+//   host,
+//   port,
+//   secure,
+//   rejectUnauthorized,
+// } = require("../controller/module/mailGmail.json");
 
 //Mailtrap.io
 // const {
@@ -18,6 +18,13 @@ const {
 //   user,
 //   pass,
 // } = require("../controller/module/mailMailbox.json");
+
+//Brevo
+const {
+  host,
+  port,
+  secure,
+} = require("../controller/module/mailBrevo.json");
 
 //Env Path
 const envPath = path.resolve(__dirname, "../prisma/");
@@ -34,17 +41,27 @@ require("dotenv").config({ path: `${envPath}/.env` });
 // };
 
 //Gmail Config
-const gmailConfig = {
-  service,
+// const gmailConfig = {
+//   service,
+//   host,
+//   port,
+//   secure,
+//   tls: {
+//     rejectUnauthorized,
+//   },
+//   auth: {
+//     user: process.env.USER_EMAIL,
+//     pass: process.env.PASS_EMAIL,
+//   },
+// };
+
+const brevoConfig = {
   host,
   port,
   secure,
-  tls: {
-    rejectUnauthorized,
-  },
   auth: {
-    user: process.env.USER_EMAIL,
-    pass: process.env.PASS_EMAIL,
+    user: process.env.USER_EMAIL_BREVO,
+    pass: process.env.PASS_EMAIL_BREVO,
   },
 };
 
@@ -52,7 +69,10 @@ const gmailConfig = {
 // const transport = nodemailer.createTransport(mailtrapConfig);
 
 //Gmail
-const transport = nodemailer.createTransport(gmailConfig);
+// const transport = nodemailer.createTransport(gmailConfig);
+
+//Brevo
+const transport = nodemailer.createTransport(brevoConfig);
 
 transport.use(
   "compile",

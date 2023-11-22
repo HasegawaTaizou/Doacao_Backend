@@ -721,18 +721,32 @@ app.delete(
           hospitalId.hospitalId[0].id_hospital
         );
 
-        const userId = await scheduleController.userIdScheduleIdGet(
-          bodyData.idSchedule
+        const userId = await bookScheduleController.userIdBookScheduleIdGet(
+          bookScheduleId
         );
-        const updatedUserSchedules = await userController.userGetSchedules(
-          userId.userId[0].id_user
-        );
+
+        if (userId.status != 404) {
+          const updatedUserSchedules = await userController.userGetSchedules(
+            userId.userId[0].id_user
+          );
+
+          wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+              if (userId.status != 404) {
+                const jsonUserData = JSON.stringify({
+                  type: "userSchedules",
+                  data: updatedUserSchedules.schedules,
+                });
+                client.send(jsonUserData);
+              }
+            }
+          });
+        }
+
         const updatedUserBookSchedules =
           await bookScheduleController.bookSchedulesMobileGet(
             hospitalId.hospitalId[0].id_hospital
           );
-
-        //get book schedules mobile
 
         wss.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
@@ -741,12 +755,6 @@ app.delete(
               data: updatedSchedules.bookSchedules,
             });
             client.send(jsonData);
-
-            const jsonUserData = JSON.stringify({
-              type: "userSchedules",
-              data: updatedUserSchedules.schedules,
-            });
-            client.send(jsonUserData);
 
             const jsonUserBookSchedulesData = JSON.stringify({
               type: "bookSchedules",
