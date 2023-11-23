@@ -1163,9 +1163,9 @@ app.post(
 
     let modifiedToken = "";
     if (body.type === "user") {
-      modifiedToken = `http://127.0.0.1:5173/forgot-password/u${token}`;
+      modifiedToken = `http://127.0.0.1:5173/forgot-password-new-password/u${token}`;
     } else if (body.type === "hospital") {
-      modifiedToken = `http://127.0.0.1:5173/forgot-password/h${token}`;
+      modifiedToken = `http://127.0.0.1:5173/forgot-password-new-password/h${token}`;
     }
 
     const replacements = {
