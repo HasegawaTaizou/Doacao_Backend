@@ -224,6 +224,11 @@ app.post(
           userId.userId[0].id_user
         );
 
+        const updatedBookSchedulesMobile =
+          await bookScheduleController.bookSchedulesGet(
+            hospitalId.hospitalId[0].id_hospital
+          );
+
         wss.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
             const jsonData = JSON.stringify({
@@ -237,6 +242,12 @@ app.post(
               data: updatedUserSchedules.schedules,
             });
             client.send(jsonUserData);
+
+            const jsonMobileData = JSON.stringify({
+              type: "bookSchedulesMobile",
+              data: updatedBookSchedulesMobile.bookSchedules,
+            });
+            client.send(jsonMobileData);
           }
         });
       }
@@ -1123,12 +1134,25 @@ app.post(
       passwordResetExpires: now,
     };
 
-    const user = await userController.userEmailGet(body);
+    console.log(body.type);
+    if (body.type === "user") {
+      const user = await userController.userEmailGet(body);
 
-    const updateUser = await userController.userForgotPasswordUpdate(
-      user.userData.id,
-      passwordResetData
-    );
+      const updateUser = await userController.userForgotPasswordUpdate(
+        user.userData.id,
+        passwordResetData
+      );
+    } else if (body.type === "hospital") {
+      const hospital = await hospitalController.hospitalEmailGet(body);
+
+      const updateHospital =
+        await hospitalController.hospitalForgotPasswordUpdate(
+          hospital.hospitalData.id,
+          passwordResetData
+        );
+    } else {
+      return response.status(400).send({ error: "Cannot send to wrong type" });
+    }
 
     const __dirname = path.resolve();
     const filePath = path.join(
@@ -1137,8 +1161,16 @@ app.post(
     );
     const source = fs.readFileSync(filePath, "utf-8").toString();
     const template = handlebars.compile(source);
+
+    let modifiedToken = "";
+    if (body.type === "user") {
+      modifiedToken = `u${token}`;
+    } else if (body.type === "hospital") {
+      modifiedToken = `h${token}`;
+    }
+
     const replacements = {
-      token: token,
+      token: modifiedToken,
       logo: "https://firebasestorage.googleapis.com/v0/b/greenworld-f2763.appspot.com/o/images%2Fdoevida-logo.png?alt=media&token=ad61f588-f9df-4433-b87e-f0490f7fc366",
     };
     const htmlToSend = template(replacements);
@@ -1172,27 +1204,53 @@ app.post(
   async function (request, response) {
     const bodyData = request.body;
 
-    const user = await userController.userEmailGet(bodyData);
+    if (bodyData.type === "user") {
+      const user = await userController.userEmailGet(bodyData);
 
-    if (bodyData.token !== user.userData.passwordResetToken) {
-      return response.status(400).send({ error: "Token Invalid" });
+      if (bodyData.token !== user.userData.passwordResetToken) {
+        return response.status(400).send({ error: "Token Invalid" });
+      }
+
+      const now = new Date();
+
+      if (now > user.userData.passwordResetExpires) {
+        return response
+          .status(400)
+          .send({ error: "Token Expired. Generate a new one" });
+      }
+
+      const responseUpdate = await userController.userPasswordUpdate(
+        user.userData.id,
+        bodyData
+      );
+
+      response.status(responseUpdate.status);
+      response.json(responseUpdate);
+    } else if (bodyData.type === "hospital") {
+      const hospital = await hospitalController.hospitalEmailGet(bodyData);
+
+      if (bodyData.token !== hospital.hospitalData.passwordResetToken) {
+        return response.status(400).send({ error: "Token Invalid" });
+      }
+
+      const now = new Date();
+
+      if (now > hospital.hospitalData.passwordResetExpires) {
+        return response
+          .status(400)
+          .send({ error: "Token Expired. Generate a new one" });
+      }
+
+      const responseUpdate = await hospitalController.hospitalPasswordUpdate(
+        hospital.hospitalData.id,
+        bodyData
+      );
+
+      response.status(responseUpdate.status);
+      response.json(responseUpdate);
+    } else {
+      return response.status(500).send({ error: "Internal server Error" });
     }
-
-    const now = new Date();
-
-    if (now > user.userData.passwordResetExpires) {
-      return response
-        .status(400)
-        .send({ error: "Token Expired. Generate a new one" });
-    }
-
-    const responseUpdate = await userController.userPasswordUpdate(
-      user.userData.id,
-      bodyData
-    );
-
-    response.status(responseUpdate.status);
-    response.json(responseUpdate);
   }
 );
 

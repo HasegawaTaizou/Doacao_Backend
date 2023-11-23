@@ -510,6 +510,26 @@ const insertBloodTypeData = async function () {
   }
 };
 
+async function updatePasswordForgotHospital(hospitalId, hospitalData) {
+  try {
+    const updatedHospital = await prisma.hospital.update({
+      where: {
+        id: Number(hospitalId),
+      },
+      data: {
+        passwordResetToken: hospitalData.passwordResetToken,
+        passwordResetExpires: hospitalData.passwordResetExpires,
+      },
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Erro ao atualizar o hospital:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 const checkAndInsertNewYearRecord = async () => {
   const currentYear = new Date().getFullYear();
 
@@ -547,4 +567,5 @@ module.exports = {
   updateHospitalPassword,
   getHospitals,
   deleteHospitalById,
+  updatePasswordForgotHospital,
 };

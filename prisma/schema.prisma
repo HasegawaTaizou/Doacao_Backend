@@ -74,6 +74,8 @@ model Hospital {
   email      String  @db.VarChar(256)
   websiteUrl String? @map("website_url") @db.VarChar(200)
   password   String  @db.VarChar(75)
+  passwordResetToken   String?   @map("password_reset_token")
+  passwordResetExpires DateTime? @map("password_reset_expires")
 
   idAddress    Int            @map("id_address")
   Address      Address        @relation(fields: [idAddress], references: [id])

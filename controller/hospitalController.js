@@ -384,6 +384,15 @@ const hospitalDelete = async function (hospitalId) {
   }
 };
 
+const hospitalForgotPasswordUpdate = async function (hospitalId, hospitalData) {
+  const status = await hospitalDAO.updatePasswordForgotUser(hospitalId, hospitalData);
+  if (status) {
+    return message.UPDATED_ITEM;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
 module.exports = {
   loginHospital,
   hospitalInsert,
@@ -396,4 +405,5 @@ module.exports = {
   hospitalPasswordUpdate,
   hospitalsGet,
   hospitalDelete,
+  hospitalForgotPasswordUpdate
 };
