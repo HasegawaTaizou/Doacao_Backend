@@ -1134,7 +1134,6 @@ app.post(
       passwordResetExpires: now,
     };
 
-    console.log(body.type);
     if (body.type === "user") {
       const user = await userController.userEmailGet(body);
 
@@ -1164,9 +1163,9 @@ app.post(
 
     let modifiedToken = "";
     if (body.type === "user") {
-      modifiedToken = `u${token}`;
+      modifiedToken = `http://127.0.0.1:5173/forgot-password/u${token}`;
     } else if (body.type === "hospital") {
-      modifiedToken = `h${token}`;
+      modifiedToken = `http://127.0.0.1:5173/forgot-password/h${token}`;
     }
 
     const replacements = {
