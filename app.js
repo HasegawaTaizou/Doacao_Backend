@@ -767,9 +767,21 @@ app.delete(
             });
             client.send(jsonData);
 
+            const modifiedBookSchedules =
+              updatedUserBookSchedules.bookSchedules.map((bookSchedule) => {
+                return {
+                  id: bookSchedule.book_schedule_id,
+                  name: bookSchedule.name,
+                  date: bookSchedule.date,
+                  hour: bookSchedule.hour,
+                  site: bookSchedule.site,
+                  site_id: bookSchedule.site_id,
+                };
+              });
+
             const jsonUserBookSchedulesData = JSON.stringify({
               type: "bookSchedules",
-              data: updatedUserBookSchedules.bookSchedules,
+              data: modifiedBookSchedules,
             });
             client.send(jsonUserBookSchedulesData);
           }
