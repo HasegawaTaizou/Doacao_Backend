@@ -38,6 +38,7 @@ const siteController = require("./controller/siteController.js");
 const reviewController = require("./controller/reviewController.js");
 const campaignController = require("./controller/campaignController.js");
 const donationBankController = require("./controller/donationBankController.js");
+const authDAO = require('./model/dao/authDAO.js')
 
 //ENDPOINTS:
 
@@ -1136,6 +1137,7 @@ app.post(
 
     const token = crypto.randomBytes(20).toString("hex");
 
+    console.log(token);
     //Expiration Date
     const now = new Date();
     now.setHours(now.getHours() + 1);
@@ -1215,8 +1217,10 @@ app.post(
   async function (request, response) {
     const bodyData = request.body;
 
+    const email = await authDAO.getEmailByToken(bodyData)
+
     if (bodyData.type === "user") {
-      const user = await userController.userEmailGet(bodyData);
+      const user = await userController.userEmailGet(email[0]);
 
       if (bodyData.token !== user.userData.passwordResetToken) {
         return response.status(400).send({ error: "Token Invalid" });
@@ -1238,7 +1242,7 @@ app.post(
       response.status(responseUpdate.status);
       response.json(responseUpdate);
     } else if (bodyData.type === "hospital") {
-      const hospital = await hospitalController.hospitalEmailGet(bodyData);
+      const hospital = await hospitalController.hospitalEmailGet(email[0]);
 
       if (bodyData.token !== hospital.hospitalData.passwordResetToken) {
         return response.status(400).send({ error: "Token Invalid" });
