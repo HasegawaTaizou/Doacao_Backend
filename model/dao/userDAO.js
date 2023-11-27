@@ -105,6 +105,7 @@ const getUserByEmail = async function (userEmail) {
   SELECT 
   tbl_user.id, 
   tbl_user.email,
+  tbl_user.name,
   tbl_user.password_reset_token,
   tbl_user.password_reset_expires,
   tbl_user.password

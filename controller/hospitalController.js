@@ -153,6 +153,7 @@ const hospitalEmailGet = async function (hospitalEmail) {
     jsonHospitalData.hospitalData = {
       id: hospitalData.id,
       email: hospitalData.email,
+      name: hospitalData.name,
       password: hospitalData.password,
       photo: hospitalData.Photo[0].url,
     };

@@ -1148,15 +1148,21 @@ app.post(
       passwordResetExpires: now,
     };
 
+    let name = ''
     if (body.type === "user") {
       const user = await userController.userEmailGet(body);
 
+      name = user.userData.name
+
+      console.log(user.userData);
       const updateUser = await userController.userForgotPasswordUpdate(
         user.userData.id,
         passwordResetData
       );
     } else if (body.type === "hospital") {
       const hospital = await hospitalController.hospitalEmailGet(body);
+
+      name = hospital.hospitalData.name
 
       const updateHospital =
         await hospitalController.hospitalForgotPasswordUpdate(
@@ -1182,17 +1188,19 @@ app.post(
       modifiedToken = `http://127.0.0.1:5173/forgot-password-new-password/h${token}`;
     }
 
+    console.log(name);
+
     const replacements = {
       link: modifiedToken,
-      logo: "https://firebasestorage.googleapis.com/v0/b/greenworld-f2763.appspot.com/o/images%2Fdoevida-logo.png?alt=media&token=ad61f588-f9df-4433-b87e-f0490f7fc366",
+      emailName: name
     };
     const htmlToSend = template(replacements);
 
     console.log(body.email);
     const mailOptions = {
       subject: "Assunto do E-mail",
-      to: body.email,
-      // to: "caiocoghi@gmail.com",
+      // to: body.email,
+      to: "caiocoghi@gmail.com",
       from: "doevida.suporte@gmail.com",
       html: htmlToSend,
     };

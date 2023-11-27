@@ -155,6 +155,7 @@ const userEmailGet = async function (userEmail) {
     jsonUserData.userData = {
       id: userData.id,
       email: userData.email,
+      name: userData.name,
       passwordResetToken: userData.password_reset_token,
       passwordResetExpires: userData.password_reset_expires
       // password: userData.password
