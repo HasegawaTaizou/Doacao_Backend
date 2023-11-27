@@ -144,6 +144,8 @@ const getHospitalByEmail = async function (hospitalEmail) {
         email: true,
         name: true,
         password: true,
+        passwordResetToken: true,
+        passwordResetExpires: true,
         Photo: {
           select: {
             url: true,

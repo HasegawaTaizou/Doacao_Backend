@@ -79,7 +79,7 @@ app.post(
           .status(400)
           .send({ error: "Cannot send forgot password email" });
       } else {
-        console.log('foooooi');
+        console.log("foooooi");
         return response.send();
       }
     });
@@ -1169,7 +1169,6 @@ app.post(
 
     const token = crypto.randomBytes(20).toString("hex");
 
-    console.log(token);
     //Expiration Date
     const now = new Date();
     now.setHours(now.getHours() + 1);
@@ -1215,18 +1214,18 @@ app.post(
 
     let modifiedToken = "";
     if (body.type === "user") {
-      modifiedToken = `http://127.0.0.1:5173/forgot-password-new-password/u${token}`;
+      modifiedToken = `http://localhost:5173/forgot-password-new-password/u${token}`;
     } else if (body.type === "hospital") {
-      modifiedToken = `http://127.0.0.1:5173/forgot-password-new-password/h${token}`;
+      modifiedToken = `http://localhost:5173/forgot-password-new-password/h${token}`;
     }
 
     const replacements = {
       link: modifiedToken,
       emailName: name,
     };
+
     const htmlToSend = template(replacements);
 
-    console.log(body.email);
     const mailOptions = {
       subject: "Assunto do E-mail",
       // to: body.email,
@@ -1255,6 +1254,7 @@ app.post(
   bodyJSON,
   async function (request, response) {
     const bodyData = request.body;
+    console.log(bodyData);
 
     const email = await authDAO.getEmailByToken(bodyData);
 

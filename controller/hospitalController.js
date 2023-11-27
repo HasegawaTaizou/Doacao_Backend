@@ -155,6 +155,8 @@ const hospitalEmailGet = async function (hospitalEmail) {
       email: hospitalData.email,
       name: hospitalData.name,
       password: hospitalData.password,
+      passwordResetToken: hospitalData.passwordResetToken,
+      passwordResetExpires: hospitalData.passwordResetExpires,
       photo: hospitalData.Photo[0].url,
     };
 
@@ -386,7 +388,7 @@ const hospitalDelete = async function (hospitalId) {
 };
 
 const hospitalForgotPasswordUpdate = async function (hospitalId, hospitalData) {
-  const status = await hospitalDAO.updatePasswordForgotUser(hospitalId, hospitalData);
+  const status = await hospitalDAO.updatePasswordForgotHospital(hospitalId, hospitalData);
   if (status) {
     return message.UPDATED_ITEM;
   } else {
