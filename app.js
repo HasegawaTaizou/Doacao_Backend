@@ -38,7 +38,7 @@ const siteController = require("./controller/siteController.js");
 const reviewController = require("./controller/reviewController.js");
 const campaignController = require("./controller/campaignController.js");
 const donationBankController = require("./controller/donationBankController.js");
-const authDAO = require('./model/dao/authDAO.js')
+const authDAO = require("./model/dao/authDAO.js");
 
 //ENDPOINTS:
 
@@ -48,9 +48,41 @@ app.post(
   cors(),
   bodyJSON,
   async function (request, response) {
-    let bodyData = request.body;
+    const bodyData = request.body;
 
-    let resultInsertData = await hospitalController.hospitalInsert(bodyData);
+    const resultInsertData = await hospitalController.hospitalInsert(bodyData);
+
+    const __dirname = path.resolve();
+    const filePath = path.join(
+      __dirname,
+      "./src/resources/mail/register_successful.html"
+    );
+    const source = fs.readFileSync(filePath, "utf-8").toString();
+    const template = handlebars.compile(source);
+
+    const htmlToSend = source;
+
+    console.log(bodyData.hospital.email);
+
+    const mailOptions = {
+      subject: "Assunto do E-mail",
+      // to: body.email,
+      to: "caiocoghi@gmail.com",
+      from: "doevida.suporte@gmail.com",
+      html: htmlToSend,
+    };
+
+    mailer.sendMail(mailOptions, (error) => {
+      if (error) {
+        console.log(error);
+        return response
+          .status(400)
+          .send({ error: "Cannot send forgot password email" });
+      } else {
+        console.log('foooooi');
+        return response.send();
+      }
+    });
 
     response.status(resultInsertData.status);
     response.json(resultInsertData);
@@ -1148,11 +1180,11 @@ app.post(
       passwordResetExpires: now,
     };
 
-    let name = ''
+    let name = "";
     if (body.type === "user") {
       const user = await userController.userEmailGet(body);
 
-      name = user.userData.name
+      name = user.userData.name;
 
       console.log(user.userData);
       const updateUser = await userController.userForgotPasswordUpdate(
@@ -1162,7 +1194,7 @@ app.post(
     } else if (body.type === "hospital") {
       const hospital = await hospitalController.hospitalEmailGet(body);
 
-      name = hospital.hospitalData.name
+      name = hospital.hospitalData.name;
 
       const updateHospital =
         await hospitalController.hospitalForgotPasswordUpdate(
@@ -1188,11 +1220,9 @@ app.post(
       modifiedToken = `http://127.0.0.1:5173/forgot-password-new-password/h${token}`;
     }
 
-    console.log(name);
-
     const replacements = {
       link: modifiedToken,
-      emailName: name
+      emailName: name,
     };
     const htmlToSend = template(replacements);
 
@@ -1226,7 +1256,7 @@ app.post(
   async function (request, response) {
     const bodyData = request.body;
 
-    const email = await authDAO.getEmailByToken(bodyData)
+    const email = await authDAO.getEmailByToken(bodyData);
 
     if (bodyData.type === "user") {
       const user = await userController.userEmailGet(email[0]);
