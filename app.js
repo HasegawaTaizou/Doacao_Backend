@@ -1183,15 +1183,16 @@ app.post(
     }
 
     const replacements = {
-      token: modifiedToken,
+      link: modifiedToken,
       logo: "https://firebasestorage.googleapis.com/v0/b/greenworld-f2763.appspot.com/o/images%2Fdoevida-logo.png?alt=media&token=ad61f588-f9df-4433-b87e-f0490f7fc366",
     };
     const htmlToSend = template(replacements);
 
+    console.log(body.email);
     const mailOptions = {
       subject: "Assunto do E-mail",
-      // to: body.email,
-      to: "caiocoghi@gmail.com",
+      to: body.email,
+      // to: "caiocoghi@gmail.com",
       from: "doevida.suporte@gmail.com",
       html: htmlToSend,
     };
