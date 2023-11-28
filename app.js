@@ -62,11 +62,9 @@ app.post(
 
     const htmlToSend = source;
 
-    console.log(bodyData.hospital.email);
-
     const mailOptions = {
       subject: "Assunto do E-mail",
-      // to: body.email,
+      // to: bodyData.hospital.email,
       to: "caiocoghi@gmail.com",
       from: "doevida.suporte@gmail.com",
       html: htmlToSend,
@@ -79,7 +77,6 @@ app.post(
           .status(400)
           .send({ error: "Cannot send forgot password email" });
       } else {
-        console.log("foooooi");
         return response.send();
       }
     });
@@ -1185,7 +1182,6 @@ app.post(
 
       name = user.userData.name;
 
-      console.log(user.userData);
       const updateUser = await userController.userForgotPasswordUpdate(
         user.userData.id,
         passwordResetData
@@ -1244,6 +1240,8 @@ app.post(
         return response.send();
       }
     });
+
+    return response.send();
   }
 );
 
@@ -1254,7 +1252,6 @@ app.post(
   bodyJSON,
   async function (request, response) {
     const bodyData = request.body;
-    console.log(bodyData);
 
     const email = await authDAO.getEmailByToken(bodyData);
 

@@ -294,7 +294,6 @@ const hospitalUpdate = async function (hospitalId, hospitalData) {
     !validateNumber(hospitalData.address.number) ||
     !validateComplement(hospitalData.address.complement)
   ) {
-    console.log('erro de validacao');
     return message.ERROR_REQUIRED_DATA;
   }
 
