@@ -208,7 +208,8 @@ const getSchedulesUserById = async function (userId) {
   TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour, 
   tbl_status.status, 
   tbl_site.site,
-  tbl_hospital.name
+  tbl_hospital.name,
+  tbl_photo.url
   FROM tbl_schedule_status
   INNER JOIN tbl_schedule ON tbl_schedule.id = tbl_schedule_status.id_schedule
   INNER JOIN tbl_user ON tbl_user.id = tbl_schedule.id_user
@@ -217,6 +218,7 @@ const getSchedulesUserById = async function (userId) {
   INNER JOIN tbl_hospital_site ON tbl_hospital_site.id = tbl_book_schedule.id_hospital_site
   INNER JOIN tbl_site ON tbl_site.id = tbl_hospital_site.id_site
   INNER JOIN tbl_hospital ON tbl_hospital_site.id_hospital = tbl_hospital.id
+  INNER JOIN tbl_photo ON tbl_photo.id_hospital = tbl_hospital.id
   WHERE tbl_schedule.id_user = ${userId};
   `;
 
