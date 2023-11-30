@@ -209,6 +209,7 @@ const getSchedulesUserById = async function (userId) {
   tbl_status.status, 
   tbl_site.site,
   tbl_hospital.name,
+  tbl_hospital.id AS id_hospital,
   tbl_photo.url
   FROM tbl_schedule_status
   INNER JOIN tbl_schedule ON tbl_schedule.id = tbl_schedule_status.id_schedule

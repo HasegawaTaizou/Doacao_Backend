@@ -237,6 +237,7 @@ const userGetSchedules = async function (userId) {
           hour: userSchedulesData[userSchedule].hour,
           site: userSchedulesData[userSchedule].site,
           status: userSchedulesData[userSchedule].status,
+          hospitalId: userSchedulesData[userSchedule].id_hospital,
           hospital: userSchedulesData[userSchedule].name,
           photo: userSchedulesData[userSchedule].url,
         };
