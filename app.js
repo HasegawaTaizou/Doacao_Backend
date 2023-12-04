@@ -1315,7 +1315,7 @@ app.post(
 // const server = https.createServer(options, app);
 // const PORT = process.env.PORT || 443;
 
-// const PORT = process.env.PORT || 8080; 
+const PORT = process.env.PORT || 8080; 
 
 // Verifica se está rodando em um ambiente de teste e usa uma porta diferente
 if (process.env.NODE_ENV !== "test") {
