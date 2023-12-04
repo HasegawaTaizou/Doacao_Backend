@@ -5,6 +5,7 @@
   "dependencies": {
     "@prisma/client": "^5.6.0",
     "body-parser": "^1.20.2",
+    "certbot": "^5.0.3",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^16.3.1",

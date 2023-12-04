@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const { request, response } = require("express");
+const https = require('https');
 //Websocket
 const http = require("http");
 const WebSocket = require("ws");
@@ -14,8 +15,8 @@ const handlebars = require("handlebars");
 const app = express();
 
 //Websocket
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+// const server = http.createServer(app);
+// const wss = new WebSocket.Server({ server });
 
 app.use((request, response, next) => {
   response.header("Access-Control-Allow-Origin", "*");
@@ -1306,7 +1307,15 @@ app.post(
 );
 
 /* ---------------------------------- RUN BACKEND ----------------------------------*/
-const PORT = process.env.PORT || 8080;
+const options = {
+  key: fs.readFileSync('/etc/letsencrypt/live/doacao-opal.vercel.app/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/doacao-opal.vercel.app/fullchain.pem'),
+};
+
+const server = https.createServer(options, app);
+const PORT = process.env.PORT || 443;
+
+// const PORT = process.env.PORT || 8080; 
 
 // Verifica se está rodando em um ambiente de teste e usa uma porta diferente
 if (process.env.NODE_ENV !== "test") {
@@ -1314,6 +1323,8 @@ if (process.env.NODE_ENV !== "test") {
     console.log(`Server waiting for requests on port ${PORT}!`);
   });
 }
+
+const wss = new WebSocket.Server({ server });
 
 wss.on("connection", (ws) => {
   console.log("Cliente conectado ao WebSocket");
