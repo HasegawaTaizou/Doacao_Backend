@@ -368,6 +368,40 @@ const hospitalsGet = async function () {
   }
 };
 
+const hospitalsFiltteredGet = async function (city) {
+  const hospitalsData = await hospitalDAO.getHospitalsFilttered(city);
+
+  if (hospitalsData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (hospitalsData) {
+    const jsonHospitalsData = {};
+    jsonHospitalsData.status = 200;
+    jsonHospitalsData.hospitals = [];
+
+    for (hospitalData in hospitalsData) {
+      if (hospitalsData) {
+        let hospitalObject = {
+          hospital: {
+            hospitalId: hospitalsData[hospitalData].hospitalId,
+            name: hospitalsData[hospitalData].name,
+            photo: hospitalsData[hospitalData].photo,
+          },
+          address: {
+            uf: hospitalsData[hospitalData].uf,
+            city: hospitalsData[hospitalData].city,
+            neighborhood: hospitalsData[hospitalData].neighborhood,
+          },
+        };
+
+        jsonHospitalsData.hospitals.push(hospitalObject);
+      }
+    }
+    return jsonHospitalsData;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
 const hospitalDelete = async function (hospitalId) {
   if (!validateId(hospitalId)) {
     return message.ERROR_INVALID_ID;
@@ -408,5 +442,6 @@ module.exports = {
   hospitalPasswordUpdate,
   hospitalsGet,
   hospitalDelete,
-  hospitalForgotPasswordUpdate
+  hospitalForgotPasswordUpdate,
+  hospitalsFiltteredGet
 };

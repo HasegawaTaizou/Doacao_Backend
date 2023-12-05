@@ -942,6 +942,16 @@ app.get("/api/v1/hospitals", cors(), async function (request, response) {
   response.json(resultGetData);
 });
 
+//Get Hospitals
+app.get("/api/v1/hospitals?:city", cors(), async function (request, response) {
+  const city = request.params.city;
+
+  const resultGetData = await hospitalController.hospitalsFiltteredGet(city);
+
+  response.status(resultGetData.status);
+  response.json(resultGetData);
+});
+
 //Get Hospital Campaigns
 app.get(
   "/api/v1/hospital/:id/campaigns",
