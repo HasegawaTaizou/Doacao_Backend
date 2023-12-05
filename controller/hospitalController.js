@@ -350,6 +350,7 @@ const hospitalsGet = async function () {
           hospital: {
             hospitalId: hospitalsData[hospitalData].hospitalId,
             name: hospitalsData[hospitalData].name,
+            photo: hospitalsData[hospitalData].photo,
           },
           address: {
             uf: hospitalsData[hospitalData].uf,

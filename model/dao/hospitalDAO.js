@@ -373,11 +373,13 @@ const getHospitals = async function () {
   SELECT 
   tbl_hospital.id AS hospitalId,
   tbl_hospital.name,
+  tbl_photo.url AS photo,
   tbl_address.uf,
   tbl_address.city,
   tbl_address.neighborhood
   FROM tbl_hospital
-  INNER JOIN tbl_address ON tbl_address.id = tbl_hospital.id_address;
+  INNER JOIN tbl_address ON tbl_address.id = tbl_hospital.id_address
+  INNER JOIN tbl_photo ON tbl_photo.id_hospital = tbl_hospital.id;
   `;
 
   let responseHospitals = await prisma.$queryRawUnsafe(sql);
