@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const { request, response } = require("express");
-const https = require('https');
+const https = require("https");
 //Websocket
 const http = require("http");
 const WebSocket = require("ws");
@@ -936,21 +936,20 @@ app.delete(
 
 //Get Hospitals
 app.get("/api/v1/hospitals", cors(), async function (request, response) {
-  const resultGetData = await hospitalController.hospitalsGet();
+  const city = request.query.city;
 
-  response.status(resultGetData.status);
-  response.json(resultGetData);
-});
+  if (city) {
+    const resultGetData = await hospitalController.hospitalsFiltteredGet(city);
 
-//Get Hospitals
-app.get("/api/v1/hospitals?:city", cors(), async function (request, response) {
-  const city = request.params.city;
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  } else {
+    const resultGetData = await hospitalController.hospitalsGet();
 
-  const resultGetData = await hospitalController.hospitalsFiltteredGet(city);
-
-  response.status(resultGetData.status);
-  response.json(resultGetData);
-});
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
+}); 
 
 //Get Hospital Campaigns
 app.get(
@@ -1325,7 +1324,7 @@ app.post(
 // const server = https.createServer(options, app);
 // const PORT = process.env.PORT || 443;
 
-const PORT = process.env.PORT || 8080; 
+const PORT = process.env.PORT || 8080;
 
 // Verifica se está rodando em um ambiente de teste e usa uma porta diferente
 if (process.env.NODE_ENV !== "test") {
