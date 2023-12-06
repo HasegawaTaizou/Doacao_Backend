@@ -1236,9 +1236,11 @@ app.post(
 
     let modifiedToken = "";
     if (body.type === "user") {
+      // modifiedToken = `http://20.206.241.108:80/forgot-password-new-password/u${token}`;
       modifiedToken = `http://localhost:5173/forgot-password-new-password/u${token}`;
     } else if (body.type === "hospital") {
-      modifiedToken = `http://localhost:5173/forgot-password-new-password/h${token}`;
+      // modifiedToken = `http://localhost:5173/forgot-password-new-password/h${token}`;
+      modifiedToken = `http://20.206.241.108:80/forgot-password-new-password/h${token}`;
     }
 
     const replacements = {
@@ -1352,14 +1354,14 @@ if (process.env.NODE_ENV !== "test") {
 // const wss = new WebSocket.Server({ server });
 
 wss.on("connection", (ws) => {
-  console.log("Cliente conectado ao WebSocket");
+  // console.log("Cliente conectado ao WebSocket");
 
   ws.on("message", (message) => {
-    console.log(`Mensagem recebida: ${message}`);
+    // console.log(`Mensagem recebida: ${message}`);
   });
 
   ws.on("close", () => {
-    console.log("Cliente desconectado do WebSocket");
+    // console.log("Cliente desconectado do WebSocket");
   });
 });
 

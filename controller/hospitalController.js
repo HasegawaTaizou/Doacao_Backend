@@ -349,7 +349,6 @@ const hospitalsGet = async function () {
   if (hospitalsData.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;
   } else if (hospitalsData) {
-    console.log(hospitalsData);
     const jsonHospitalsData = {};
     jsonHospitalsData.status = 200;
     jsonHospitalsData.hospitals = [];
@@ -357,7 +356,6 @@ const hospitalsGet = async function () {
     for (hospitalData in hospitalsData) {
       let ratings = await ratingsStatisticsGet(hospitalsData[hospitalData].hospitalId);
       
-      console.log(ratings.ratingsStatistics.average);
       if (hospitalsData) {
         let hospitalObject = {
           hospital: {
@@ -393,12 +391,14 @@ const hospitalsFiltteredGet = async function (city) {
     jsonHospitalsData.hospitals = [];
 
     for (hospitalData in hospitalsData) {
+      let ratings = await ratingsStatisticsGet(hospitalsData[hospitalData].hospitalId);
       if (hospitalsData) {
         let hospitalObject = {
           hospital: {
             hospitalId: hospitalsData[hospitalData].hospitalId,
             name: hospitalsData[hospitalData].name,
             photo: hospitalsData[hospitalData].photo,
+            average: ratings.ratingsStatistics.average
           },
           address: {
             uf: hospitalsData[hospitalData].uf,
