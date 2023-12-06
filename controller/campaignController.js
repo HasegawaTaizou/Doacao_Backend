@@ -69,6 +69,23 @@ const campaignsGet = async function () {
   }
 };
 
+const campaignsFiltteredGet = async function (city) {
+  const campaignsData = await campaignDAO.getFiltteredCampaigns(city);
+
+  if (campaignsData.length == 0) {
+    return message.ERROR_RESOURCE_NOT_FOUND;
+  } else if (campaignsData) {
+    const jsonCampaignsData = {};
+
+    jsonCampaignsData.status = message.OK.status;
+    jsonCampaignsData.campaigns = campaignsData;
+
+    return jsonCampaignsData;
+  } else {
+    return message.ERROR_INTERNAL_SERVER;
+  }
+};
+
 const campaignUpdate = async function (campaignId, campaignData) {
   if (!validateId(campaignId)) {
     return message.ERROR_INVALID_ID;
@@ -141,5 +158,6 @@ module.exports = {
   campaignsGet,
   campaignUpdate,
   campaignDelete,
-  hospitalIdCampaignIdGet
+  hospitalIdCampaignIdGet,
+  campaignsFiltteredGet,
 };

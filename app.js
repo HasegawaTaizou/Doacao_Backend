@@ -949,7 +949,7 @@ app.get("/api/v1/hospitals", cors(), async function (request, response) {
     response.status(resultGetData.status);
     response.json(resultGetData);
   }
-}); 
+});
 
 //Get Hospital Campaigns
 app.get(
@@ -969,10 +969,19 @@ app.get(
 
 //Get All Campaigns
 app.get("/api/v1/campaigns", cors(), async function (request, response) {
-  const resultGetData = await campaignController.campaignsGet();
+  const city = request.query.city;
 
-  response.status(resultGetData.status);
-  response.json(resultGetData);
+  if (city) {
+    const resultGetData = await campaignController.campaignsFiltteredGet(city);
+
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  } else {
+    const resultGetData = await campaignController.campaignsGet();
+
+    response.status(resultGetData.status);
+    response.json(resultGetData);
+  }
 });
 
 //Insert Campaign
