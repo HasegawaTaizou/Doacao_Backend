@@ -31,6 +31,8 @@ const {
 const { validatePhoto } = require("../validations/validate-photo");
 const { validatePassword } = require("../validations/validate-password");
 
+const { ratingsStatisticsGet } = require("./reviewController");
+
 const loginHospital = async function (loginData) {
   if (
     !validateEmail(loginData.email) ||
@@ -203,7 +205,10 @@ const hospitalGetSchedules = async function (hospitalId) {
 };
 
 const hospitalGetFilteredStatusSchedules = async function (hospitalId, status) {
-  const schedulesData = await hospitalDAO.getHospitalFilteredStatusSchedules(hospitalId, status);
+  const schedulesData = await hospitalDAO.getHospitalFilteredStatusSchedules(
+    hospitalId,
+    status
+  );
 
   if (schedulesData.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;
@@ -239,7 +244,10 @@ const hospitalGetFilteredStatusSchedules = async function (hospitalId, status) {
 };
 
 const hospitalGetFilteredNameSchedules = async function (hospitalId, userName) {
-  const schedulesData = await hospitalDAO.getHospitalFilteredNameSchedules(hospitalId, userName);
+  const schedulesData = await hospitalDAO.getHospitalFilteredNameSchedules(
+    hospitalId,
+    userName
+  );
 
   if (schedulesData.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;
@@ -285,7 +293,7 @@ const hospitalUpdate = async function (hospitalId, hospitalData) {
     !validateWebsite(hospitalData.hospital.website) ||
     !validateDonationSite(hospitalData.hospital.donationSite) ||
     !validateDonationSite(hospitalData.hospital.otherDonationSite) ||
-    !validatePhoto(hospitalData.hospital.photo) || 
+    !validatePhoto(hospitalData.hospital.photo) ||
     !validateCEP(hospitalData.address.cep) ||
     !validateUF(hospitalData.address.uf) ||
     !validateCity(hospitalData.address.city) ||
@@ -336,21 +344,27 @@ const hospitalPasswordUpdate = async function (hospitalId, hospitalData) {
 
 const hospitalsGet = async function () {
   const hospitalsData = await hospitalDAO.getHospitals();
+  //ratingsStatisticsGet
 
   if (hospitalsData.length == 0) {
     return message.ERROR_RESOURCE_NOT_FOUND;
   } else if (hospitalsData) {
+    console.log(hospitalsData);
     const jsonHospitalsData = {};
     jsonHospitalsData.status = 200;
     jsonHospitalsData.hospitals = [];
 
     for (hospitalData in hospitalsData) {
+      let ratings = await ratingsStatisticsGet(hospitalsData[hospitalData].hospitalId);
+      
+      console.log(ratings.ratingsStatistics.average);
       if (hospitalsData) {
         let hospitalObject = {
           hospital: {
             hospitalId: hospitalsData[hospitalData].hospitalId,
             name: hospitalsData[hospitalData].name,
             photo: hospitalsData[hospitalData].photo,
+            average: ratings.ratingsStatistics.average
           },
           address: {
             uf: hospitalsData[hospitalData].uf,
@@ -422,7 +436,10 @@ const hospitalDelete = async function (hospitalId) {
 };
 
 const hospitalForgotPasswordUpdate = async function (hospitalId, hospitalData) {
-  const status = await hospitalDAO.updatePasswordForgotHospital(hospitalId, hospitalData);
+  const status = await hospitalDAO.updatePasswordForgotHospital(
+    hospitalId,
+    hospitalData
+  );
   if (status) {
     return message.UPDATED_ITEM;
   } else {
@@ -443,5 +460,5 @@ module.exports = {
   hospitalsGet,
   hospitalDelete,
   hospitalForgotPasswordUpdate,
-  hospitalsFiltteredGet
+  hospitalsFiltteredGet,
 };
