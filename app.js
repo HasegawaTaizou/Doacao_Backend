@@ -14,6 +14,13 @@ const handlebars = require("handlebars");
 
 const app = express();
 
+//SWAGGER
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocs = require("./src/swagger.json");
+
+//SWAGGER DOCUMENTATION
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 //Websocket
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
