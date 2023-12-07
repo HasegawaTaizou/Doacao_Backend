@@ -70,6 +70,7 @@ const getBookSchedulesByHospitalIdMobile = async function (hospitalId) {
 SELECT 
   tbl_book_schedule.id AS book_schedule_id, 
   tbl_hospital.name,
+  tbl_photo.url AS hospital_photo,
   DATE_FORMAT(tbl_book_schedule.date, '%d/%m/%Y') AS date,
   TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour, 
   tbl_site.site,
@@ -80,6 +81,7 @@ LEFT JOIN tbl_schedule_status ON tbl_schedule.id = tbl_schedule_status.id_schedu
 LEFT JOIN tbl_status ON tbl_status.id = tbl_schedule_status.id_status
 LEFT JOIN tbl_hospital_site ON tbl_book_schedule.id_hospital_site = tbl_hospital_site.id
 LEFT JOIN tbl_hospital ON tbl_hospital_site.id_hospital = tbl_hospital.id
+LEFT JOIN tbl_photo ON tbl_hospital.id = tbl_photo.id_hospital
 LEFT JOIN tbl_site ON tbl_hospital_site.id = tbl_site.id
 WHERE tbl_hospital.id = ${hospitalId} AND tbl_status.status IS NULL
 
@@ -88,6 +90,7 @@ UNION
 SELECT 
   tbl_book_schedule.id AS book_schedule_id, 
   tbl_hospital.name,
+  tbl_photo.url AS hospital_photo,
   DATE_FORMAT(tbl_book_schedule.date, '%d/%m/%Y') AS date,
   TIME_FORMAT(tbl_book_schedule.hour, '%H:%i') AS hour, 
   tbl_site.site,
@@ -98,6 +101,7 @@ RIGHT JOIN tbl_schedule_status ON tbl_schedule.id = tbl_schedule_status.id_sched
 RIGHT JOIN tbl_status ON tbl_status.id = tbl_schedule_status.id_status
 RIGHT JOIN tbl_hospital_site ON tbl_book_schedule.id_hospital_site = tbl_hospital_site.id
 RIGHT JOIN tbl_hospital ON tbl_hospital_site.id_hospital = tbl_hospital.id
+RIGHT JOIN tbl_photo ON tbl_hospital.id = tbl_photo.id_hospital
 RIGHT JOIN tbl_site ON tbl_hospital_site.id = tbl_site.id
 WHERE tbl_hospital.id = ${hospitalId} AND tbl_status.status IS NULL;
   `;
