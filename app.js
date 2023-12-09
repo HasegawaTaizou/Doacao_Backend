@@ -1206,22 +1206,28 @@ app.post(
     if (body.type === "user") {
       const user = await userController.userEmailGet(body);
 
-      name = user.userData.name;
-
-      const updateUser = await userController.userForgotPasswordUpdate(
-        user.userData.id,
-        passwordResetData
-      );
+      if (user.status == 200) {
+        name = user.userData.name;
+        const updateUser = await userController.userForgotPasswordUpdate(
+          user.userData.id,
+          passwordResetData
+        );
+      } else {
+        return response.status(400).send({ error: "User not found", status: 404 });
+      }
     } else if (body.type === "hospital") {
       const hospital = await hospitalController.hospitalEmailGet(body);
 
-      name = hospital.hospitalData.name;
-
-      const updateHospital =
-        await hospitalController.hospitalForgotPasswordUpdate(
-          hospital.hospitalData.id,
-          passwordResetData
-        );
+      if (hospital.status == 200) {
+        name = hospital.hospitalData.name;
+        const updateHospital =
+          await hospitalController.hospitalForgotPasswordUpdate(
+            hospital.hospitalData.id,
+            passwordResetData
+          );
+      } else {
+        return response.status(400).send({ error: "Hospital not found", status: 404 });
+      }
     } else {
       return response.status(400).send({ error: "Cannot send to wrong type" });
     }
@@ -1235,6 +1241,8 @@ app.post(
     const template = handlebars.compile(source);
 
     let modifiedToken = "";
+
+    //ALTERAR AQUI
     if (body.type === "user") {
       // modifiedToken = `http://20.206.241.108:80/forgot-password-new-password/u${token}`;
       modifiedToken = `http://localhost:5173/forgot-password-new-password/u${token}`;

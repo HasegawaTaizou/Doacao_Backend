@@ -146,7 +146,7 @@ const hospitalEmailGet = async function (hospitalEmail) {
     hospitalEmail.email
   );
 
-  if (hospitalData.length == 0) {
+  if (hospitalData == null) {
     return message.ERROR_RESOURCE_NOT_FOUND;
   } else if (hospitalData) {
     const jsonHospitalData = {};
